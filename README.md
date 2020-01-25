@@ -1,4 +1,4 @@
-# Data Visualizer
+# WebGL Experimentation
 
 This is the WebGL Experimentation application that I created to better understand how WebGL works.
 
