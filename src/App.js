@@ -1,11 +1,17 @@
 import React from 'react';
 import ColoredSquareScene from './ColoredSquareScene';
+import ColoredCubeScene from './ColoredCubeScene';
 
 class App extends React.Component {
   constructor(props) {
     super(props);
+    this.onClickCanvas = this.onClickCanvas.bind(this);
     this.renderCanvas = this.renderCanvas.bind(this);
-    this.scene = new ColoredSquareScene();
+    this.scenes = [
+      { init: false, render: new ColoredSquareScene() },
+      { init: false, render: new ColoredCubeScene() }
+    ];
+    this.sceneIndex = 0;
   }
 
   componentDidMount() {
@@ -17,13 +23,26 @@ class App extends React.Component {
     if (this.gl === null) {
       alert("Unable to initialize WebGL. Your browser or machine may not support it.");
     } else {
-      this.scene.initScene(this.gl);
+      const scene = this.scenes[this.sceneIndex];
+      if (!scene.init) {
+        scene.render.initScene(this.gl);
+      }
       this.frame = window.requestAnimationFrame(this.renderCanvas);
     }
   }
 
   componentWillUnmount() {
     window.cancelAnimationFrame(this.frame);
+  }
+
+  onClickCanvas(event) {
+    event.preventDefault();
+    this.sceneIndex = (this.sceneIndex + 1) % this.scenes.length;
+    const scene = this.scenes[this.sceneIndex];
+    if (!scene.init) {
+      scene.init = true;
+      scene.render.initScene(this.gl);
+    }
   }
 
   renderCanvas(timeStamp) {
@@ -33,14 +52,15 @@ class App extends React.Component {
     timeStamp *= 0.001;
     const deltaTime = timeStamp - this.timeStamp;
     this.timeStamp = timeStamp;
-    this.scene.drawScene(this.gl, deltaTime);
+    const scene = this.scenes[this.sceneIndex];
+    scene.render.drawScene(this.gl, deltaTime);
     this.frame = window.requestAnimationFrame(this.renderCanvas);
   }
 
   render() {
     return (
       <div className="screen">
-        <canvas className="canvas" ref={elem => this.canvas = elem}></canvas>
+        <canvas className="canvas" ref={elem => this.canvas = elem} onClick={this.onClickCanvas}></canvas>
       </div>
     );
   }

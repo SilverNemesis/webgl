@@ -6,6 +6,7 @@ exports[`renders correctly 1`] = `
 >
   <canvas
     className="canvas"
+    onClick={[Function]}
   />
 </div>
 `;
