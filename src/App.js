@@ -2,6 +2,7 @@ import React from 'react';
 import ColoredSquareScene from './ColoredSquareScene';
 import ColoredCubeScene from './ColoredCubeScene';
 import TexturedCubeScene from './TexturedCubeScene';
+import LightedCubeScene from './LightedCubeScene';
 
 class App extends React.Component {
   constructor(props) {
@@ -9,11 +10,12 @@ class App extends React.Component {
     this.onClickCanvas = this.onClickCanvas.bind(this);
     this.renderCanvas = this.renderCanvas.bind(this);
     this.scenes = [
-      { init: false, render: new TexturedCubeScene() },
+      { init: false, render: new ColoredSquareScene() },
       { init: false, render: new ColoredCubeScene() },
-      { init: false, render: new ColoredSquareScene() }
+      { init: false, render: new TexturedCubeScene() },
+      { init: false, render: new LightedCubeScene() }
     ];
-    this.sceneIndex = 0;
+    this.sceneIndex = this.scenes.length - 1;
   }
 
   componentDidMount() {
