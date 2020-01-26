@@ -1,7 +1,9 @@
+import Utility from './Utility'
 import * as mat4 from 'gl-matrix/mat4';
 
 class ColoredSquareScene {
   constructor() {
+    this.utility = new Utility();
     this.initScene = this.initScene.bind(this);
     this.drawScene = this.drawScene.bind(this);
   }
@@ -30,7 +32,7 @@ class ColoredSquareScene {
     }
   `;
 
-    const shaderProgram = this._initShaderProgram(gl, vsSource, fsSource);
+    const shaderProgram = this.utility.initShaderProgram(gl, vsSource, fsSource);
 
     const programInfo = {
       program: shaderProgram,
@@ -53,11 +55,7 @@ class ColoredSquareScene {
     const scene = this.scene;
     const { programInfo, buffers } = scene;
 
-    gl.clearColor(0.0, 0.0, 0.0, 1.0);
-    gl.clearDepth(1.0);
-    gl.enable(gl.DEPTH_TEST);
-    gl.depthFunc(gl.LEQUAL);
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    this.utility.clearScreen(gl);
 
     {
       const numComponents = 4;
@@ -123,32 +121,6 @@ class ColoredSquareScene {
     }
 
     scene.squareRotation += deltaTime;
-  }
-
-  _initShaderProgram(gl, vsSource, fsSource) {
-    const vertexShader = this._loadShader(gl, gl.VERTEX_SHADER, vsSource);
-    const fragmentShader = this._loadShader(gl, gl.FRAGMENT_SHADER, fsSource);
-    const shaderProgram = gl.createProgram();
-    gl.attachShader(shaderProgram, vertexShader);
-    gl.attachShader(shaderProgram, fragmentShader);
-    gl.linkProgram(shaderProgram);
-    if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
-      alert('Unable to initialize the shader program: ' + gl.getProgramInfoLog(shaderProgram));
-      return null;
-    }
-    return shaderProgram;
-  }
-
-  _loadShader(gl, type, source) {
-    const shader = gl.createShader(type);
-    gl.shaderSource(shader, source);
-    gl.compileShader(shader);
-    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-      alert('An error occurred compiling the shaders: ' + gl.getShaderInfoLog(shader));
-      gl.deleteShader(shader);
-      return null;
-    }
-    return shader;
   }
 
   _initBuffers(gl) {
