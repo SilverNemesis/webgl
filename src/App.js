@@ -1,6 +1,7 @@
 import React from 'react';
 import ColoredSquareScene from './ColoredSquareScene';
 import ColoredCubeScene from './ColoredCubeScene';
+import TexturedCubeScene from './TexturedCubeScene';
 
 class App extends React.Component {
   constructor(props) {
@@ -8,8 +9,9 @@ class App extends React.Component {
     this.onClickCanvas = this.onClickCanvas.bind(this);
     this.renderCanvas = this.renderCanvas.bind(this);
     this.scenes = [
-      { init: false, render: new ColoredSquareScene() },
-      { init: false, render: new ColoredCubeScene() }
+      { init: false, render: new TexturedCubeScene() },
+      { init: false, render: new ColoredCubeScene() },
+      { init: false, render: new ColoredSquareScene() }
     ];
     this.sceneIndex = 0;
   }
@@ -25,6 +27,7 @@ class App extends React.Component {
     } else {
       const scene = this.scenes[this.sceneIndex];
       if (!scene.init) {
+        scene.init = true;
         scene.render.initScene(this.gl);
       }
       this.frame = window.requestAnimationFrame(this.renderCanvas);
