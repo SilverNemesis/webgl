@@ -1,10 +1,9 @@
 import * as mat4 from 'gl-matrix/mat4';
-import Utility from './Utility'
+import { loadTexture, initShaderProgram } from './utility'
 
 class LightedCubeModel {
   constructor(gl) {
     this.gl = gl;
-    this.utility = new Utility();
     this.draw = this.draw.bind(this);
     const shaderProgram = this._initShaders(gl);
     this.model = {
@@ -21,7 +20,7 @@ class LightedCubeModel {
         uSampler: gl.getUniformLocation(shaderProgram, 'uSampler')
       },
       buffers: this._initBuffers(gl),
-      texture: this.utility.loadTexture(gl, 'images/cubetexture.png')
+      texture: loadTexture(gl, 'images/cubetexture.png')
     }
   }
 
@@ -132,7 +131,7 @@ class LightedCubeModel {
       }
     `;
 
-    return this.utility.initShaderProgram(gl, vsSource, fsSource);
+    return initShaderProgram(gl, vsSource, fsSource);
   }
 
   _initBuffers(gl) {

@@ -1,9 +1,8 @@
-import Utility from './Utility'
 import * as mat4 from 'gl-matrix/mat4';
+import { initShaderProgram, clearScreen } from './utility'
 
 class ColoredSquareScene {
   constructor() {
-    this.utility = new Utility();
     this.initScene = this.initScene.bind(this);
     this.drawScene = this.drawScene.bind(this);
   }
@@ -32,7 +31,7 @@ class ColoredSquareScene {
     }
   `;
 
-    const shaderProgram = this.utility.initShaderProgram(gl, vsSource, fsSource);
+    const shaderProgram = initShaderProgram(gl, vsSource, fsSource);
 
     const programInfo = {
       program: shaderProgram,
@@ -55,7 +54,7 @@ class ColoredSquareScene {
     const scene = this.scene;
     const { programInfo, buffers } = scene;
 
-    this.utility.clearScreen(gl);
+    clearScreen(gl);
 
     {
       const numComponents = 4;

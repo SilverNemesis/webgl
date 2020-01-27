@@ -1,9 +1,8 @@
-import Utility from './Utility'
 import * as mat4 from 'gl-matrix/mat4';
+import { initShaderProgram, loadTexture, clearScreen } from './utility'
 
 class TexturedCubeScene {
   constructor() {
-    this.utility = new Utility();
     this.initScene = this.initScene.bind(this);
     this.drawScene = this.drawScene.bind(this);
   }
@@ -34,7 +33,7 @@ class TexturedCubeScene {
       }
     `;
 
-    const shaderProgram = this.utility.initShaderProgram(gl, vsSource, fsSource);
+    const shaderProgram = initShaderProgram(gl, vsSource, fsSource);
 
     const programInfo = {
       program: shaderProgram,
@@ -51,7 +50,7 @@ class TexturedCubeScene {
 
     const buffers = this._initBuffers(gl);
 
-    const texture = this.utility.loadTexture(gl, 'images/cubetexture.png');
+    const texture = loadTexture(gl, 'images/cubetexture.png');
 
     this.scene = { programInfo, buffers, texture, cubeRotation: 0.0 };
   }
@@ -60,7 +59,7 @@ class TexturedCubeScene {
     const scene = this.scene;
     const { programInfo, buffers, texture } = scene;
 
-    this.utility.clearScreen(gl);
+    clearScreen(gl);
 
     {
       const numComponents = 3;

@@ -1,10 +1,9 @@
 import * as mat4 from 'gl-matrix/mat4';
-import Utility from './Utility'
+import { clearScreen } from './utility'
 import LightedCubeModel from './LightedCubeModel';
 
 class LightedCubeScene {
   constructor() {
-    this.utility = new Utility();
     this.initScene = this.initScene.bind(this);
     this.drawScene = this.drawScene.bind(this);
   }
@@ -34,7 +33,7 @@ class LightedCubeScene {
   drawScene(gl, deltaTime) {
     const scene = this.scene;
 
-    this.utility.clearScreen(gl);
+    clearScreen(gl);
 
     const fieldOfView = 45 * Math.PI / 180;
     const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
