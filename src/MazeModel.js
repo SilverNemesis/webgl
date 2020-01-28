@@ -27,7 +27,7 @@ class MazeModel {
     const { buffers } = this.model;
 
     {
-      const numComponents = 2;
+      const numComponents = 3;
       const type = gl.FLOAT;
       const normalize = false;
       const stride = 0;
@@ -93,8 +93,8 @@ class MazeModel {
   }
 
   _initBuffers(gl, maze) {
-    const wallColor = [.65, .65, .65, 1];
-    const floorColor = [.1, .1, .1, 1.0];
+    const wallColor = [.7, .7, .7, 1];
+    const floorColor = [.2, .2, .2, 1.0];
 
     const positions = []
     const colors = [];
@@ -103,17 +103,20 @@ class MazeModel {
     const ofs_y = -maze.height / 2;
     for (let y = 0; y < maze.height; y++) {
       for (let x = 0; x < maze.width; x++) {
+        let base;
+        let color;
+        if (maze.data[y][x] === 0) {
+          base = 0.0;
+          color = floorColor;
+        } else {
+          base = 1.0;
+          color = wallColor;
+        }
         const left = x + ofs_x;
         const right = left + 1;
         const top = y + ofs_y;
         const bottom = top + 1;
-        positions.push(left, top, right, top, right, bottom, left, bottom);
-        let color;
-        if (maze.data[y][x] === 0) {
-          color = floorColor;
-        } else {
-          color = wallColor;
-        }
+        positions.push(left, top, base, right, top, base, right, bottom, base, left, bottom, base);
         for (let i = 0; i < 4; i++) {
           for (let j = 0; j < 4; j++) {
             colors.push(color[j]);
