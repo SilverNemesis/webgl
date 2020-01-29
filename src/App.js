@@ -29,6 +29,7 @@ class App extends React.Component {
     if (this.gl === null) {
       alert("Unable to initialize WebGL. Your browser or machine may not support it.");
     } else {
+      this.gl.getExtension('OES_element_index_uint');
       const scene = this.scenes[this.sceneIndex];
       if (!scene.init) {
         scene.init = true;
@@ -53,10 +54,10 @@ class App extends React.Component {
   }
 
   renderCanvas(timeStamp) {
+    timeStamp *= 0.001;
     if (!this.timeStamp) {
       this.timeStamp = timeStamp;
     }
-    timeStamp *= 0.001;
     const deltaTime = timeStamp - this.timeStamp;
     this.timeStamp = timeStamp;
     const scene = this.scenes[this.sceneIndex];

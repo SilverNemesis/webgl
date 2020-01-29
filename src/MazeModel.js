@@ -21,6 +21,12 @@ class MazeModel {
     }
   }
 
+  update(maze) {
+    this._freeBuffers(this.gl, this.model.buffers);
+    this.maze = maze;
+    this.model.buffers = this._initBuffers(this.gl, maze);
+  }
+
   draw(projectionMatrix, viewMatrix, modelMatrix) {
     const gl = this.gl;
     const model = this.model;
@@ -59,7 +65,7 @@ class MazeModel {
 
     {
       const vertexCount = buffers.vertexCount;
-      const type = gl.UNSIGNED_SHORT;
+      const type = gl.UNSIGNED_INT;
       const offset = 0;
       gl.drawElements(gl.TRIANGLES, vertexCount, type, offset);
     }
@@ -208,9 +214,15 @@ class MazeModel {
 
     const indexBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint32Array(indices), gl.STATIC_DRAW);
 
     return { position: positionBuffer, color: colorBuffer, indices: indexBuffer, vertexCount: indices.length };
+  }
+
+  _freeBuffers(gl, buffers) {
+    gl.deleteBuffer(buffers.position);
+    gl.deleteBuffer(buffers.color);
+    gl.deleteBuffer(buffers.indices);
   }
 }
 
