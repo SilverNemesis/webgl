@@ -16,17 +16,19 @@ class LightedCubeScene {
           model,
           location: [-2.0, 0.0, -5.5],
           rotation: 0.0,
-          rotationSpeed: 1.0
+          rotationSpeed: 1.0,
+          perPixel: false
         },
         {
           model,
           location: [2.0, 0.0, -5.5],
           rotation: 0.0,
-          rotationSpeed: 2.0
+          rotationSpeed: 1.0,
+          perPixel: true
         }
       ],
       camera: [0.0, 0.0, 0.0],
-      cameraDir: [0.0, 0.0, 8.0]
+      cameraDir: [0.0, 0.0, 2.0]
     };
   }
 
@@ -52,12 +54,12 @@ class LightedCubeScene {
       this._animateActor(deltaTime, actor);
     }
 
-    if (scene.camera[2] > 64.0) {
-      scene.camera[2] = 64.0;
-      scene.cameraDir[2] = -8.0;
+    if (scene.camera[2] > 16.0) {
+      scene.camera[2] = 16.0;
+      scene.cameraDir[2] = -2.0;
     } else if (scene.camera[2] < 0.0) {
       scene.camera[2] = 0.0;
-      scene.cameraDir[2] = 8.0;
+      scene.cameraDir[2] = 2.0;
     }
 
     scene.camera[0] += scene.cameraDir[0] * deltaTime;
@@ -74,7 +76,7 @@ class LightedCubeScene {
     mat4.rotate(modelMatrix, modelMatrix, actor.rotation * 0.7, [0, 1, 0]);
     mat4.rotate(modelMatrix, modelMatrix, actor.rotation * 0.3, [1, 0, 0]);
 
-    model.draw(projectionMatrix, viewMatrix, modelMatrix);
+    model.draw(projectionMatrix, viewMatrix, modelMatrix, actor.perPixel);
   }
 
   _animateActor(deltaTime, actor) {
