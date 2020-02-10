@@ -29,6 +29,8 @@ class App extends React.Component {
     if (this.gl === null) {
       alert("Unable to initialize WebGL. Your browser or machine may not support it.");
     } else {
+      this.gl.enable(this.gl.CULL_FACE);
+      this.gl.cullFace(this.gl.BACK);
       this.gl.getExtension('OES_element_index_uint');
       const scene = this.scenes[this.sceneIndex];
       if (!scene.init) {
