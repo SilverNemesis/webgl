@@ -113,9 +113,6 @@ class LightedCubeModel {
     const modelViewMatrix = mat4.create();
     mat4.multiply(modelViewMatrix, viewMatrix, modelMatrix);
 
-    const direction = vec3.fromValues(0.0, 1.0, 0.0);
-    vec3.normalize(direction, direction);
-
     gl.useProgram(shader.program);
     gl.uniformMatrix4fv(shader.uniformLocations.projectionMatrix, false, projectionMatrix);
     gl.uniformMatrix4fv(shader.uniformLocations.modelViewMatrix, false, modelViewMatrix);
@@ -123,6 +120,8 @@ class LightedCubeModel {
 
     gl.uniform3f(shader.uniformLocations.ambientLight, 0.3, 0.3, 0.3);
 
+    const direction = vec3.fromValues(0.0, 1.0, 0.0);
+    vec3.normalize(direction, direction);
     gl.uniform3f(shader.uniformLocations.directionalLight.color, 0.5, 0.5, 0.5);
     gl.uniform3fv(shader.uniformLocations.directionalLight.direction, direction);
 

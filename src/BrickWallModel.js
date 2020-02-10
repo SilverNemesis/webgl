@@ -239,7 +239,6 @@ class BrickWallModel {
     const tangents = [];
     const bitangents = [];
     const textureCoordinates = [];
-    const colors = [];
     const indices = [];
     const tangent = vec3.create();
     const bitangent = vec3.create();
