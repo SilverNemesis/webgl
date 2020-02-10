@@ -190,11 +190,11 @@ class MazeModel {
           }
 
           if (x === 0 || maze.data[y][x - 1] === 0) {
-            addSquareYZ(top, bottom, 0.0, 1.0, left, wallColor_Left);
+            addSquareYZ(bottom, top, 0.0, 1.0, left, wallColor_Left);
           }
 
           if (y === maze.height - 1 || maze.data[y + 1][x] === 0) {
-            addSquareXZ(left, right, 0.0, 1.0, bottom, wallColor_Bottom);
+            addSquareXZ(right, left, 0.0, 1.0, bottom, wallColor_Bottom);
           }
 
           if (x === maze.width - 1 || maze.data[y][x + 1] === 0) {
