@@ -22,10 +22,7 @@ class Model {
       const shader = {
         program: shaderProgram,
         attribLocations: {},
-        uniformLocations: {
-          directionalLight: {},
-          pointLight: {}
-        }
+        uniformLocations: {}
       };
       shaderParameters.attributes.forEach((attribute) => {
         const location = gl.getAttribLocation(shaderProgram, attribute.name)
@@ -77,15 +74,27 @@ class Model {
             shader.uniformLocations.ambientLight = location;
             break;
           case 'uDirectionalLight.color':
+            if (!shader.uniformLocations.directionalLight) {
+              shader.uniformLocations.directionalLight = {};
+            }
             shader.uniformLocations.directionalLight.color = location;
             break;
           case 'uDirectionalLight.direction':
+            if (!shader.uniformLocations.directionalLight) {
+              shader.uniformLocations.directionalLight = {};
+            }
             shader.uniformLocations.directionalLight.direction = location;
             break;
           case 'uPointLight.color':
+            if (!shader.uniformLocations.pointLight) {
+              shader.uniformLocations.pointLight = {};
+            }
             shader.uniformLocations.pointLight.color = location;
             break;
           case 'uPointLight.position':
+            if (!shader.uniformLocations.pointLight) {
+              shader.uniformLocations.pointLight = {};
+            }
             shader.uniformLocations.pointLight.position = location;
             break;
           default:
