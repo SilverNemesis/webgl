@@ -17,6 +17,66 @@ export function initShaderProgram(gl, vsSource, fsSource) {
   return shaderProgram;
 }
 
+export function getShaderParameters(gl, shaderProgram) {
+  const attributeCount = gl.getProgramParameter(shaderProgram, gl.ACTIVE_ATTRIBUTES);
+  const attributes = [];
+  for (let i = 0; i < attributeCount; i++) {
+    const attribute = gl.getActiveAttrib(shaderProgram, i);
+    attributes.push({ name: attribute.name, type: _typeToString(gl, attribute.type) });
+  }
+  const uniformCount = gl.getProgramParameter(shaderProgram, gl.ACTIVE_UNIFORMS);
+  const uniforms = [];
+  for (let i = 0; i < uniformCount; i++) {
+    const uniform = gl.getActiveUniform(shaderProgram, i);
+    uniforms.push({ name: uniform.name, type: _typeToString(gl, uniform.type) });
+  }
+  return {
+    attributes,
+    uniforms
+  };
+}
+
+function _typeToString(gl, type) {
+  switch (type) {
+    case gl.FLOAT:
+      return "FLOAT";
+    case gl.FLOAT_VEC2:
+      return "FLOAT_VEC2";
+    case gl.FLOAT_VEC3:
+      return "FLOAT_VEC3";
+    case gl.FLOAT_VEC4:
+      return "FLOAT_VEC4";
+    case gl.INT:
+      return "INT";
+    case gl.INT_VEC2:
+      return "INT_VEC2";
+    case gl.INT_VEC3:
+      return "INT_VEC3";
+    case gl.INT_VEC4:
+      return "INT_VEC4";
+    case gl.BOOL:
+      return "BOOL";
+    case gl.BOOL_VEC2:
+      return "BOOL_VEC2";
+    case gl.BOOL_VEC3:
+      return "BOOL_VEC3";
+    case gl.BOOL_VEC4:
+      return "BOOL_VEC4";
+    case gl.FLOAT_MAT2:
+      return "FLOAT_MAT2";
+    case gl.FLOAT_MAT3:
+      return "FLOAT_MAT3";
+    case gl.FLOAT_MAT4:
+      return "FLOAT_MAT4";
+    case gl.SAMPLER_2D:
+      return "SAMPLER_2D";
+    case gl.SAMPLER_CUBE:
+      return "SAMPLER_CUBE";
+    default:
+      return "UNKNOWN";
+  }
+}
+
 function _loadShader(gl, type, source) {
   const shader = gl.createShader(type);
   gl.shaderSource(shader, source);
