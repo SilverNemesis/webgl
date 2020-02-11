@@ -30,6 +30,9 @@ class Model {
           case 'aVertexPosition':
             shader.attribLocations.vertexPosition = location;
             break;
+          case 'aVertexNormal':
+            shader.attribLocations.vertexNormal = location;
+            break;
           case 'aVertexTangent':
             shader.attribLocations.vertexTangent = location;
             break;
@@ -66,6 +69,9 @@ class Model {
             break;
           case 'uShowTexture':
             shader.uniformLocations.textureShow = location;
+            break;
+          case 'uPerPixel':
+            shader.uniformLocations.perPixel = location;
             break;
           case 'uCameraPos':
             shader.uniformLocations.cameraPosition = location;
@@ -106,16 +112,18 @@ class Model {
         shader,
         buffers,
         texture
-      }
+      };
     });
   }
 
   _initBuffers(gl, shader, geometry) {
     const positions = [];
+    const normals = [];
     const tangents = [];
     const bitangents = [];
     const textureCoordinates = [];
     const indices = [];
+    const normal = vec3.create();
     const tangent = vec3.create();
     const bitangent = vec3.create();
     let offset = 0;
@@ -125,16 +133,25 @@ class Model {
       indices.push(offset + 0, offset + 1, offset + 2, offset + 0, offset + 3, offset + 1);
       offset += 4;
 
-      if (shader.attribLocations.vertexTangent) {
+      if (shader.attribLocations.vertexNormal || shader.attribLocations.vertexTangent || shader.attribLocations.vertexBitangent) {
         vec3.subtract(tangent, c3, c0);
-        vec3.normalize(tangent, tangent);
-        tangents.push(...tangent, ...tangent, ...tangent, ...tangent);
-      }
-
-      if (shader.attribLocations.vertexBitangent) {
         vec3.subtract(bitangent, c0, c2);
-        vec3.normalize(bitangent, bitangent);
-        bitangents.push(...bitangent, ...bitangent, ...bitangent, ...bitangent);
+
+        if (shader.attribLocations.vertexNormal) {
+          vec3.cross(normal, tangent, bitangent);
+          vec3.normalize(normal, normal);
+          normals.push(...normal, ...normal, ...normal, ...normal);
+        }
+
+        if (shader.attribLocations.vertexTangent) {
+          vec3.normalize(tangent, tangent);
+          tangents.push(...tangent, ...tangent, ...tangent, ...tangent);
+        }
+
+        if (shader.attribLocations.vertexBitangent) {
+          vec3.normalize(bitangent, bitangent);
+          bitangents.push(...bitangent, ...bitangent, ...bitangent, ...bitangent);
+        }
       }
 
       if (shader.attribLocations.vertexTextureCoord) {
@@ -153,6 +170,13 @@ class Model {
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
 
     const buffers = { position: positionBuffer, indices: indexBuffer, vertexCount: indices.length }
+
+    if (shader.attribLocations.vertexNormal) {
+      const normalBuffer = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normals), gl.STATIC_DRAW);
+      buffers.normal = normalBuffer;
+    }
 
     if (shader.attribLocations.vertexTangent) {
       const tangentBuffer = gl.createBuffer();
@@ -183,7 +207,7 @@ class Model {
       return;
     }
 
-    const { gl, model, projectionMatrix, viewMatrix, modelMatrix, textureShow } = options;
+    const { gl, model, projectionMatrix, viewMatrix, modelMatrix } = options;
     const { shader, buffers, texture } = model;
 
     {
@@ -198,6 +222,17 @@ class Model {
     }
 
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffers.indices);
+
+    if (shader.attribLocations.vertexNormal) {
+      const numComponents = 3;
+      const type = gl.FLOAT;
+      const normalize = false;
+      const stride = 0;
+      const offset = 0;
+      gl.bindBuffer(gl.ARRAY_BUFFER, buffers.normal);
+      gl.vertexAttribPointer(shader.attribLocations.vertexNormal, numComponents, type, normalize, stride, offset);
+      gl.enableVertexAttribArray(shader.attribLocations.vertexNormal);
+    }
 
     if (shader.attribLocations.vertexTangent) {
       const numComponents = 3;
@@ -245,7 +280,11 @@ class Model {
     }
 
     if (shader.uniformLocations.textureShow) {
-      gl.uniform1i(shader.uniformLocations.textureShow, textureShow);
+      gl.uniform1i(shader.uniformLocations.textureShow, options.textureShow);
+    }
+
+    if (shader.uniformLocations.perPixel) {
+      gl.uniform1i(shader.uniformLocations.perPixel, options.perPixel);
     }
 
     if (shader.uniformLocations.ambientLight) {
