@@ -1,14 +1,14 @@
 precision highp float;
 
 attribute vec3 aVertexPosition;
+attribute vec3 aVertexNormal;
 attribute vec3 aVertexTangent;
 attribute vec3 aVertexBitangent;
 attribute vec2 aTextureCoord;
 
-uniform mat4 uNormalMatrix;
-uniform mat4 uModelMatrix;
-uniform mat4 uViewMatrix;
 uniform mat4 uProjectionMatrix;
+uniform mat4 uViewMatrix;
+uniform mat4 uModelMatrix;
 
 uniform vec3 uCameraPos;
 uniform struct {
@@ -35,16 +35,17 @@ mat3 transpose(in mat3 inMatrix) {
 }
 
 void main(void) {
+  gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);
+
   frag_uv = aTextureCoord;
 
-  vec3 t = normalize(mat3(uNormalMatrix) * aVertexTangent);
-  vec3 b = normalize(mat3(uNormalMatrix) * aVertexBitangent);
-  mat3 tbn = transpose(mat3(t, b, normalize(mat3(uNormalMatrix) * cross(aVertexBitangent, aVertexTangent))));
+  vec3 t = normalize(mat3(uModelMatrix) * aVertexTangent);
+  vec3 b = normalize(mat3(uModelMatrix) * aVertexBitangent);
+  vec3 n = normalize(mat3(uModelMatrix) * aVertexNormal);
+  mat3 tbn = transpose(mat3(t, b, n));
 
   ts_light_pos = tbn * uPointLight.position;
   ts_view_pos = tbn * uCameraPos;
   ts_frag_pos = tbn * vec3(uModelMatrix * vec4(aVertexPosition, 1.0));
   ts_diffuse_dir = tbn * uDirectionalLight.direction;
-
-  gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);
 }

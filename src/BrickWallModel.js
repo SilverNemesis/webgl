@@ -10,7 +10,8 @@ class BrickWallModel extends Model {
       geometry: this._geometry,
       texture: {
         diffuse: 'images/Brick_Wall_017_basecolor.jpg',
-        normal: 'images/Brick_Wall_017_normal.jpg'
+        normal: 'images/Brick_Wall_017_normal.jpg',
+        height: 'images/Brick_Wall_017_height.png'
       },
       shader: {
         vertex: 'shaders/brickwall/vertex.glsl',
@@ -29,8 +30,8 @@ class BrickWallModel extends Model {
       textureShow: 1,
       ambientLight: [0.2, 0.2, 0.2],
       directionalLight: {
-        color: [1.0, 1.0, 1.0],
-        direction: [0.0, 1.0, 0.0]
+        color: [0.5, 0.5, 0.5],
+        direction: [0.0, -1.0, 1.0]
       },
       pointLight: {
         color: [1.0, 1.0, 1.0],
@@ -53,8 +54,8 @@ class BrickWallModel extends Model {
     addSquare(b1, b0, b3, b2);  // back
     addSquare(b0, f0, f3, b3);  // left
     addSquare(f1, b1, b2, f2);  // right
-    addSquare(b0, b1, f1, f0);  // bottom
-    addSquare(b2, b3, f3, f2);  // top
+    addSquare(b0, b1, f1, f0);  // top
+    addSquare(b2, b3, f3, f2);  // bottom
   }
 }
 
