@@ -263,38 +263,78 @@ class Model {
       }
     }
 
-    const addTriangle = (c0, c1, c2) => {
+    const addTriangle = (c0, c1, c2, options) => {
       positions.push(...c0, ...c1, ...c2);
       indices.push(offset + 0, offset + 1, offset + 2);
       offset += 3;
-      vec3.subtract(tangent, c1, c0);
-      vec3.subtract(bitangent, c2, c0);
-      vec3.cross(normal, tangent, bitangent);
-      vec3.normalize(normal, normal);
-      normals.push(...normal, ...normal, ...normal);
+
+      if (shader.attribLocations.vertexNormal || shader.attribLocations.vertexTangent || shader.attribLocations.vertexBitangent) {
+        vec3.subtract(tangent, c1, c0);
+        vec3.subtract(bitangent, c2, c0);
+
+        if (shader.attribLocations.vertexNormal) {
+          vec3.cross(normal, tangent, bitangent);
+          vec3.normalize(normal, normal);
+          normals.push(...normal, ...normal, ...normal);
+        }
+
+        if (shader.attribLocations.vertexTangent) {
+          vec3.normalize(tangent, tangent);
+          tangents.push(...tangent, ...tangent, ...tangent);
+        }
+
+        if (shader.attribLocations.vertexBitangent) {
+          vec3.normalize(bitangent, bitangent);
+          bitangents.push(...bitangent, ...bitangent, ...bitangent);
+        }
+      }
+
+      if (shader.attribLocations.vertexColor) {
+        colors.push(...options.color, ...options.color, ...options.color);
+      }
     }
 
-    const addPentagon = (c0, c1, c2, c3, c4) => {
+    const addPentagon = (c0, c1, c2, c3, c4, options) => {
       positions.push(...c0, ...c1, ...c2, ...c3, ...c4);
       indices.push(offset + 0, offset + 3, offset + 4, offset + 0, offset + 1, offset + 3, offset + 1, offset + 2, offset + 3);
       offset += 5;
-      vec3.subtract(tangent, c1, c0);
-      vec3.subtract(bitangent, c4, c0);
-      vec3.cross(normal, tangent, bitangent);
-      vec3.normalize(normal, normal);
-      normals.push(...normal, ...normal, ...normal, ...normal, ...normal);
+
+      if (shader.attribLocations.vertexNormal || shader.attribLocations.vertexTangent || shader.attribLocations.vertexBitangent) {
+        vec3.subtract(tangent, c1, c0);
+        vec3.subtract(bitangent, c4, c0);
+
+        if (shader.attribLocations.vertexNormal) {
+          vec3.cross(normal, tangent, bitangent);
+          vec3.normalize(normal, normal);
+          normals.push(...normal, ...normal, ...normal, ...normal, ...normal);
+        }
+
+        if (shader.attribLocations.vertexTangent) {
+          vec3.normalize(tangent, tangent);
+          tangents.push(...tangent, ...tangent, ...tangent, ...tangent, ...tangent);
+        }
+
+        if (shader.attribLocations.vertexBitangent) {
+          vec3.normalize(bitangent, bitangent);
+          bitangents.push(...bitangent, ...bitangent, ...bitangent, ...bitangent, ...bitangent);
+        }
+      }
+
+      if (shader.attribLocations.vertexColor) {
+        colors.push(...options.color, ...options.color, ...options.color, ...options.color, ...options.color);
+      }
     }
 
     const addFace = (vertices, face, options) => {
       switch (face.length) {
         case 3:
-          addTriangle(vertices[face[0]], vertices[face[1]], vertices[face[2]]);
+          addTriangle(vertices[face[0]], vertices[face[1]], vertices[face[2]], options);
           break;
         case 4:
           addSquare(vertices[face[0]], vertices[face[1]], vertices[face[2]], vertices[face[3]], options);
           break;
         case 5:
-          addPentagon(vertices[face[0]], vertices[face[1]], vertices[face[2]], vertices[face[3]], vertices[face[4]]);
+          addPentagon(vertices[face[0]], vertices[face[1]], vertices[face[2]], vertices[face[3]], vertices[face[4]], options);
           break;
         default:
           alert('faces with ' + face.length + ' vertices are not supported');
@@ -306,7 +346,7 @@ class Model {
         let option = {}
         if (options) {
           if (options.colors) {
-            option.color = options.colors[i];
+            option.color = options.colors[i % options.colors.length];
           }
         }
         addFace(vertices, faces[i], option);
