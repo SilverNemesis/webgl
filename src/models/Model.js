@@ -80,11 +80,20 @@ class Model {
           case 'uSamplerHeight':
             shader.uniformLocations.textureHeight = location;
             break;
-          case 'uShowTexture':
-            shader.uniformLocations.textureShow = location;
+          case 'uShowDiffuseMap':
+            shader.uniformLocations.showDiffuseMap = location;
+            break;
+          case 'uShowNormalMap':
+            shader.uniformLocations.showNormalMap = location;
             break;
           case 'uPerPixel':
             shader.uniformLocations.perPixel = location;
+            break;
+          case 'uParallaxHeightScale':
+            shader.uniformLocations.parallaxHeightScale = location;
+            break;
+          case 'uParallaxSteps':
+            shader.uniformLocations.parallaxSteps = location;
             break;
           case 'uCameraPos':
             shader.uniformLocations.cameraPosition = location;
@@ -501,12 +510,24 @@ class Model {
       gl.uniformMatrix4fv(shader.uniformLocations.normalMatrix, false, normalMatrix);
     }
 
-    if (shader.uniformLocations.textureShow) {
-      gl.uniform1i(shader.uniformLocations.textureShow, options.textureShow);
+    if (shader.uniformLocations.showDiffuseMap) {
+      gl.uniform1i(shader.uniformLocations.showDiffuseMap, options.showDiffuseMap);
+    }
+
+    if (shader.uniformLocations.showNormalMap) {
+      gl.uniform1i(shader.uniformLocations.showNormalMap, options.showNormalMap);
     }
 
     if (shader.uniformLocations.perPixel) {
       gl.uniform1i(shader.uniformLocations.perPixel, options.perPixel);
+    }
+
+    if (shader.uniformLocations.parallaxHeightScale) {
+      gl.uniform1f(shader.uniformLocations.parallaxHeightScale, options.parallaxHeightScale);
+    }
+
+    if (shader.uniformLocations.parallaxSteps) {
+      gl.uniform1i(shader.uniformLocations.parallaxSteps, options.parallaxSteps);
     }
 
     if (shader.uniformLocations.ambientLight) {

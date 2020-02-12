@@ -27,7 +27,10 @@ class BrickWallModel extends Model {
       projectionMatrix,
       viewMatrix,
       modelMatrix,
-      textureShow: 1,
+      showDiffuseMap: 1,
+      showNormalMap: 1,
+      parallaxHeightScale: 0.04,
+      parallaxSteps: 32,
       ambientLight: [0.2, 0.2, 0.2],
       directionalLight: {
         color: [0.5, 0.5, 0.5],
