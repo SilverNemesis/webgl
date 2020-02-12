@@ -8,8 +8,15 @@ class Model {
     let texture
     if (options.texture) {
       texture = {};
-      texture.diffuse = loadTexture(gl, options.texture.diffuse);
-      texture.normal = loadTexture(gl, options.texture.normal);
+      if (options.texture.diffuse) {
+        texture.diffuse = loadTexture(gl, options.texture.diffuse);
+      }
+      if (options.texture.normal) {
+        texture.normal = loadTexture(gl, options.texture.normal);
+      }
+      if (options.texture.height) {
+        texture.height = loadTexture(gl, options.texture.height);
+      }
     }
     let vertexShader;
     let fragmentShader;
@@ -64,11 +71,14 @@ class Model {
           case 'uProjectionMatrix':
             shader.uniformLocations.projectionMatrix = location;
             break;
+          case 'uSamplerDiffuse':
+            shader.uniformLocations.textureDiffuse = location;
+            break;
           case 'uSamplerNormal':
             shader.uniformLocations.textureNormal = location;
             break;
-          case 'uSamplerDiffuse':
-            shader.uniformLocations.textureDiffuse = location;
+          case 'uSamplerHeight':
+            shader.uniformLocations.textureHeight = location;
             break;
           case 'uShowTexture':
             shader.uniformLocations.textureShow = location;
@@ -235,7 +245,7 @@ class Model {
 
       if (shader.attribLocations.vertexNormal || shader.attribLocations.vertexTangent || shader.attribLocations.vertexBitangent) {
         vec3.subtract(tangent, c1, c0);
-        vec3.subtract(bitangent, c1, c3);
+        vec3.subtract(bitangent, c3, c0);
 
         if (shader.attribLocations.vertexNormal) {
           vec3.cross(normal, tangent, bitangent);
@@ -538,16 +548,22 @@ class Model {
       gl.uniform3fv(shader.uniformLocations.cameraPosition, options.cameraPosition);
     }
 
-    if (shader.uniformLocations.textureNormal) {
+    if (shader.uniformLocations.textureDiffuse) {
       gl.activeTexture(gl.TEXTURE0);
-      gl.bindTexture(gl.TEXTURE_2D, texture.normal);
-      gl.uniform1i(shader.uniformLocations.textureNormal, 0);
+      gl.bindTexture(gl.TEXTURE_2D, texture.diffuse);
+      gl.uniform1i(shader.uniformLocations.textureDiffuse, 0);
     }
 
-    if (shader.uniformLocations.textureDiffuse) {
+    if (shader.uniformLocations.textureNormal) {
       gl.activeTexture(gl.TEXTURE1);
-      gl.bindTexture(gl.TEXTURE_2D, texture.diffuse);
-      gl.uniform1i(shader.uniformLocations.textureDiffuse, 1);
+      gl.bindTexture(gl.TEXTURE_2D, texture.normal);
+      gl.uniform1i(shader.uniformLocations.textureNormal, 1);
+    }
+
+    if (shader.uniformLocations.textureHeight) {
+      gl.activeTexture(gl.TEXTURE2);
+      gl.bindTexture(gl.TEXTURE_2D, texture.height);
+      gl.uniform1i(shader.uniformLocations.textureHeight, 2);
     }
 
     {
