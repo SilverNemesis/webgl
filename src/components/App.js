@@ -35,7 +35,6 @@ class App extends React.Component {
     } else {
       this.gl.enable(this.gl.CULL_FACE);
       this.gl.cullFace(this.gl.BACK);
-      this.gl.getExtension('OES_element_index_uint');
       const scene = this.scenes[this.sceneIndex];
       if (!scene.init) {
         scene.init = true;
