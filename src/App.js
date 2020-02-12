@@ -5,6 +5,7 @@ import TexturedCubeScene from './TexturedCubeScene';
 import LightedCubeScene from './LightedCubeScene';
 import MazeScene from './MazeScene';
 import BrickWallScene from './BrickWallScene';
+import MaterialScene from './MaterialScene';
 
 class App extends React.Component {
   constructor(props) {
@@ -17,7 +18,8 @@ class App extends React.Component {
       { init: false, render: new TexturedCubeScene() },
       { init: false, render: new LightedCubeScene() },
       { init: false, render: new MazeScene() },
-      { init: false, render: new BrickWallScene() }
+      { init: false, render: new BrickWallScene() },
+      { init: false, render: new MaterialScene() }
     ];
     this.sceneIndex = this.scenes.length - 1;
   }
