@@ -95,6 +95,9 @@ class Model {
           case 'uParallaxSteps':
             shader.uniformLocations.parallaxSteps = location;
             break;
+          case 'uParallaxOcclusionMapping':
+            shader.uniformLocations.parallaxOcclusionMapping = location;
+            break;
           case 'uCameraPos':
             shader.uniformLocations.cameraPosition = location;
             break;
@@ -528,6 +531,10 @@ class Model {
 
     if (shader.uniformLocations.parallaxSteps) {
       gl.uniform1i(shader.uniformLocations.parallaxSteps, options.parallaxSteps);
+    }
+
+    if (shader.uniformLocations.parallaxOcclusionMapping) {
+      gl.uniform1i(shader.uniformLocations.parallaxOcclusionMapping, options.parallaxOcclusionMapping);
     }
 
     if (shader.uniformLocations.ambientLight) {

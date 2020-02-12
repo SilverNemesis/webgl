@@ -31,6 +31,7 @@ class BrickWallModel extends Model {
       showNormalMap: 1,
       parallaxHeightScale: 0.04,
       parallaxSteps: 32,
+      parallaxOcclusionMapping: 1,
       ambientLight: [0.2, 0.2, 0.2],
       directionalLight: {
         color: [0.5, 0.5, 0.5],
