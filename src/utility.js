@@ -243,12 +243,12 @@ export function getShape(shape) {
     ];
 
     const faces = [
-      [0, 3, 2, 1],
-      [4, 5, 6, 7],
-      [0, 1, 5, 4],
-      [2, 3, 7, 6],
-      [1, 2, 6, 5],
-      [3, 0, 4, 7]
+      [0, 3, 2, 1],   // bottom
+      [4, 5, 6, 7],   // top
+      [0, 1, 5, 4],   // left
+      [2, 3, 7, 6],   // right
+      [1, 2, 6, 5],   // front
+      [3, 0, 4, 7]    // back
     ];
 
     return { vertices, faces };

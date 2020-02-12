@@ -42,19 +42,19 @@ class BrickWallModel extends Model {
 
   _geometry({ addSquare }) {
     const f0 = [-1, -1, 1];
-    const f1 = [1, 1, 1];
-    const f2 = [-1, 1, 1];
-    const f3 = [1, -1, 1];
+    const f1 = [1, -1, 1];
+    const f2 = [1, 1, 1];
+    const f3 = [-1, 1, 1];
     const b0 = [-1, -1, -1];
-    const b1 = [1, 1, -1];
-    const b2 = [-1, 1, -1];
-    const b3 = [1, -1, -1];
+    const b1 = [1, -1, -1];
+    const b2 = [1, 1, -1];
+    const b3 = [-1, 1, -1];
     addSquare(f0, f1, f2, f3);  // front
-    addSquare(b3, b2, b1, b0);  // back
-    addSquare(b0, f2, b2, f0);  // left
-    addSquare(f3, b1, f1, b3);  // right
-    addSquare(b0, f3, f0, b3);  // bottom
-    addSquare(b1, f2, f1, b2);  // top
+    addSquare(b1, b0, b3, b2);  // back
+    addSquare(b0, f0, f3, b3);  // left
+    addSquare(f1, b1, b2, f2);  // right
+    addSquare(b0, b1, f1, f0);  // bottom
+    addSquare(b2, b3, f3, f2);  // top
   }
 }
 

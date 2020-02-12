@@ -39,6 +39,9 @@ class Model {
           case 'aVertexBitangent':
             shader.attribLocations.vertexBitangent = location;
             break;
+          case 'aVertexColor':
+            shader.attribLocations.vertexColor = location;
+            break;
           case 'aTextureCoord':
             shader.attribLocations.vertexTextureCoord = location;
             break;
@@ -218,20 +221,21 @@ class Model {
     const tangents = [];
     const bitangents = [];
     const textureCoordinates = [];
+    const colors = [];
     const indices = [];
     const normal = vec3.create();
     const tangent = vec3.create();
     const bitangent = vec3.create();
     let offset = 0;
 
-    const addSquare = (c0, c1, c2, c3) => {
+    const addSquare = (c0, c1, c2, c3, options) => {
       positions.push(...c0, ...c1, ...c2, ...c3);
-      indices.push(offset + 0, offset + 1, offset + 2, offset + 0, offset + 3, offset + 1);
+      indices.push(offset + 0, offset + 1, offset + 2, offset + 2, offset + 3, offset + 0);
       offset += 4;
 
       if (shader.attribLocations.vertexNormal || shader.attribLocations.vertexTangent || shader.attribLocations.vertexBitangent) {
-        vec3.subtract(tangent, c3, c0);
-        vec3.subtract(bitangent, c0, c2);
+        vec3.subtract(tangent, c1, c0);
+        vec3.subtract(bitangent, c1, c3);
 
         if (shader.attribLocations.vertexNormal) {
           vec3.cross(normal, tangent, bitangent);
@@ -251,7 +255,11 @@ class Model {
       }
 
       if (shader.attribLocations.vertexTextureCoord) {
-        textureCoordinates.push(0, 0, 1, 1, 0, 1, 1, 0);
+        textureCoordinates.push(0, 0, 1, 0, 1, 1, 0, 1);
+      }
+
+      if (shader.attribLocations.vertexColor) {
+        colors.push(...options.color, ...options.color, ...options.color, ...options.color);
       }
     }
 
@@ -266,17 +274,6 @@ class Model {
       normals.push(...normal, ...normal, ...normal);
     }
 
-    const addSquare2 = (c0, c1, c2, c3) => {
-      positions.push(...c0, ...c1, ...c2, ...c3);
-      indices.push(offset + 0, offset + 1, offset + 2, offset + 2, offset + 3, offset + 0);
-      offset += 4;
-      vec3.subtract(tangent, c1, c0);
-      vec3.subtract(bitangent, c2, c0);
-      vec3.cross(normal, tangent, bitangent);
-      vec3.normalize(normal, normal);
-      normals.push(...normal, ...normal, ...normal, ...normal);
-    }
-
     const addPentagon = (c0, c1, c2, c3, c4) => {
       positions.push(...c0, ...c1, ...c2, ...c3, ...c4);
       indices.push(offset + 0, offset + 3, offset + 4, offset + 0, offset + 1, offset + 3, offset + 1, offset + 2, offset + 3);
@@ -288,13 +285,13 @@ class Model {
       normals.push(...normal, ...normal, ...normal, ...normal, ...normal);
     }
 
-    const addFace = (vertices, face) => {
+    const addFace = (vertices, face, options) => {
       switch (face.length) {
         case 3:
           addTriangle(vertices[face[0]], vertices[face[1]], vertices[face[2]]);
           break;
         case 4:
-          addSquare2(vertices[face[0]], vertices[face[1]], vertices[face[2]], vertices[face[3]]);
+          addSquare(vertices[face[0]], vertices[face[1]], vertices[face[2]], vertices[face[3]], options);
           break;
         case 5:
           addPentagon(vertices[face[0]], vertices[face[1]], vertices[face[2]], vertices[face[3]], vertices[face[4]]);
@@ -304,9 +301,15 @@ class Model {
       }
     }
 
-    const addFaces = (vertices, faces) => {
+    const addFaces = (vertices, faces, options) => {
       for (let i = 0; i < faces.length; i++) {
-        addFace(vertices, faces[i]);
+        let option = {}
+        if (options) {
+          if (options.colors) {
+            option.color = options.colors[i];
+          }
+        }
+        addFace(vertices, faces[i], option);
       }
     }
 
@@ -348,6 +351,13 @@ class Model {
       gl.bindBuffer(gl.ARRAY_BUFFER, textureCoordBuffer);
       gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoordinates), gl.STATIC_DRAW);
       buffers.textureCoord = textureCoordBuffer;
+    }
+
+    if (shader.attribLocations.vertexColor) {
+      const colorBuffer = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
+      buffers.color = colorBuffer;
     }
 
     return buffers;
@@ -416,6 +426,17 @@ class Model {
       gl.bindBuffer(gl.ARRAY_BUFFER, buffers.textureCoord);
       gl.vertexAttribPointer(shader.attribLocations.vertexTextureCoord, numComponents, type, normalize, stride, offset);
       gl.enableVertexAttribArray(shader.attribLocations.vertexTextureCoord);
+    }
+
+    if (shader.attribLocations.vertexColor) {
+      const numComponents = 3;
+      const type = gl.FLOAT;
+      const normalize = false;
+      const stride = 0;
+      const offset = 0;
+      gl.bindBuffer(gl.ARRAY_BUFFER, buffers.color);
+      gl.vertexAttribPointer(shader.attribLocations.vertexColor, numComponents, type, normalize, stride, offset);
+      gl.enableVertexAttribArray(shader.attribLocations.vertexColor);
     }
 
     gl.useProgram(shader.program);
