@@ -103,6 +103,102 @@ class Model {
             }
             shader.uniformLocations.pointLight.position = location;
             break;
+          case 'uLight[0].position':
+            if (!shader.uniformLocations.lights) {
+              shader.uniformLocations.lights = [];
+            }
+            while (shader.uniformLocations.lights.length < 1) {
+              shader.uniformLocations.lights.push({});
+            }
+            shader.uniformLocations.lights[0].position = location;
+            break;
+          case 'uLight[0].ambient':
+            if (!shader.uniformLocations.lights) {
+              shader.uniformLocations.lights = [];
+            }
+            while (shader.uniformLocations.lights.length < 1) {
+              shader.uniformLocations.lights.push({});
+            }
+            shader.uniformLocations.lights[0].ambient = location;
+            break;
+          case 'uLight[0].diffuse':
+            if (!shader.uniformLocations.lights) {
+              shader.uniformLocations.lights = [];
+            }
+            while (shader.uniformLocations.lights.length < 1) {
+              shader.uniformLocations.lights.push({});
+            }
+            shader.uniformLocations.lights[0].diffuse = location;
+            break;
+          case 'uLight[0].specular':
+            if (!shader.uniformLocations.lights) {
+              shader.uniformLocations.lights = [];
+            }
+            while (shader.uniformLocations.lights.length < 1) {
+              shader.uniformLocations.lights.push({});
+            }
+            shader.uniformLocations.lights[0].specular = location;
+            break;
+          case 'uLight[1].position':
+            if (!shader.uniformLocations.lights) {
+              shader.uniformLocations.lights = [];
+            }
+            while (shader.uniformLocations.lights.length < 2) {
+              shader.uniformLocations.lights.push({});
+            }
+            shader.uniformLocations.lights[1].position = location;
+            break;
+          case 'uLight[1].ambient':
+            if (!shader.uniformLocations.lights) {
+              shader.uniformLocations.lights = [];
+            }
+            while (shader.uniformLocations.lights.length < 2) {
+              shader.uniformLocations.lights.push({});
+            }
+            shader.uniformLocations.lights[1].ambient = location;
+            break;
+          case 'uLight[1].diffuse':
+            if (!shader.uniformLocations.lights) {
+              shader.uniformLocations.lights = [];
+            }
+            while (shader.uniformLocations.lights.length < 2) {
+              shader.uniformLocations.lights.push({});
+            }
+            shader.uniformLocations.lights[1].diffuse = location;
+            break;
+          case 'uLight[1].specular':
+            if (!shader.uniformLocations.lights) {
+              shader.uniformLocations.lights = [];
+            }
+            while (shader.uniformLocations.lights.length < 2) {
+              shader.uniformLocations.lights.push({});
+            }
+            shader.uniformLocations.lights[1].specular = location;
+            break;
+          case 'uMaterial.ambient':
+            if (!shader.uniformLocations.material) {
+              shader.uniformLocations.material = {};
+            }
+            shader.uniformLocations.material.ambient = location;
+            break;
+          case 'uMaterial.diffuse':
+            if (!shader.uniformLocations.material) {
+              shader.uniformLocations.material = {};
+            }
+            shader.uniformLocations.material.diffuse = location;
+            break;
+          case 'uMaterial.specular':
+            if (!shader.uniformLocations.material) {
+              shader.uniformLocations.material = {};
+            }
+            shader.uniformLocations.material.specular = location;
+            break;
+          case 'uMaterial.shininess':
+            if (!shader.uniformLocations.material) {
+              shader.uniformLocations.material = {};
+            }
+            shader.uniformLocations.material.shininess = location;
+            break;
           default:
             alert('unknown uniform of ' + uniform.name);
         }
@@ -159,7 +255,62 @@ class Model {
       }
     }
 
-    geometry({ addSquare });
+    const addTriangle = (c0, c1, c2) => {
+      positions.push(...c0, ...c1, ...c2);
+      indices.push(offset + 0, offset + 1, offset + 2);
+      offset += 3;
+      vec3.subtract(tangent, c1, c0);
+      vec3.subtract(bitangent, c2, c0);
+      vec3.cross(normal, tangent, bitangent);
+      vec3.normalize(normal, normal);
+      normals.push(...normal, ...normal, ...normal);
+    }
+
+    const addSquare2 = (c0, c1, c2, c3) => {
+      positions.push(...c0, ...c1, ...c2, ...c3);
+      indices.push(offset + 0, offset + 1, offset + 2, offset + 2, offset + 3, offset + 0);
+      offset += 4;
+      vec3.subtract(tangent, c1, c0);
+      vec3.subtract(bitangent, c2, c0);
+      vec3.cross(normal, tangent, bitangent);
+      vec3.normalize(normal, normal);
+      normals.push(...normal, ...normal, ...normal, ...normal);
+    }
+
+    const addPentagon = (c0, c1, c2, c3, c4) => {
+      positions.push(...c0, ...c1, ...c2, ...c3, ...c4);
+      indices.push(offset + 0, offset + 3, offset + 4, offset + 0, offset + 1, offset + 3, offset + 1, offset + 2, offset + 3);
+      offset += 5;
+      vec3.subtract(tangent, c1, c0);
+      vec3.subtract(bitangent, c4, c0);
+      vec3.cross(normal, tangent, bitangent);
+      vec3.normalize(normal, normal);
+      normals.push(...normal, ...normal, ...normal, ...normal, ...normal);
+    }
+
+    const addFace = (vertices, face) => {
+      switch (face.length) {
+        case 3:
+          addTriangle(vertices[face[0]], vertices[face[1]], vertices[face[2]]);
+          break;
+        case 4:
+          addSquare2(vertices[face[0]], vertices[face[1]], vertices[face[2]], vertices[face[3]]);
+          break;
+        case 5:
+          addPentagon(vertices[face[0]], vertices[face[1]], vertices[face[2]], vertices[face[3]], vertices[face[4]]);
+          break;
+        default:
+          alert('faces with ' + face.length + ' vertices are not supported');
+      }
+    }
+
+    const addFaces = (vertices, faces) => {
+      for (let i = 0; i < faces.length; i++) {
+        addFace(vertices, faces[i]);
+      }
+    }
+
+    geometry({ addSquare, addFaces });
 
     const positionBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
@@ -301,6 +452,25 @@ class Model {
     if (shader.uniformLocations.pointLight) {
       gl.uniform3fv(shader.uniformLocations.pointLight.color, options.pointLight.color);
       gl.uniform3fv(shader.uniformLocations.pointLight.position, options.pointLight.position);
+    }
+
+    if (options.lights) {
+      const lights = options.lights;
+      for (let i = 0; i < lights.length; i++) {
+        const light = lights[i];
+        gl.uniform3fv(shader.uniformLocations.lights[i].position, light.position);
+        gl.uniform3fv(shader.uniformLocations.lights[i].ambient, light.ambient);
+        gl.uniform3fv(shader.uniformLocations.lights[i].diffuse, light.diffuse);
+        gl.uniform3fv(shader.uniformLocations.lights[i].specular, light.specular);
+      }
+    }
+
+    if (options.material) {
+      const material = options.material;
+      gl.uniform3fv(shader.uniformLocations.material.ambient, material.ambient);
+      gl.uniform3fv(shader.uniformLocations.material.diffuse, material.diffuse);
+      gl.uniform3fv(shader.uniformLocations.material.specular, material.specular);
+      gl.uniform1f(shader.uniformLocations.material.shininess, material.shininess);
     }
 
     if (shader.uniformLocations.cameraPosition) {
