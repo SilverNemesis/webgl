@@ -1,8 +1,8 @@
 import Model from './Model';
-import { getShape } from './utility';
+import { getShape } from '../lib/utility';
 
-class ColoredModel extends Model {
-  constructor(gl, shapeName, colors) {
+class MaterialModel extends Model {
+  constructor(gl, shapeName) {
     super(gl);
     this.gl = gl;
     this.draw = this.draw.bind(this);
@@ -10,11 +10,11 @@ class ColoredModel extends Model {
       gl,
       geometry: ({ addFaces }) => {
         const shape = getShape(shapeName);
-        addFaces(shape.vertices, shape.faces, { colors });
+        addFaces(shape.vertices, shape.faces);
       },
       shader: {
-        vertex: 'shaders/colored/vertex.glsl',
-        fragment: 'shaders/colored/fragment.glsl'
+        vertex: 'shaders/material/vertex.glsl',
+        fragment: 'shaders/material/fragment.glsl'
       }
     });
   }
@@ -32,4 +32,4 @@ class ColoredModel extends Model {
   }
 }
 
-export default ColoredModel;
+export default MaterialModel;

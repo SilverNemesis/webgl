@@ -1,6 +1,6 @@
 import * as mat4 from 'gl-matrix/mat4';
-import { clearScreen } from './utility'
-import LightedCubeModel from './LightedCubeModel';
+import { clearScreen } from '../lib/utility'
+import LightedCubeModel from '../models/LightedCubeModel';
 
 class LightedCubeScene {
   constructor() {

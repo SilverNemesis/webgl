@@ -1,5 +1,5 @@
 import * as mat4 from 'gl-matrix/mat4';
-import { initShaderProgram, clearScreen } from './utility'
+import { initShaderProgram, clearScreen } from '../lib/utility'
 
 class ColoredSquareScene {
   constructor() {

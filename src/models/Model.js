@@ -1,6 +1,6 @@
 import * as mat4 from 'gl-matrix/mat4';
 import * as vec3 from 'gl-matrix/vec3';
-import { loadTexture, initShaderProgram, getShaderParameters } from './utility'
+import { loadTexture, initShaderProgram, getShaderParameters } from '../lib/utility'
 
 class Model {
   _initModel(options) {

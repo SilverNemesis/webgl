@@ -1,11 +1,11 @@
 import React from 'react';
-import ColoredSquareScene from './ColoredSquareScene';
-import ColoredCubeScene from './ColoredCubeScene';
-import TexturedCubeScene from './TexturedCubeScene';
-import LightedCubeScene from './LightedCubeScene';
-import MazeScene from './MazeScene';
-import BrickWallScene from './BrickWallScene';
-import MaterialScene from './MaterialScene';
+import ColoredSquareScene from '../scenes/ColoredSquareScene';
+import ColoredCubeScene from '../scenes/ColoredCubeScene';
+import TexturedCubeScene from '../scenes/TexturedCubeScene';
+import LightedCubeScene from '../scenes/LightedCubeScene';
+import MazeScene from '../scenes/MazeScene';
+import BrickWallScene from '../scenes/BrickWallScene';
+import MaterialScene from '../scenes/MaterialScene';
 
 class App extends React.Component {
   constructor(props) {

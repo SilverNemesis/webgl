@@ -1,35 +1,28 @@
 import * as mat4 from 'gl-matrix/mat4';
-import { clearScreen } from './utility'
-import TexturedCubeModel from './TexturedCubeModel';
+import { clearScreen, degreesToRadians, generateMaze } from '../lib/utility'
+import MazeModel from '../models/MazeModel';
 
-class TexturedCubeScene {
+class MazeScene {
   constructor() {
     this.initScene = this.initScene.bind(this);
     this.drawScene = this.drawScene.bind(this);
+    this.totalDelta = 0.0;
   }
 
   initScene(gl) {
-    const model = new TexturedCubeModel(gl);
+    const size = Math.floor(Math.random() * 45) * 2 + 11;
+    const maze = generateMaze(size, size);
+    const model = new MazeModel(gl, maze);
     this.scene = {
       actors: [
         {
           model,
-          location: [0.0, 0.0, -6.0],
-          rotations: [
-            {
-              angle: 0.0,
-              axis: [1, 0, 0],
-              speed: 1.0
-            },
-            {
-              angle: 0.0,
-              axis: [0, 1, 0],
-              speed: 0.7
-            }
-          ]
+          location: [0.0, 0.0, -2.0 * size],
+          rotation: { angle: 0.0, axis: [0, 0, 1], speed: 0.5 }
         }
       ],
-      camera: [0.0, 0.0, 0.0]
+      camera: [0.0, 0.0, 0.0],
+      cameraDir: [0.0, 0.0, 8.0]
     };
   }
 
@@ -41,7 +34,7 @@ class TexturedCubeScene {
     const fieldOfView = 45 * Math.PI / 180;
     const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
     const zNear = 0.1;
-    const zFar = 100.0;
+    const zFar = 500.0;
     const projectionMatrix = mat4.create();
     mat4.perspective(projectionMatrix, fieldOfView, aspect, zNear, zFar);
 
@@ -61,20 +54,23 @@ class TexturedCubeScene {
 
     const modelMatrix = mat4.create();
     mat4.translate(modelMatrix, modelMatrix, actor.location);
-    for (let i = 0; i < actor.rotations.length; i++) {
-      const rotation = actor.rotations[i];
-      mat4.rotate(modelMatrix, modelMatrix, rotation.angle, rotation.axis);
-    }
+    mat4.rotate(modelMatrix, modelMatrix, degreesToRadians(-45), [1, 0, 0]);
+    mat4.rotate(modelMatrix, modelMatrix, actor.rotation.angle, actor.rotation.axis);
 
     model.draw(projectionMatrix, viewMatrix, modelMatrix);
   }
 
   _animateActor(deltaTime, actor) {
-    for (let i = 0; i < actor.rotations.length; i++) {
-      const rotation = actor.rotations[i];
-      rotation.angle += deltaTime * rotation.speed;
+    actor.rotation.angle += deltaTime * actor.rotation.speed;
+    this.totalDelta += deltaTime;
+    if (this.totalDelta >= 10.0) {
+      this.totalDelta -= 10.0;
+      const size = Math.floor(Math.random() * 45) * 2 + 11;
+      const maze = generateMaze(size, size);
+      actor.location[2] = -2.0 * size;
+      actor.model.update(maze);
     }
   }
 }
 
-export default TexturedCubeScene;
+export default MazeScene;

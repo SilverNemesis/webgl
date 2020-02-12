@@ -1,5 +1,5 @@
 import * as mat4 from 'gl-matrix/mat4';
-import { initShaderProgram } from './utility'
+import { initShaderProgram } from '../lib/utility'
 
 class MazeModel {
   constructor(gl, maze) {

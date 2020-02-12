@@ -1,28 +1,35 @@
 import * as mat4 from 'gl-matrix/mat4';
-import { clearScreen, degreesToRadians, generateMaze } from './utility'
-import MazeModel from './MazeModel';
+import { clearScreen } from '../lib/utility'
+import BrickWallModel from '../models/BrickWallModel';
 
-class MazeScene {
+class BrickWallScene {
   constructor() {
     this.initScene = this.initScene.bind(this);
     this.drawScene = this.drawScene.bind(this);
-    this.totalDelta = 0.0;
   }
 
   initScene(gl) {
-    const size = Math.floor(Math.random() * 45) * 2 + 11;
-    const maze = generateMaze(size, size);
-    const model = new MazeModel(gl, maze);
+    const model = new BrickWallModel(gl);
     this.scene = {
       actors: [
         {
           model,
-          location: [0.0, 0.0, -2.0 * size],
-          rotation: { angle: 0.0, axis: [0, 0, 1], speed: 0.5 }
+          location: [0.0, 0.0, -5.5],
+          rotations: [
+            {
+              angle: 0.0,
+              axis: [0, 1, 0],
+              speed: 0.4
+            },
+            {
+              angle: 0.0,
+              axis: [1, 0, 0],
+              speed: 0.2
+            }
+          ]
         }
       ],
-      camera: [0.0, 0.0, 0.0],
-      cameraDir: [0.0, 0.0, 8.0]
+      camera: [0.0, 0.0, 0.0]
     };
   }
 
@@ -34,7 +41,7 @@ class MazeScene {
     const fieldOfView = 45 * Math.PI / 180;
     const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
     const zNear = 0.1;
-    const zFar = 500.0;
+    const zFar = 100.0;
     const projectionMatrix = mat4.create();
     mat4.perspective(projectionMatrix, fieldOfView, aspect, zNear, zFar);
 
@@ -54,23 +61,20 @@ class MazeScene {
 
     const modelMatrix = mat4.create();
     mat4.translate(modelMatrix, modelMatrix, actor.location);
-    mat4.rotate(modelMatrix, modelMatrix, degreesToRadians(-45), [1, 0, 0]);
-    mat4.rotate(modelMatrix, modelMatrix, actor.rotation.angle, actor.rotation.axis);
+    for (let i = 0; i < actor.rotations.length; i++) {
+      const rotation = actor.rotations[i];
+      mat4.rotate(modelMatrix, modelMatrix, rotation.angle, rotation.axis);
+    }
 
     model.draw(projectionMatrix, viewMatrix, modelMatrix);
   }
 
   _animateActor(deltaTime, actor) {
-    actor.rotation.angle += deltaTime * actor.rotation.speed;
-    this.totalDelta += deltaTime;
-    if (this.totalDelta >= 10.0) {
-      this.totalDelta -= 10.0;
-      const size = Math.floor(Math.random() * 45) * 2 + 11;
-      const maze = generateMaze(size, size);
-      actor.location[2] = -2.0 * size;
-      actor.model.update(maze);
+    for (let i = 0; i < actor.rotations.length; i++) {
+      const rotation = actor.rotations[i];
+      rotation.angle += deltaTime * rotation.speed;
     }
   }
 }
 
-export default MazeScene;
+export default BrickWallScene;
