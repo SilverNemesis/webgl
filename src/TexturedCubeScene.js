@@ -18,7 +18,7 @@ class TexturedCubeScene {
           rotations: [
             {
               angle: 0.0,
-              axis: [0, 0, 1],
+              axis: [1, 0, 0],
               speed: 1.0
             },
             {
