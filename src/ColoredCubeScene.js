@@ -1,5 +1,6 @@
 import * as mat4 from 'gl-matrix/mat4';
-import { initShaderProgram, clearScreen } from './utility'
+import { clearScreen } from './utility'
+import ColoredModel from './ColoredModel';
 
 class ColoredCubeScene {
   constructor() {
@@ -8,194 +9,115 @@ class ColoredCubeScene {
   }
 
   initScene(gl) {
-    const vsSource = `
-    attribute vec4 aVertexPosition;
-    attribute vec4 aVertexColor;
-
-    uniform mat4 uModelViewMatrix;
-    uniform mat4 uProjectionMatrix;
-
-    varying lowp vec4 vColor;
-
-    void main(void) {
-      gl_Position = uProjectionMatrix * uModelViewMatrix * aVertexPosition;
-      vColor = aVertexColor;
-    }
-  `;
-
-    const fsSource = `
-    varying lowp vec4 vColor;
-
-    void main(void) {
-      gl_FragColor = vColor;
-    }
-  `;
-
-    const shaderProgram = initShaderProgram(gl, vsSource, fsSource);
-
-    const programInfo = {
-      program: shaderProgram,
-      attribLocations: {
-        vertexPosition: gl.getAttribLocation(shaderProgram, 'aVertexPosition'),
-        vertexColor: gl.getAttribLocation(shaderProgram, 'aVertexColor')
-      },
-      uniformLocations: {
-        projectionMatrix: gl.getUniformLocation(shaderProgram, 'uProjectionMatrix'),
-        modelViewMatrix: gl.getUniformLocation(shaderProgram, 'uModelViewMatrix')
-      }
+    const colors1 = [
+      [0.0, 0.0, 1.0],    // Bottom face: blue
+      [0.0, 1.0, 0.0],    // Top face: green
+      [1.0, 0.0, 1.0],    // Left face: purple
+      [1.0, 1.0, 0.0],    // Right face: yellow
+      [1.0, 1.0, 1.0],    // Front face: white
+      [1.0, 0.0, 0.0]     // Back face: red
+    ];
+    const model6 = new ColoredModel(gl, 'cube', colors1);
+    const colors2 = [
+      [1.0, 0.0, 0.0],
+      [0.0, 0.0, 1.0],
+      [0.0, 1.0, 0.0],
+      [1.0, 1.0, 0.0],
+      [0.0, 1.0, 1.0],
+      [1.0, 0.0, 1.0],
+      [1.0, 0.5, 0.0],
+      [0.0, 1.0, 0.5],
+      [1.0, 0.0, 0.5],
+      [0.5, 1.0, 0.0],
+      [0.0, 0.5, 1.0],
+      [0.5, 0.0, 1.0]
+    ];
+    const model12 = new ColoredModel(gl, 'dodecahedron', colors2);
+    this.scene = {
+      actors: [
+        {
+          model: model6,
+          location: [-1.6, 0.0, -6.0],
+          scale: [3.0, 3.0, 3.0],
+          rotations: [
+            {
+              angle: 0.0,
+              axis: [1, 0, 0],
+              speed: 1.0
+            },
+            {
+              angle: 0.0,
+              axis: [0, 1, 0],
+              speed: 0.7
+            }
+          ]
+        },
+        {
+          model: model12,
+          location: [1.6, 0.0, -6.0],
+          scale: [2.8, 2.8, 2.8],
+          rotations: [
+            {
+              angle: 0.0,
+              axis: [1, 0, 0],
+              speed: 1.0
+            },
+            {
+              angle: 0.0,
+              axis: [0, 1, 0],
+              speed: 0.7
+            }
+          ]
+        }
+      ],
+      camera: [0.0, 0.0, 0.0]
     };
-
-    const buffers = this._initBuffers(gl);
-
-    this.scene = { programInfo, buffers, cubeRotation: 0.0 };
   }
 
   drawScene(gl, deltaTime) {
     const scene = this.scene;
-    const { programInfo, buffers } = scene;
 
     clearScreen(gl);
 
-    {
-      const numComponents = 3;
-      const type = gl.FLOAT;
-      const normalize = false;
-      const stride = 0;
-      const offset = 0;
-      gl.bindBuffer(gl.ARRAY_BUFFER, buffers.position);
-      gl.vertexAttribPointer(
-        programInfo.attribLocations.vertexPosition,
-        numComponents,
-        type,
-        normalize,
-        stride,
-        offset);
-      gl.enableVertexAttribArray(programInfo.attribLocations.vertexPosition);
+    const fieldOfView = 45 * Math.PI / 180;
+    const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
+    const zNear = 0.1;
+    const zFar = 100.0;
+    const projectionMatrix = mat4.create();
+    mat4.perspective(projectionMatrix, fieldOfView, aspect, zNear, zFar);
+
+    const viewMatrix = mat4.create();
+    mat4.translate(viewMatrix, viewMatrix, scene.camera);
+    mat4.invert(viewMatrix, viewMatrix)
+
+    for (let i = 0; i < scene.actors.length; i++) {
+      const actor = scene.actors[i];
+      this._renderActor(projectionMatrix, viewMatrix, actor);
+      this._animateActor(deltaTime, actor);
     }
-
-    {
-      const numComponents = 4;
-      const type = gl.FLOAT;
-      const normalize = false;
-      const stride = 0;
-      const offset = 0;
-      gl.bindBuffer(gl.ARRAY_BUFFER, buffers.color);
-      gl.vertexAttribPointer(
-        programInfo.attribLocations.vertexColor,
-        numComponents,
-        type,
-        normalize,
-        stride,
-        offset);
-      gl.enableVertexAttribArray(programInfo.attribLocations.vertexColor);
-    }
-
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffers.indices);
-
-    {
-      const fieldOfView = 45 * Math.PI / 180;
-      const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
-      const zNear = 0.1;
-      const zFar = 100.0;
-      const projectionMatrix = mat4.create();
-      mat4.perspective(projectionMatrix, fieldOfView, aspect, zNear, zFar);
-      const modelViewMatrix = mat4.create();
-      mat4.translate(modelViewMatrix, modelViewMatrix, [-0.0, 0.0, -6.0]);
-      mat4.rotate(modelViewMatrix, modelViewMatrix, scene.cubeRotation, [0, 0, 1]);
-      mat4.rotate(modelViewMatrix, modelViewMatrix, scene.cubeRotation * 0.7, [0, 1, 0]);
-      gl.useProgram(programInfo.program);
-      gl.uniformMatrix4fv(
-        programInfo.uniformLocations.projectionMatrix,
-        false,
-        projectionMatrix);
-      gl.uniformMatrix4fv(
-        programInfo.uniformLocations.modelViewMatrix,
-        false,
-        modelViewMatrix);
-    }
-
-    {
-      const vertexCount = 36;
-      const type = gl.UNSIGNED_SHORT;
-      const offset = 0;
-      gl.drawElements(gl.TRIANGLES, vertexCount, type, offset);
-    }
-
-    scene.cubeRotation += deltaTime;
   }
 
-  _initBuffers(gl) {
-    const positions = [
-      // Front face
-      -1.0, -1.0, 1.0,
-      1.0, -1.0, 1.0,
-      1.0, 1.0, 1.0,
-      -1.0, 1.0, 1.0,
+  _renderActor(projectionMatrix, viewMatrix, actor) {
+    const model = actor.model;
 
-      // Back face
-      -1.0, -1.0, -1.0,
-      -1.0, 1.0, -1.0,
-      1.0, 1.0, -1.0,
-      1.0, -1.0, -1.0,
-
-      // Top face
-      -1.0, 1.0, -1.0,
-      -1.0, 1.0, 1.0,
-      1.0, 1.0, 1.0,
-      1.0, 1.0, -1.0,
-
-      // Bottom face
-      -1.0, -1.0, -1.0,
-      1.0, -1.0, -1.0,
-      1.0, -1.0, 1.0,
-      -1.0, -1.0, 1.0,
-
-      // Right face
-      1.0, -1.0, -1.0,
-      1.0, 1.0, -1.0,
-      1.0, 1.0, 1.0,
-      1.0, -1.0, 1.0,
-
-      // Left face
-      -1.0, -1.0, -1.0,
-      -1.0, -1.0, 1.0,
-      -1.0, 1.0, 1.0,
-      -1.0, 1.0, -1.0,
-    ];
-    const positionBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
-
-    const faceColors = [
-      [1.0, 1.0, 1.0, 1.0],    // Front face: white
-      [1.0, 0.0, 0.0, 1.0],    // Back face: red
-      [0.0, 1.0, 0.0, 1.0],    // Top face: green
-      [0.0, 0.0, 1.0, 1.0],    // Bottom face: blue
-      [1.0, 1.0, 0.0, 1.0],    // Right face: yellow
-      [1.0, 0.0, 1.0, 1.0],    // Left face: purple
-    ];
-    let colors = [];
-    for (let j = 0; j < faceColors.length; ++j) {
-      const c = faceColors[j];
-      colors = colors.concat(c, c, c, c);
+    const modelMatrix = mat4.create();
+    mat4.translate(modelMatrix, modelMatrix, actor.location);
+    if (actor.scale) {
+      mat4.scale(modelMatrix, modelMatrix, actor.scale);
     }
-    const colorBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
+    for (let i = 0; i < actor.rotations.length; i++) {
+      const rotation = actor.rotations[i];
+      mat4.rotate(modelMatrix, modelMatrix, rotation.angle, rotation.axis);
+    }
 
-    const indices = [
-      0, 1, 2, 0, 2, 3,   // front
-      4, 5, 6, 4, 6, 7,   // back
-      8, 9, 10, 8, 10, 11,   // top
-      12, 13, 14, 12, 14, 15,   // bottom
-      16, 17, 18, 16, 18, 19,   // right
-      20, 21, 22, 20, 22, 23,   // left
-    ];
-    const indexBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
+    model.draw(projectionMatrix, viewMatrix, modelMatrix);
+  }
 
-    return { position: positionBuffer, color: colorBuffer, indices: indexBuffer };
+  _animateActor(deltaTime, actor) {
+    for (let i = 0; i < actor.rotations.length; i++) {
+      const rotation = actor.rotations[i];
+      rotation.angle += deltaTime * rotation.speed;
+    }
   }
 }
 
