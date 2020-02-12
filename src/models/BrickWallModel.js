@@ -11,7 +11,8 @@ class BrickWallModel extends Model {
       texture: {
         diffuse: 'images/Brick_Wall_017_basecolor.jpg',
         normal: 'images/Brick_Wall_017_normal.jpg',
-        height: 'images/Brick_Wall_017_height.png'
+        height: 'images/Brick_Wall_017_height.png',
+        occlusion: 'images/Brick_Wall_017_ambientOcclusion.jpg'
       },
       shader: {
         vertex: 'shaders/brickwall/vertex.glsl',
@@ -29,12 +30,13 @@ class BrickWallModel extends Model {
       modelMatrix,
       showDiffuseMap: 1,
       showNormalMap: 1,
+      showAmbientOcclusionMap: 1,
       parallaxHeightScale: 0.04,
       parallaxSteps: 32,
       parallaxOcclusionMapping: 1,
-      ambientLight: [0.2, 0.2, 0.2],
+      ambientLight: [0.3, 0.3, 0.3],
       directionalLight: {
-        color: [0.5, 0.5, 0.5],
+        color: [0.4, 0.4, 0.4],
         direction: [0.0, -1.0, 1.0]
       },
       pointLight: {

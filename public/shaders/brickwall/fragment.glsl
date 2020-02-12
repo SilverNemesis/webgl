@@ -3,9 +3,11 @@ precision highp float;
 uniform sampler2D uSamplerNormal;
 uniform sampler2D uSamplerDiffuse;
 uniform sampler2D uSamplerHeight;
+uniform sampler2D uSamplerOcclusion;
 
 uniform int uShowDiffuseMap;
 uniform int uShowNormalMap;
+uniform int uShowAmbientOcclusionMap;
 uniform float uParallaxHeightScale;
 uniform int uParallaxSteps;
 uniform int uParallaxOcclusionMapping;
@@ -132,6 +134,17 @@ void main(void)
     diffuse_intensity = max(dot(ts_diffuse_dir, normal), 0.0);
   }
 
-  vec3 lighting = uAmbientLight + (uDirectionalLight.color * diffuse_intensity) + (uPointLight.color * point_intensity); 
+  vec3 ambient;
+
+  if (uShowAmbientOcclusionMap == 0)
+  {
+    ambient = uAmbientLight;
+  }
+  else
+  {
+    ambient = texture2D(uSamplerOcclusion, texCoords).r * uAmbientLight;
+  }
+
+  vec3 lighting = ambient + (uDirectionalLight.color * diffuse_intensity) + (uPointLight.color * point_intensity); 
   gl_FragColor = vec4(albedo * lighting, 1.0);
 }

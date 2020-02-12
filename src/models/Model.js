@@ -17,6 +17,9 @@ class Model {
       if (options.texture.height) {
         texture.height = loadTexture(gl, options.texture.height);
       }
+      if (options.texture.occlusion) {
+        texture.occlusion = loadTexture(gl, options.texture.occlusion);
+      }
     }
     let vertexShader;
     let fragmentShader;
@@ -80,11 +83,17 @@ class Model {
           case 'uSamplerHeight':
             shader.uniformLocations.textureHeight = location;
             break;
+          case 'uSamplerOcclusion':
+            shader.uniformLocations.textureOcclusion = location;
+            break;
           case 'uShowDiffuseMap':
             shader.uniformLocations.showDiffuseMap = location;
             break;
           case 'uShowNormalMap':
             shader.uniformLocations.showNormalMap = location;
+            break;
+          case 'uShowAmbientOcclusionMap':
+            shader.uniformLocations.showAmbientOcclusionMap = location;
             break;
           case 'uPerPixel':
             shader.uniformLocations.perPixel = location;
@@ -521,6 +530,10 @@ class Model {
       gl.uniform1i(shader.uniformLocations.showNormalMap, options.showNormalMap);
     }
 
+    if (shader.uniformLocations.showAmbientOcclusionMap) {
+      gl.uniform1i(shader.uniformLocations.showAmbientOcclusionMap, options.showAmbientOcclusionMap);
+    }
+
     if (shader.uniformLocations.perPixel) {
       gl.uniform1i(shader.uniformLocations.perPixel, options.perPixel);
     }
@@ -592,6 +605,12 @@ class Model {
       gl.activeTexture(gl.TEXTURE2);
       gl.bindTexture(gl.TEXTURE_2D, texture.height);
       gl.uniform1i(shader.uniformLocations.textureHeight, 2);
+    }
+
+    if (shader.uniformLocations.textureOcclusion) {
+      gl.activeTexture(gl.TEXTURE3);
+      gl.bindTexture(gl.TEXTURE_2D, texture.occlusion);
+      gl.uniform1i(shader.uniformLocations.textureOcclusion, 3);
     }
 
     {
