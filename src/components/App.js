@@ -1,11 +1,7 @@
 import React from 'react';
-import ColoredSquareScene from '../scenes/ColoredSquareScene';
-import ColoredCubeScene from '../scenes/ColoredCubeScene';
-import TexturedCubeScene from '../scenes/TexturedCubeScene';
-import LightedCubeScene from '../scenes/LightedCubeScene';
-import MazeScene from '../scenes/MazeScene';
-import BrickWallScene from '../scenes/BrickWallScene';
-import MaterialScene from '../scenes/MaterialScene';
+import Message from './Message';
+import Controls from './Controls';
+import SceneManager from './SceneManager';
 
 class App extends React.Component {
   constructor(props) {
@@ -15,17 +11,7 @@ class App extends React.Component {
     this.onKeyUp = this.onKeyUp.bind(this);
     this.onClickPrevious = this.onClickPrevious.bind(this);
     this.onClickNext = this.onClickNext.bind(this);
-    this.renderCanvas = this.renderCanvas.bind(this);
-    this.scenes = [
-      { init: false, render: new ColoredSquareScene() },
-      { init: false, render: new ColoredCubeScene() },
-      { init: false, render: new TexturedCubeScene() },
-      { init: false, render: new LightedCubeScene() },
-      { init: false, render: new MazeScene() },
-      { init: false, render: new BrickWallScene() },
-      { init: false, render: new MaterialScene() }
-    ];
-    this.sceneIndex = this.scenes.length - 1;
+    this.onAnimationFrame = this.onAnimationFrame.bind(this);
     this.state = {
       showControls: false,
       keys: []
@@ -33,27 +19,12 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    const canvas = this.canvas;
-    const rect = canvas.getBoundingClientRect()
-    canvas.width = rect.width;
-    canvas.height = rect.height;
-    this.gl = canvas.getContext('webgl');
-    if (this.gl === null) {
-      alert("Unable to initialize WebGL. Your browser or machine may not support it.");
-    } else {
-      this.gl.viewport(0, 0, canvas.width, canvas.height);
-      this.gl.enable(this.gl.CULL_FACE);
-      this.gl.cullFace(this.gl.BACK);
-      const scene = this.scenes[this.sceneIndex];
-      if (!scene.init) {
-        scene.init = true;
-        scene.render.initScene(this.gl);
-      }
-      this.frame = window.requestAnimationFrame(this.renderCanvas);
-    }
+    this.sceneManager = new SceneManager(this.canvas);
+    this.frame = window.requestAnimationFrame(this.onAnimationFrame);
     window.addEventListener('resize', this.onResize);
     window.addEventListener('keydown', this.onKeyDown);
     window.addEventListener('keyup', this.onKeyUp);
+    this.showMessage(['Press Escape to toggle menu', 'Press Page Up for previous screen', 'Press Page Down for next screen']);
   }
 
   componentWillUnmount() {
@@ -64,11 +35,7 @@ class App extends React.Component {
   }
 
   onResize() {
-    const canvas = this.canvas;
-    const rect = canvas.getBoundingClientRect()
-    canvas.width = rect.width;
-    canvas.height = rect.height;
-    this.gl.viewport(0, 0, canvas.width, canvas.height);
+    this.sceneManager.resizeViewport();
   }
 
   onKeyDown(event) {
@@ -86,68 +53,57 @@ class App extends React.Component {
 
   onKeyPress(key) {
     if (key === 'Escape') {
-      this.setState({ showControls: !this.state.showControls });
+      if (this.messageTimer) {
+        this.cancelMessage();
+      } else {
+        this.setState({ showControls: !this.state.showControls });
+      }
     } else if (key === 'PageUp') {
-      this.previousScene();
+      this.sceneManager.previousScene();
     } else if (key === 'PageDown') {
-      this.nextScene();
-    }
-    else {
-      console.log(key);
+      this.sceneManager.nextScene();
     }
   }
 
   onClickPrevious(event) {
     event.preventDefault();
-    this.previousScene();
+    this.sceneManager.previousScene();
   }
 
   onClickNext(event) {
     event.preventDefault();
-    this.nextScene();
+    this.sceneManager.nextScene();
   }
 
-  previousScene() {
-    this.sceneIndex = (this.sceneIndex - 1) % this.scenes.length;
-    if (this.sceneIndex < 0) {
-      this.sceneIndex = this.scenes.length - 1;
-    }
-    const scene = this.scenes[this.sceneIndex];
-    if (!scene.init) {
-      scene.init = true;
-      scene.render.initScene(this.gl);
-    }
+  showMessage(message) {
+    this.setState({ message });
+    this.messageTimer = setTimeout(this.clearMessage.bind(this), 10000);
   }
 
-  nextScene() {
-    this.sceneIndex = (this.sceneIndex + 1) % this.scenes.length;
-    const scene = this.scenes[this.sceneIndex];
-    if (!scene.init) {
-      scene.init = true;
-      scene.render.initScene(this.gl);
-    }
+  clearMessage() {
+    this.setState({ message: undefined });
+    this.messageTimer = undefined;
   }
 
-  renderCanvas(timeStamp) {
-    timeStamp *= 0.001;
-    if (!this.timeStamp) {
-      this.timeStamp = timeStamp;
-    }
-    const deltaTime = timeStamp - this.timeStamp;
-    this.timeStamp = timeStamp;
-    const scene = this.scenes[this.sceneIndex];
-    scene.render.drawScene(this.gl, deltaTime);
-    this.frame = window.requestAnimationFrame(this.renderCanvas);
+  cancelMessage() {
+    clearTimeout(this.messageTimer);
+    this.clearMessage();
+  }
+
+  onAnimationFrame(timeStamp) {
+    this.sceneManager.renderScene(timeStamp);
+    this.frame = window.requestAnimationFrame(this.onAnimationFrame);
   }
 
   render() {
     return (
       <div className="screen">
         <canvas id="canvas" ref={elem => this.canvas = elem}></canvas>
-        <div id="overlay" hidden={!this.state.showControls}>
+        <Message message={this.state.message} />
+        <Controls show={this.state.showControls}>
           <span className="left" onClick={this.onClickPrevious}>❮ PREV</span>
           <span className="right" onClick={this.onClickNext}>NEXT ❯</span>
-        </div>
+        </Controls>
       </div>
     );
   }

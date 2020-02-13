@@ -7,9 +7,9 @@ exports[`renders correctly 1`] = `
   <canvas
     id="canvas"
   />
-  <div
-    hidden={true}
-    id="overlay"
+  <Message />
+  <Controls
+    show={false}
   >
     <span
       className="left"
@@ -23,6 +23,6 @@ exports[`renders correctly 1`] = `
     >
       NEXT ❯
     </span>
-  </div>
+  </Controls>
 </div>
 `;
