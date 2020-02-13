@@ -5,6 +5,7 @@ import LightedCubeScene from '../scenes/LightedCubeScene';
 import MazeScene from '../scenes/MazeScene';
 import BrickWallScene from '../scenes/BrickWallScene';
 import MaterialScene from '../scenes/MaterialScene';
+import RoomScene from '../scenes/RoomScene';
 
 class SceneManager {
   constructor(canvas) {
@@ -23,7 +24,8 @@ class SceneManager {
       { init: false, render: new LightedCubeScene() },
       { init: false, render: new MazeScene() },
       { init: false, render: new BrickWallScene() },
-      { init: false, render: new MaterialScene() }
+      { init: false, render: new MaterialScene() },
+      { init: false, render: new RoomScene() }
     ];
     this.sceneIndex = this.scenes.length - 1;
 
