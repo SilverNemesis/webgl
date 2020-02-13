@@ -25,16 +25,19 @@ const Controls = ({ show, onClickPrevious, onClickNext, onChange, options }) => 
   if (!show) {
     return null;
   }
-  const controls = options.map((option, index) => {
-    switch (option.type) {
-      case 'select':
-        return <SelectControl key={index} control={option} onChange={onChange} />
-      default:
-        return (
-          <div>{option.type} is not supported</div>
-        );
-    }
-  });
+  let controls
+  if (options) {
+    controls = options.map((option, index) => {
+      switch (option.type) {
+        case 'select':
+          return <SelectControl key={index} control={option} onChange={onChange} />
+        default:
+          return (
+            <div>{option.type} is not supported</div>
+          );
+      }
+    });
+  }
   return (
     <div id="overlay">
       <div className="none">
