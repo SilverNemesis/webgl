@@ -41,7 +41,7 @@ class MazeModel extends Model {
     const gl = this.gl;
     this._deleteBuffers(gl, this.model.buffers);
     this.maze = maze;
-    this.model.buffers = this._initBuffers(gl, this.model.shaders, this.geometry);
+    this.model.buffers = this._initBuffers(gl, this.model.shaders, this.geometry, 1);
   }
 
   geometry({ addSquare }) {
