@@ -9,20 +9,10 @@ exports[`renders correctly 1`] = `
   />
   <Message />
   <Controls
+    onChange={[Function]}
+    onClickNext={[Function]}
+    onClickPrevious={[Function]}
     show={false}
-  >
-    <span
-      className="left"
-      onClick={[Function]}
-    >
-      ❮ PREV
-    </span>
-    <span
-      className="right"
-      onClick={[Function]}
-    >
-      NEXT ❯
-    </span>
-  </Controls>
+  />
 </div>
 `;

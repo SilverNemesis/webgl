@@ -11,6 +11,7 @@ class SceneManager {
     this.canvas = canvas;
 
     this.resizeViewport = this.resizeViewport.bind(this);
+    this.getScene = this.getScene.bind(this);
     this.previousScene = this.previousScene.bind(this);
     this.nextScene = this.nextScene.bind(this);
     this.renderScene = this.renderScene.bind(this);
@@ -37,6 +38,10 @@ class SceneManager {
       if (!scene.init) {
         scene.init = true;
         scene.render.initScene(this.gl);
+        if (scene.render.getOptions) {
+          scene.options = scene.render.getOptions();
+          scene.setOption = scene.render.setOption;
+        }
       }
     }
   }
@@ -49,6 +54,10 @@ class SceneManager {
     this.gl.viewport(0, 0, canvas.width, canvas.height);
   }
 
+  getScene() {
+    return this.scenes[this.sceneIndex];
+  }
+
   previousScene() {
     this.sceneIndex = (this.sceneIndex - 1) % this.scenes.length;
     if (this.sceneIndex < 0) {
@@ -58,7 +67,12 @@ class SceneManager {
     if (!scene.init) {
       scene.init = true;
       scene.render.initScene(this.gl);
+      if (scene.render.getOptions) {
+        scene.options = scene.render.getOptions();
+        scene.setOption = scene.render.setOption;
+      }
     }
+    return this.scenes[this.sceneIndex];
   }
 
   nextScene() {
@@ -67,7 +81,12 @@ class SceneManager {
     if (!scene.init) {
       scene.init = true;
       scene.render.initScene(this.gl);
+      if (scene.render.getOptions) {
+        scene.options = scene.render.getOptions();
+        scene.setOption = scene.render.setOption;
+      }
     }
+    return this.scenes[this.sceneIndex];
   }
 
   renderScene(timeStamp) {

@@ -1,7 +1,7 @@
 import React from 'react';
 import Message from './Message';
 import Controls from './Controls';
-import SceneManager from './SceneManager';
+import SceneManager from '../lib/SceneManager';
 
 class App extends React.Component {
   constructor(props) {
@@ -9,6 +9,7 @@ class App extends React.Component {
     this.onResize = this.onResize.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onKeyUp = this.onKeyUp.bind(this);
+    this.onChange = this.onChange.bind(this);
     this.onClickPrevious = this.onClickPrevious.bind(this);
     this.onClickNext = this.onClickNext.bind(this);
     this.onAnimationFrame = this.onAnimationFrame.bind(this);
@@ -20,6 +21,7 @@ class App extends React.Component {
 
   componentDidMount() {
     this.sceneManager = new SceneManager(this.canvas);
+    this.setState({ scene: this.sceneManager.getScene() });
     this.frame = window.requestAnimationFrame(this.onAnimationFrame);
     window.addEventListener('resize', this.onResize);
     window.addEventListener('keydown', this.onKeyDown);
@@ -59,20 +61,28 @@ class App extends React.Component {
         this.setState({ showControls: !this.state.showControls });
       }
     } else if (key === 'PageUp') {
-      this.sceneManager.previousScene();
+      this.setState({ scene: this.sceneManager.previousScene() });
     } else if (key === 'PageDown') {
-      this.sceneManager.nextScene();
+      this.setState({ scene: this.sceneManager.nextScene() });
+    }
+  }
+
+  onChange(control, value) {
+    if (value !== control.value) {
+      this.state.scene.setOption(control.name, value);
+      this.forceUpdate();
     }
   }
 
   onClickPrevious(event) {
     event.preventDefault();
-    this.sceneManager.previousScene();
+    this.setState({ scene: this.sceneManager.previousScene() });
   }
 
   onClickNext(event) {
     event.preventDefault();
     this.sceneManager.nextScene();
+    this.setState({ scene: this.sceneManager.nextScene() });
   }
 
   showMessage(message) {
@@ -100,10 +110,7 @@ class App extends React.Component {
       <div className="screen">
         <canvas id="canvas" ref={elem => this.canvas = elem}></canvas>
         <Message message={this.state.message} />
-        <Controls show={this.state.showControls}>
-          <span className="left" onClick={this.onClickPrevious}>❮ PREV</span>
-          <span className="right" onClick={this.onClickNext}>NEXT ❯</span>
-        </Controls>
+        <Controls show={this.state.showControls} onClickPrevious={this.onClickPrevious} onClickNext={this.onClickNext} onChange={this.onChange} options={this.state.scene ? this.state.scene.options : undefined} />
       </div>
     );
   }

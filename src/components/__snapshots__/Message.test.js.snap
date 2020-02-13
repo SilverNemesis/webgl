@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
+<div
+  id="message"
+>
+  <div>
+    This is my message
+  </div>
+  <div>
+    It is about nothing
+  </div>
+  <div>
+    But it has three lines
+  </div>
+</div>
+`;

@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
+<div
+  id="overlay"
+>
+  <div
+    className="none"
+  >
+    <span
+      className="left"
+      onClick={[Function]}
+    >
+      ❮ PREV
+    </span>
+    <span
+      className="right"
+      onClick={[Function]}
+    >
+      NEXT ❯
+    </span>
+  </div>
+  <div />
+</div>
+`;
