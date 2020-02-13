@@ -482,6 +482,16 @@ const _materials = {
   }
 };
 
+export function getMaterialList() {
+  const materials = [];
+  for (const prop in _materials) {
+    if (_materials.hasOwnProperty(prop)) {
+      materials.push(prop);
+    }
+  }
+  return materials;
+}
+
 export function getMaterial(name) {
   return _materials[name];
 }
