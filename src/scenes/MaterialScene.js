@@ -1,11 +1,54 @@
 import * as mat4 from 'gl-matrix/mat4';
-import { clearScreen, getMaterial } from '../lib/utility'
+import { clearScreen, getMaterialList, getMaterial } from '../lib/utility'
 import MaterialModel from '../models/MaterialModel';
 
 class MaterialScene {
   constructor() {
+    this.getOptions = this.getOptions.bind(this);
+    this.setOption = this.setOption.bind(this);
     this.initScene = this.initScene.bind(this);
     this.drawScene = this.drawScene.bind(this);
+    this.materials = new Array(3).fill(0);
+    const materialList = getMaterialList();
+    this.options = [
+      {
+        name: 'Material 1',
+        type: 'select',
+        options: materialList
+      },
+      {
+        name: 'Material 2',
+        type: 'select',
+        options: materialList
+      },
+      {
+        name: 'Material 3',
+        type: 'select',
+        options: materialList
+      }
+    ];
+  }
+
+  getOptions() {
+    return this.options
+  }
+
+  setOption(name, value) {
+    const option = this.options.find((option) => option.name === name);
+    option.value = Number(value);
+
+    if (option.name === 'Material 1') {
+      const materialName = option.options[option.value];
+      this.materials[0] = getMaterial(materialName);
+    }
+    else if (option.name === 'Material 2') {
+      const materialName = option.options[option.value];
+      this.materials[1] = getMaterial(materialName);
+    }
+    else if (option.name === 'Material 3') {
+      const materialName = option.options[option.value];
+      this.materials[2] = getMaterial(materialName);
+    }
   }
 
   initScene(gl) {
@@ -20,7 +63,7 @@ class MaterialScene {
       actors: [
         {
           model: model4,
-          material: getMaterial('gold'),
+          materialIndex: 1,
           location: [-3.75, 0.0, -8.0],
           rotations: [
             {
@@ -37,7 +80,7 @@ class MaterialScene {
         },
         {
           model: model6,
-          material: getMaterial('gold'),
+          materialIndex: 1,
           location: [-2.25, 0.0, -8.0],
           rotations: [
             {
@@ -54,7 +97,7 @@ class MaterialScene {
         },
         {
           model: model8,
-          material: getMaterial('gold'),
+          materialIndex: 1,
           location: [-0.75, 0.0, -8.0],
           rotations: [
             {
@@ -71,7 +114,7 @@ class MaterialScene {
         },
         {
           model: model10,
-          material: getMaterial('gold'),
+          materialIndex: 1,
           location: [0.75, 0.0, -8.0],
           rotations: [
             {
@@ -88,7 +131,7 @@ class MaterialScene {
         },
         {
           model: model12,
-          material: getMaterial('gold'),
+          materialIndex: 1,
           location: [2.25, 0.0, -8.0],
           rotations: [
             {
@@ -105,7 +148,7 @@ class MaterialScene {
         },
         {
           model: model20,
-          material: getMaterial('gold'),
+          materialIndex: 1,
           location: [3.75, 0.0, -8.0],
           rotations: [
             {
@@ -122,7 +165,7 @@ class MaterialScene {
         },
         {
           model: model4,
-          material: getMaterial('chrome'),
+          materialIndex: 0,
           location: [-3.75, 2.0, -8.0],
           rotations: [
             {
@@ -139,7 +182,7 @@ class MaterialScene {
         },
         {
           model: model6,
-          material: getMaterial('chrome'),
+          materialIndex: 0,
           location: [-2.25, 2.0, -8.0],
           rotations: [
             {
@@ -156,7 +199,7 @@ class MaterialScene {
         },
         {
           model: model8,
-          material: getMaterial('chrome'),
+          materialIndex: 0,
           location: [-0.75, 2.0, -8.0],
           rotations: [
             {
@@ -173,7 +216,7 @@ class MaterialScene {
         },
         {
           model: model10,
-          material: getMaterial('chrome'),
+          materialIndex: 0,
           location: [0.75, 2.0, -8.0],
           rotations: [
             {
@@ -190,7 +233,7 @@ class MaterialScene {
         },
         {
           model: model12,
-          material: getMaterial('chrome'),
+          materialIndex: 0,
           location: [2.25, 2.0, -8.0],
           rotations: [
             {
@@ -207,7 +250,7 @@ class MaterialScene {
         },
         {
           model: model20,
-          material: getMaterial('chrome'),
+          materialIndex: 0,
           location: [3.75, 2.0, -8.0],
           rotations: [
             {
@@ -224,7 +267,7 @@ class MaterialScene {
         },
         {
           model: model4,
-          material: getMaterial('obsidian'),
+          materialIndex: 2,
           location: [-3.75, -2.0, -8.0],
           rotations: [
             {
@@ -241,7 +284,7 @@ class MaterialScene {
         },
         {
           model: model6,
-          material: getMaterial('obsidian'),
+          materialIndex: 2,
           location: [-2.25, -2.0, -8.0],
           rotations: [
             {
@@ -258,7 +301,7 @@ class MaterialScene {
         },
         {
           model: model8,
-          material: getMaterial('obsidian'),
+          materialIndex: 2,
           location: [-0.75, -2.0, -8.0],
           rotations: [
             {
@@ -275,7 +318,7 @@ class MaterialScene {
         },
         {
           model: model10,
-          material: getMaterial('obsidian'),
+          materialIndex: 2,
           location: [0.75, -2.0, -8.0],
           rotations: [
             {
@@ -292,7 +335,7 @@ class MaterialScene {
         },
         {
           model: model12,
-          material: getMaterial('obsidian'),
+          materialIndex: 2,
           location: [2.25, -2.0, -8.0],
           rotations: [
             {
@@ -309,7 +352,7 @@ class MaterialScene {
         },
         {
           model: model20,
-          material: getMaterial('obsidian'),
+          materialIndex: 2,
           location: [3.75, -2.0, -8.0],
           rotations: [
             {
@@ -327,6 +370,10 @@ class MaterialScene {
       ],
       camera: [0.0, 0.0, 0.0]
     };
+
+    this.setOption('Material 1', 8);
+    this.setOption('Material 2', 10);
+    this.setOption('Material 3', 2);
   }
 
   drawScene(gl, deltaTime) {
@@ -377,7 +424,7 @@ class MaterialScene {
       }
     ];
 
-    model.draw(projectionMatrix, viewMatrix, modelMatrix, lights, actor.material);
+    model.draw(projectionMatrix, viewMatrix, modelMatrix, lights, this.materials[actor.materialIndex]);
   }
 
   _animateActor(deltaTime, actor) {
