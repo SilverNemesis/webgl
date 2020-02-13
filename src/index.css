@@ -118,9 +118,13 @@ code {
   display: block;
 }
 
-.control > label {
+input[type="range"] {
   display: block;
-  text-align: center;
+  width: 95%;
+}
+
+label {
+  display: block;
 }
 
 .left {

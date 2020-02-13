@@ -21,6 +21,45 @@ const SelectControl = (props) => {
   );
 }
 
+const BoolControl = (props) => {
+  function onChange(event) {
+    props.onChange(control, event.target.checked);
+  }
+  const { control } = props;
+  return (
+    <div className="control">
+      <label htmlFor={control.name}><input id={control.name} type="checkbox" checked={control.value} onChange={onChange} />{control.name}</label>
+    </div>
+  );
+}
+
+const IntControl = (props) => {
+  function onChange(event) {
+    props.onChange(control, event.target.value);
+  }
+  const { control } = props;
+  return (
+    <div className="control">
+      <label htmlFor={control.name}>{control.name} {control.value}</label>
+      <input id={control.name} type="range" min={control.min} max={control.max} value={control.value} onChange={onChange} />
+    </div>
+  );
+}
+
+const FloatControl = (props) => {
+  const factor = 1000;
+  function onChange(event) {
+    props.onChange(control, event.target.value / factor);
+  }
+  const { control } = props;
+  return (
+    <div className="control">
+      <label htmlFor={control.name}>{control.name} {control.value.toFixed(3)}</label>
+      <input id={control.name} type="range" min={Math.floor(control.min * factor)} max={Math.floor(control.max * factor)} value={Math.floor(control.value * factor)} onChange={onChange} />
+    </div>
+  );
+}
+
 const Controls = ({ show, onClickPrevious, onClickNext, onChange, options }) => {
   if (!show) {
     return null;
@@ -31,9 +70,15 @@ const Controls = ({ show, onClickPrevious, onClickNext, onChange, options }) => 
       switch (option.type) {
         case 'select':
           return <SelectControl key={index} control={option} onChange={onChange} />
+        case 'bool':
+          return <BoolControl key={index} control={option} onChange={onChange} />
+        case 'int':
+          return <IntControl key={index} control={option} onChange={onChange} />
+        case 'float':
+          return <FloatControl key={index} control={option} onChange={onChange} />
         default:
           return (
-            <div>{option.type} is not supported</div>
+            <div key={index} className="control">{option.type} is not supported</div>
           );
       }
     });
