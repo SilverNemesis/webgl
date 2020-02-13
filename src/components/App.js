@@ -81,7 +81,6 @@ class App extends React.Component {
 
   onClickNext(event) {
     event.preventDefault();
-    this.sceneManager.nextScene();
     this.setState({ scene: this.sceneManager.nextScene() });
   }
 
