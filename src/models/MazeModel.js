@@ -11,20 +11,27 @@ class MazeModel extends Model {
     this._initModel({
       gl,
       geometry: this.geometry,
-      shader: {
-        vertex: 'shaders/colored/vertex.glsl',
-        fragment: 'shaders/colored/fragment.glsl'
-      }
+      shaders: [
+        {
+          vertex: 'shaders/colored/vertex.glsl',
+          fragment: 'shaders/colored/fragment.glsl'
+        },
+        {
+          vertex: 'shaders/material/vertex.glsl',
+          fragment: 'shaders/material/fragment.glsl'
+        }
+      ]
     });
   }
 
-  draw(projectionMatrix, viewMatrix, modelMatrix, lights, material) {
+  draw(projectionMatrix, viewMatrix, modelMatrix, shaderIndex, lights, material) {
     this._drawModel({
       gl: this.gl,
       model: this.model,
       projectionMatrix,
       viewMatrix,
       modelMatrix,
+      shaderIndex,
       lights,
       material
     });
@@ -32,12 +39,9 @@ class MazeModel extends Model {
 
   update(maze) {
     const gl = this.gl;
-    const buffers = this.model.buffers;
-    gl.deleteBuffer(buffers.position);
-    gl.deleteBuffer(buffers.color);
-    gl.deleteBuffer(buffers.indices);
+    this._deleteBuffers(gl, this.model.buffers);
     this.maze = maze;
-    this.model.buffers = this._initBuffers(gl, this.model.shader, this.geometry);
+    this.model.buffers = this._initBuffers(gl, this.model.shaders, this.geometry);
   }
 
   geometry({ addSquare }) {
