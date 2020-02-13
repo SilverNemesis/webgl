@@ -21,19 +21,27 @@ class BrickWallModel extends Model {
     });
   }
 
-  draw(projectionMatrix, viewMatrix, modelMatrix) {
+  draw(projectionMatrix, viewMatrix, modelMatrix, options) {
+    const {
+      showDiffuseMap,
+      showNormalMap,
+      showAmbientOcclusionMap,
+      parallaxHeightScale,
+      parallaxSteps,
+      parallaxOcclusionMapping,
+    } = options;
     this._drawModel({
       gl: this.gl,
       model: this.model,
       projectionMatrix,
       viewMatrix,
       modelMatrix,
-      showDiffuseMap: 1,
-      showNormalMap: 1,
-      showAmbientOcclusionMap: 1,
-      parallaxHeightScale: 0.04,
-      parallaxSteps: 32,
-      parallaxOcclusionMapping: 1,
+      showDiffuseMap,
+      showNormalMap,
+      showAmbientOcclusionMap,
+      parallaxHeightScale,
+      parallaxSteps,
+      parallaxOcclusionMapping,
       ambientLight: [0.3, 0.3, 0.3],
       directionalLight: {
         color: [0.4, 0.4, 0.4],

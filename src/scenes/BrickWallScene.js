@@ -4,8 +4,67 @@ import BrickWallModel from '../models/BrickWallModel';
 
 class BrickWallScene {
   constructor() {
+    this.getOptions = this.getOptions.bind(this);
+    this.setOption = this.setOption.bind(this);
     this.initScene = this.initScene.bind(this);
     this.drawScene = this.drawScene.bind(this);
+    this.renderOptions = {
+      showDiffuseMap: true,
+      showNormalMap: true,
+      showAmbientOcclusionMap: true,
+      parallaxHeightScale: 0.04,
+      parallaxSteps: 32,
+      parallaxOcclusionMapping: true
+    };
+    this.options = [
+      {
+        name: 'Show Diffuse Map',
+        id: 'showDiffuseMap',
+        type: 'bool'
+      },
+      {
+        name: 'Show Normal Map',
+        id: 'showNormalMap',
+        type: 'bool'
+      },
+      {
+        name: 'Show Ambient Occlusion Map',
+        id: 'showAmbientOcclusionMap',
+        type: 'bool'
+      },
+      {
+        name: 'Parallax Height Scale',
+        id: 'parallaxHeightScale',
+        type: 'float',
+        min: 0.0,
+        max: 0.1
+      },
+      {
+        name: 'Parallax Steps',
+        id: 'parallaxSteps',
+        type: 'int',
+        min: 0,
+        max: 32
+      },
+      {
+        name: 'Use Parallax Occlusion Mapping',
+        id: 'parallaxOcclusionMapping',
+        type: 'bool'
+      }
+    ];
+    for (let i = 0; i < this.options.length; i++) {
+      this.options[i].value = this.renderOptions[this.options[i].id];
+    }
+  }
+
+  getOptions() {
+    return this.options
+  }
+
+  setOption(name, value) {
+    const option = this.options.find((option) => option.name === name);
+    option.value = Number(value);
+    this.renderOptions[option.id] = option.value;
   }
 
   initScene(gl) {
@@ -66,7 +125,7 @@ class BrickWallScene {
       mat4.rotate(modelMatrix, modelMatrix, rotation.angle, rotation.axis);
     }
 
-    model.draw(projectionMatrix, viewMatrix, modelMatrix);
+    model.draw(projectionMatrix, viewMatrix, modelMatrix, this.renderOptions);
   }
 
   _animateActor(deltaTime, actor) {
