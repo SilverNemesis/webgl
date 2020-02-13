@@ -4,36 +4,63 @@ import MazeModel from '../models/MazeModel';
 
 class MazeScene {
   constructor() {
+    this.getOptions = this.getOptions.bind(this);
+    this.setOption = this.setOption.bind(this);
     this.initScene = this.initScene.bind(this);
     this.drawScene = this.drawScene.bind(this);
     this.totalDelta = 0.0;
+
+    this.options = [
+      {
+        name: 'Material',
+        type: 'select',
+        options: ['useColors', ...getMaterialList()]
+      }
+    ];
+  }
+
+  getOptions() {
+    return this.options
+  }
+
+  setOption(name, value) {
+    const option = this.options.find((option) => option.name === name);
+    option.value = Number(value);
+
+    const actor = this.scene.actors[0];
+
+    if (option.name === 'Material') {
+      const materialName = option.options[option.value];
+      if (materialName !== 'useColors') {
+        actor.material = getMaterial(materialName);
+      } else {
+        actor.material = undefined;
+      }
+    }
   }
 
   initScene(gl) {
-    const { size, maze, material } = this._generateMaze();
+    const { size, maze } = this._generateMaze();
+
     const model = new MazeModel(gl, maze);
     this.scene = {
       actors: [
         {
           model,
           location: [0.0, 0.0, -2.0 * size],
-          rotation: { angle: 0.0, axis: [0, 1, 0], speed: 0.5 },
-          material
+          rotation: { angle: 0.0, axis: [0, 1, 0], speed: 0.5 }
         }
       ],
       camera: [0.0, 0.0, 0.0]
     };
+
+    this.setOption('Material', 1);
   }
 
   _generateMaze() {
     const size = Math.floor(Math.random() * 35) * 2 + 11;
     const maze = generateMaze(size, size);
-    let material = undefined;
-    if (Math.random() < 0.8) {
-      const materials = getMaterialList();
-      material = getMaterial(materials[Math.floor(Math.random() * materials.length)]);
-    }
-    return { size, maze, material };
+    return { size, maze };
   }
 
   drawScene(gl, deltaTime) {
@@ -91,14 +118,6 @@ class MazeScene {
 
   _animateActor(deltaTime, actor) {
     actor.rotation.angle += deltaTime * actor.rotation.speed;
-    this.totalDelta += deltaTime;
-    if (this.totalDelta >= 3.0) {
-      this.totalDelta -= 3.0;
-      const { size, maze, material } = this._generateMaze();
-      actor.material = material;
-      actor.location[2] = -2.0 * size;
-      actor.model.update(maze);
-    }
   }
 }
 
