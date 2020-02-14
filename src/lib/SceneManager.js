@@ -1,6 +1,5 @@
 import ColorScene from '../scenes/ColorScene';
 import TexturedCubeScene from '../scenes/TexturedCubeScene';
-import LightedCubeScene from '../scenes/LightedCubeScene';
 import MazeScene from '../scenes/MazeScene';
 import BrickWallScene from '../scenes/BrickWallScene';
 import MaterialScene from '../scenes/MaterialScene';
@@ -21,7 +20,6 @@ class SceneManager {
       { init: false, render: new TexturedCubeScene() },
       { init: false, render: new MaterialScene() },
       { init: false, render: new MazeScene() },
-      { init: false, render: new LightedCubeScene() },
       { init: false, render: new BrickWallScene() },
       { init: false, render: new RoomScene() }
     ];
