@@ -108,7 +108,7 @@ class Model {
           shader.attribLocations.vertexColor = location;
           break;
         case 'aTextureCoord':
-          shader.attribLocations.vertexTextureCoord = location;
+          shader.attribLocations.textureCoord = location;
           break;
         default:
           alert('unknown attribute of ' + attribute.name);
@@ -130,16 +130,16 @@ class Model {
           shader.uniformLocations.projectionMatrix = location;
           break;
         case 'uSamplerDiffuse':
-          shader.uniformLocations.textureDiffuse = location;
+          shader.uniformLocations.samplerDiffuse = location;
           break;
         case 'uSamplerNormal':
-          shader.uniformLocations.textureNormal = location;
+          shader.uniformLocations.samplerNormal = location;
           break;
         case 'uSamplerHeight':
-          shader.uniformLocations.textureHeight = location;
+          shader.uniformLocations.samplerHeight = location;
           break;
         case 'uSamplerOcclusion':
-          shader.uniformLocations.textureOcclusion = location;
+          shader.uniformLocations.samplerOcclusion = location;
           break;
         case 'uShowDiffuseMap':
           shader.uniformLocations.showDiffuseMap = location;
@@ -163,7 +163,7 @@ class Model {
           shader.uniformLocations.parallaxOcclusionMapping = location;
           break;
         case 'uCameraPos':
-          shader.uniformLocations.cameraPosition = location;
+          shader.uniformLocations.cameraPos = location;
           break;
         case 'uAmbientLight':
           shader.uniformLocations.ambientLight = location;
@@ -192,7 +192,7 @@ class Model {
           }
           shader.uniformLocations.pointLight.position = location;
           break;
-        case 'uLight[0].position':
+        case 'uLights[0].position':
           if (!shader.uniformLocations.lights) {
             shader.uniformLocations.lights = [];
           }
@@ -201,7 +201,7 @@ class Model {
           }
           shader.uniformLocations.lights[0].position = location;
           break;
-        case 'uLight[0].ambient':
+        case 'uLights[0].ambient':
           if (!shader.uniformLocations.lights) {
             shader.uniformLocations.lights = [];
           }
@@ -210,7 +210,7 @@ class Model {
           }
           shader.uniformLocations.lights[0].ambient = location;
           break;
-        case 'uLight[0].diffuse':
+        case 'uLights[0].diffuse':
           if (!shader.uniformLocations.lights) {
             shader.uniformLocations.lights = [];
           }
@@ -219,7 +219,7 @@ class Model {
           }
           shader.uniformLocations.lights[0].diffuse = location;
           break;
-        case 'uLight[0].specular':
+        case 'uLights[0].specular':
           if (!shader.uniformLocations.lights) {
             shader.uniformLocations.lights = [];
           }
@@ -228,7 +228,7 @@ class Model {
           }
           shader.uniformLocations.lights[0].specular = location;
           break;
-        case 'uLight[1].position':
+        case 'uLights[1].position':
           if (!shader.uniformLocations.lights) {
             shader.uniformLocations.lights = [];
           }
@@ -237,7 +237,7 @@ class Model {
           }
           shader.uniformLocations.lights[1].position = location;
           break;
-        case 'uLight[1].ambient':
+        case 'uLights[1].ambient':
           if (!shader.uniformLocations.lights) {
             shader.uniformLocations.lights = [];
           }
@@ -246,7 +246,7 @@ class Model {
           }
           shader.uniformLocations.lights[1].ambient = location;
           break;
-        case 'uLight[1].diffuse':
+        case 'uLights[1].diffuse':
           if (!shader.uniformLocations.lights) {
             shader.uniformLocations.lights = [];
           }
@@ -255,7 +255,7 @@ class Model {
           }
           shader.uniformLocations.lights[1].diffuse = location;
           break;
-        case 'uLight[1].specular':
+        case 'uLights[1].specular':
           if (!shader.uniformLocations.lights) {
             shader.uniformLocations.lights = [];
           }
@@ -314,8 +314,8 @@ class Model {
         requirements.vertexBitangent = true;
       }
 
-      if (shader.attribLocations.vertexTextureCoord) {
-        requirements.vertexTextureCoord = true;
+      if (shader.attribLocations.textureCoord) {
+        requirements.textureCoord = true;
       }
 
       if (shader.attribLocations.vertexColor) {
@@ -377,7 +377,7 @@ class Model {
         }
       }
 
-      if (requirements.vertexTextureCoord) {
+      if (requirements.textureCoord) {
         textureCoordinates.push(0, 0, 1, 0, 1, 1, 0, 1);
       }
 
@@ -533,7 +533,7 @@ class Model {
         outputBuffer.bitangent = bitangentBuffer;
       }
 
-      if (requirements.vertexTextureCoord) {
+      if (requirements.textureCoord) {
         const textureCoordBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, textureCoordBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoordinates), gl.STATIC_DRAW);
@@ -623,15 +623,15 @@ class Model {
         gl.enableVertexAttribArray(shader.attribLocations.vertexBitangent);
       }
 
-      if (shader.attribLocations.vertexTextureCoord) {
+      if (shader.attribLocations.textureCoord) {
         const numComponents = 2;
         const type = gl.FLOAT;
         const normalize = false;
         const stride = 0;
         const offset = 0;
         gl.bindBuffer(gl.ARRAY_BUFFER, buffer.textureCoord);
-        gl.vertexAttribPointer(shader.attribLocations.vertexTextureCoord, numComponents, type, normalize, stride, offset);
-        gl.enableVertexAttribArray(shader.attribLocations.vertexTextureCoord);
+        gl.vertexAttribPointer(shader.attribLocations.textureCoord, numComponents, type, normalize, stride, offset);
+        gl.enableVertexAttribArray(shader.attribLocations.textureCoord);
       }
 
       if (shader.attribLocations.vertexColor) {
@@ -720,32 +720,32 @@ class Model {
         gl.uniform1f(shader.uniformLocations.material.shininess, material.shininess);
       }
 
-      if (shader.uniformLocations.cameraPosition) {
-        gl.uniform3fv(shader.uniformLocations.cameraPosition, options.cameraPosition);
+      if (shader.uniformLocations.cameraPos) {
+        gl.uniform3fv(shader.uniformLocations.cameraPos, options.cameraPos);
       }
 
-      if (shader.uniformLocations.textureDiffuse) {
+      if (shader.uniformLocations.samplerDiffuse) {
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, texture.diffuse);
-        gl.uniform1i(shader.uniformLocations.textureDiffuse, 0);
+        gl.uniform1i(shader.uniformLocations.samplerDiffuse, 0);
       }
 
-      if (shader.uniformLocations.textureNormal) {
+      if (shader.uniformLocations.samplerNormal) {
         gl.activeTexture(gl.TEXTURE1);
         gl.bindTexture(gl.TEXTURE_2D, texture.normal);
-        gl.uniform1i(shader.uniformLocations.textureNormal, 1);
+        gl.uniform1i(shader.uniformLocations.samplerNormal, 1);
       }
 
-      if (shader.uniformLocations.textureHeight) {
+      if (shader.uniformLocations.samplerHeight) {
         gl.activeTexture(gl.TEXTURE2);
         gl.bindTexture(gl.TEXTURE_2D, texture.height);
-        gl.uniform1i(shader.uniformLocations.textureHeight, 2);
+        gl.uniform1i(shader.uniformLocations.samplerHeight, 2);
       }
 
-      if (shader.uniformLocations.textureOcclusion) {
+      if (shader.uniformLocations.samplerOcclusion) {
         gl.activeTexture(gl.TEXTURE3);
         gl.bindTexture(gl.TEXTURE_2D, texture.occlusion);
-        gl.uniform1i(shader.uniformLocations.textureOcclusion, 3);
+        gl.uniform1i(shader.uniformLocations.samplerOcclusion, 3);
       }
 
       {

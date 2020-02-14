@@ -51,7 +51,7 @@ class BrickWallModel extends Model {
         color: [1.0, 1.0, 1.0],
         position: [0.0, 0.0, 0.0]
       },
-      cameraPosition: [0.0, 0.0, 0.0]
+      cameraPos: [0.0, 0.0, 0.0]
     });
   }
 

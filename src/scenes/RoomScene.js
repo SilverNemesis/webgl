@@ -104,7 +104,7 @@ class RoomScene {
     }
     mat4.invert(viewMatrix, viewMatrix)
 
-    this.renderOptions.cameraPosition = camera.location;
+    this.renderOptions.cameraPos = camera.location;
 
     for (let i = 0; i < scene.actors.length; i++) {
       const actor = scene.actors[i];

@@ -34,7 +34,7 @@ class LightedCubeModel extends Model {
         color: [0.7, 0.7, 0.7],
         position: [0.0, 0.0, 0.0]
       },
-      cameraPosition: [0.0, 0.0, 0.0],
+      cameraPos: [0.0, 0.0, 0.0],
       perPixel
     });
   }

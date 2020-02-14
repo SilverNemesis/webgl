@@ -38,7 +38,7 @@ class RoomModel extends Model {
       ambientLight,
       directionalLight,
       pointLight,
-      cameraPosition
+      cameraPos
     } = options;
     this._drawModel({
       gl: this.gl,
@@ -55,7 +55,7 @@ class RoomModel extends Model {
       ambientLight,
       directionalLight,
       pointLight,
-      cameraPosition
+      cameraPos
     });
   }
 
