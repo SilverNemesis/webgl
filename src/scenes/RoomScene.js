@@ -1,5 +1,5 @@
 import * as mat4 from 'gl-matrix/mat4';
-import { clearScreen } from '../lib/utility'
+import { clearScreen, degreesToRadians, generateMaze } from '../lib/utility'
 import RoomModel from '../models/RoomModel';
 
 class RoomScene {
@@ -9,15 +9,16 @@ class RoomScene {
     this.mouseMovement = this.mouseMovement.bind(this);
     this.keyboardState = this.keyboardState.bind(this);
     this.initScene = this.initScene.bind(this);
+    this.updateScene = this.updateScene.bind(this);
     this.drawScene = this.drawScene.bind(this);
     this.renderOptions = {
       showDiffuseMap: true,
       showNormalMap: true,
       showAmbientOcclusionMap: true,
-      ambientLight: [0.2, 0.2, 0.2],
+      ambientLight: [0.1, 0.1, 0.1],
       directionalLight: {
-        color: [0.4, 0.4, 0.2],
-        direction: [0.0, -1.0, 1.0]
+        color: [0.0, 0.0, 0.0],
+        direction: [0.0, 0.0, 0.0]
       },
       pointLight: {
         color: [0.6, 0.6, 0.6],
@@ -39,6 +40,11 @@ class RoomScene {
         name: 'Show Ambient Occlusion Map',
         id: 'showAmbientOcclusionMap',
         type: 'bool'
+      },
+      {
+        name: 'Update Geometry',
+        type: 'function',
+        function: this.updateScene
       }
     ];
     for (let i = 0; i < this.options.length; i++) {
@@ -83,7 +89,9 @@ class RoomScene {
   }
 
   initScene(gl) {
-    const model = new RoomModel(gl);
+    const map = generateMaze(11, 11);
+    const { location, angle } = this._findStartLocation(map);
+    const model = new RoomModel(gl, map);
     this.scene = {
       actors: [
         {
@@ -93,10 +101,10 @@ class RoomScene {
         }
       ],
       camera: {
-        location: [0.0, 0.5, 0.0],
+        location,
         rotations: [
           {
-            angle: 0.0,
+            angle,
             axis: [0, 1, 0]
           },
           {
@@ -106,6 +114,64 @@ class RoomScene {
         ]
       }
     };
+  }
+
+  updateScene() {
+    const map = generateMaze(11, 11);
+    const { location, angle } = this._findStartLocation(map);
+    this.scene.camera.location = location;
+    this.scene.camera.rotations[0].angle = angle;
+    this.scene.actors[0].model.update(map);
+  }
+
+  _findStartLocation(map) {
+    const { width, height, data } = map;
+    const isSolid = (x, y) => {
+      if (x < 0 || x >= width || y < 0 || y >= height) {
+        return true;
+      }
+      if (data[y][x] !== 0) {
+        return true;
+      }
+      return false;
+    }
+    const ofs_x = -width / 2;
+    const ofs_z = -height / 2;
+    for (let z = 0; z < height; z++) {
+      for (let x = 0; x < width; x++) {
+        if (data[z][x] === 0) {
+          let angle = 0.0;
+          const matrix = [];
+          for (let r = -1; r < 2; r++) {
+            for (let c = -1; c < 2; c++) {
+              if (isSolid(x + c, z + r)) {
+                matrix.push('1');
+              } else {
+                matrix.push('0');
+              }
+            }
+          }
+          if (matrix[0] === '0') {
+            angle = -45.0;
+          } else if (matrix[2] === '0') {
+            angle = 45.0;
+          } else if (matrix[6] === '0') {
+            angle = -225.0;
+          } else if (matrix[8] === '0') {
+            angle = 225.0;
+          } else if (matrix[3] === '0') {
+            angle = 90.0;
+          } else if (matrix[5] === '0') {
+            angle = -90.0;
+          } else if (matrix[7] === '0') {
+            angle = 180.0;
+          }
+          console.log({ matrix, angle });
+          return { location: [x + ofs_x + 0.5, 0.5, z + ofs_z + 0.5], angle: degreesToRadians(angle) };
+        }
+      }
+    }
+    return { location: [0.0, 0.5, 0.0] };
   }
 
   drawScene(gl, deltaTime) {
@@ -130,6 +196,7 @@ class RoomScene {
     mat4.invert(viewMatrix, viewMatrix)
 
     this.renderOptions.cameraPos = camera.location;
+    this.renderOptions.pointLight.position = camera.location;
 
     for (let i = 0; i < scene.actors.length; i++) {
       const actor = scene.actors[i];

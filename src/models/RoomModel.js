@@ -1,10 +1,13 @@
 import Model from './Model';
 
 class RoomModel extends Model {
-  constructor(gl) {
+  constructor(gl, map) {
     super(gl);
     this.gl = gl;
+    this.map = map;
     this.draw = this.draw.bind(this);
+    this.update = this.update.bind(this);
+    this._geometry = this._geometry.bind(this);
     this._initModel({
       gl,
       geometry: this._geometry,
@@ -59,15 +62,13 @@ class RoomModel extends Model {
     });
   }
 
+  update(map) {
+    this.map = map;
+    this._updateModel(this._geometry);
+  }
+
   _geometry({ addSquare }) {
-    const width = 4;
-    const height = 4;
-    const data = [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0]
-    ]
+    const { width, height, data } = this.map;
     const ofs_x = -width / 2;
     const ofs_z = -height / 2;
     for (let z = 0; z < height; z++) {
