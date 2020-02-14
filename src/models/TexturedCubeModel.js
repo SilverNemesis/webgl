@@ -18,14 +18,25 @@ class TexturedCubeModel extends Model {
     });
   }
 
-  draw(projectionMatrix, viewMatrix, modelMatrix) {
+  draw(projectionMatrix, viewMatrix, modelMatrix, options) {
+    const {
+      ambientLight,
+      directionalLight,
+      pointLight,
+      cameraPos,
+      lightingModel
+    } = options;
     this._drawModel({
       gl: this.gl,
       model: this.model,
       projectionMatrix,
       viewMatrix,
       modelMatrix,
-      lightingModel: 0
+      ambientLight,
+      directionalLight,
+      pointLight,
+      cameraPos,
+      lightingModel
     });
   }
 
