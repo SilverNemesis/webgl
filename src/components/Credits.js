@@ -7,16 +7,25 @@ const Credits = ({ show, credits }) => {
   let children
   if (credits) {
     children = credits.map((credit, index) => {
-      return (
-        <div key={index} className="credit">{credit}</div>
-      );
+      if (credit.startsWith('link:')) {
+        const url = credit.slice(5);
+        return (
+          <div key={index} className="credit"><a href={url} target="_blank" rel="noopener noreferrer">{url}</a></div>
+        );
+      } else if (credit === '') {
+        return (
+          <div key={index} className="credit"></div>
+        );
+      } else {
+        return (
+          <div key={index} className="credit">{credit}</div>
+        );
+      }
     });
   }
   return (
     <div id="credits">
-      <div>
-        {children}
-      </div>
+      {children}
     </div>
   );
 }

@@ -146,20 +146,36 @@ code {
   position: absolute;
   bottom: 0px;
   right: 0px;
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: rgba(0, 0, 0, 0);
   color: white;
   font-family: monospace;
-  font-size: 1rem;
-  padding: 1rem;
-  width: 20%;
+  font-size: .8rem;
+  padding: .8rem;
 }
 
 #credits > * {
   user-select: none;
 }
 
-#credits > div {
-  display: block;
+.credit {
+  text-align: right;
+  margin: .2rem;
+}
+
+a {
+  font-weight: bolder;
+}
+a:link {
+  color:#ccc;
+}
+a:visited {
+  color:#999;
+}
+a:hover {
+  color:#fff;
+}
+a:active {
+  color:#fff;
 }
 
 input[type="range"] {
