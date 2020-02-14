@@ -19,16 +19,25 @@ class ColorModel extends Model {
     });
   }
 
-  draw(projectionMatrix, viewMatrix, modelMatrix, lights, material) {
+  draw(projectionMatrix, viewMatrix, modelMatrix, options) {
+    const {
+      ambientLight,
+      directionalLight,
+      pointLight,
+      cameraPos,
+      lightingModel
+    } = options;
     this._drawModel({
       gl: this.gl,
       model: this.model,
       projectionMatrix,
       viewMatrix,
       modelMatrix,
-      lights,
-      material,
-      lightingModel: 0
+      ambientLight,
+      directionalLight,
+      pointLight,
+      cameraPos,
+      lightingModel
     });
   }
 }

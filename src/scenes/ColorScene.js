@@ -4,14 +4,39 @@ import ColorModel from '../models/ColorModel';
 
 class ColorScene {
   constructor() {
+    this.setOption = this.setOption.bind(this);
     this.initScene = this.initScene.bind(this);
     this.drawScene = this.drawScene.bind(this);
+    this.renderOptions = {
+      ambientLight: [0.2, 0.2, 0.2],
+      directionalLight: {
+        color: [0.5, 0.5, 0.5],
+        direction: [-1.0, -1.0, 0.0]
+      },
+      pointLight: {
+        color: [0.7, 0.7, 0.7],
+        position: [1.0, 1.0, 0.0]
+      },
+      cameraPos: [0.0, 0.0, 0.0],
+      lightingModel: 0
+    }
     this.options = [
       {
         description: 'Colored cube and dodecahedron with no lighting',
         type: 'description'
+      },
+      {
+        name: 'Lighting Model',
+        id: 'lightingModel',
+        type: 'select',
+        options: ['Unlit', 'Vertex Lighting', 'Fragment Lighting']
       }
     ];
+  }
+
+  setOption(option, value) {
+    option.value = Number(value);
+    this.renderOptions[option.id] = option.value;
   }
 
   initScene(gl) {
@@ -116,7 +141,7 @@ class ColorScene {
       mat4.rotate(modelMatrix, modelMatrix, rotation.angle, rotation.axis);
     }
 
-    model.draw(projectionMatrix, viewMatrix, modelMatrix);
+    model.draw(projectionMatrix, viewMatrix, modelMatrix, this.renderOptions);
   }
 
   _animateActor(deltaTime, actor) {
