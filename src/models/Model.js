@@ -81,6 +81,11 @@ class Model {
     }
   }
 
+  _updateModel(geometry) {
+    this._deleteBuffers();
+    this.model.buffers = this._initBuffers(this.gl, this.model.shaders, geometry, this.model.textures.length || 1);
+  }
+
   _setupShader(gl, vertexShader, fragmentShader) {
     const shaderProgram = initShaderProgram(gl, vertexShader, fragmentShader);
     const shaderParameters = getShaderParameters(gl, shaderProgram);
@@ -409,12 +414,14 @@ class Model {
     return outputBuffers;
   }
 
-  _deleteBuffers({ gl, buffers }) {
+  _deleteBuffers() {
+    const buffers = this.model.buffers;
     for (let i = 0; i < buffers.length; i++) {
       const buffer = buffers[i];
+      buffer.vertexCount = 0;
       for (const prop in buffer) {
-        if (buffer.hasOwnProperty(prop)) {
-          gl.deleteBuffer(buffer[prop]);
+        if (buffer.hasOwnProperty(prop) && typeof buffer[prop] === 'object') {
+          this.gl.deleteBuffer(buffer[prop]);
         }
       }
     }
