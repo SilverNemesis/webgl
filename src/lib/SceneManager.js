@@ -103,6 +103,7 @@ class SceneManager {
     const deltaTime = timeStamp - this.timeStamp;
     this.timeStamp = timeStamp;
     const scene = this.scenes[this.sceneIndex];
+    scene.fps = Math.round(1.0 / deltaTime);
     scene.render.drawScene(this.gl, deltaTime);
   }
 }
