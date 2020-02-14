@@ -4,7 +4,6 @@ import BrickWallModel from '../models/BrickWallModel';
 
 class BrickWallScene {
   constructor() {
-    this.getOptions = this.getOptions.bind(this);
     this.setOption = this.setOption.bind(this);
     this.initScene = this.initScene.bind(this);
     this.drawScene = this.drawScene.bind(this);
@@ -17,6 +16,10 @@ class BrickWallScene {
       parallaxOcclusionMapping: true
     };
     this.options = [
+      {
+        description: 'Brick cube with diffuse, normal, height, and ambient occlusion maps',
+        type: 'description'
+      },
       {
         name: 'Show Diffuse Map',
         id: 'showDiffuseMap',
@@ -59,10 +62,6 @@ class BrickWallScene {
       'Textures created by João Paulo',
       'https://3dtextures.me/about/'
     ];
-  }
-
-  getOptions() {
-    return this.options
   }
 
   setOption(name, value) {

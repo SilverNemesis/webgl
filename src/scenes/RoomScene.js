@@ -4,7 +4,6 @@ import RoomModel from '../models/RoomModel';
 
 class RoomScene {
   constructor() {
-    this.getOptions = this.getOptions.bind(this);
     this.setOption = this.setOption.bind(this);
     this.mouseMovement = this.mouseMovement.bind(this);
     this.keyboardState = this.keyboardState.bind(this);
@@ -26,6 +25,10 @@ class RoomScene {
       }
     };
     this.options = [
+      {
+        description: 'Explorable random maze geometry with diffuse, normal, and ambient occlusion maps',
+        type: 'description'
+      },
       {
         name: 'Show Diffuse Map',
         id: 'showDiffuseMap',
@@ -55,10 +58,6 @@ class RoomScene {
       'https://3dtextures.me/about/'
     ];
     this.movement = { front: 0.0, side: 0.0 };
-  }
-
-  getOptions() {
-    return this.options
   }
 
   setOption(name, value) {

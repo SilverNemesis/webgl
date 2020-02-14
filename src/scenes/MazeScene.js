@@ -4,7 +4,6 @@ import MazeModel from '../models/MazeModel';
 
 class MazeScene {
   constructor() {
-    this.getOptions = this.getOptions.bind(this);
     this.setOption = this.setOption.bind(this);
     this.initScene = this.initScene.bind(this);
     this.updateScene = this.updateScene.bind(this);
@@ -12,6 +11,10 @@ class MazeScene {
     this.totalDelta = 0.0;
 
     this.options = [
+      {
+        description: 'Random maze geometry with colors or materials using Phong shading',
+        type: 'description'
+      },
       {
         name: 'Material',
         type: 'select',
@@ -23,10 +26,6 @@ class MazeScene {
         function: this.updateScene
       }
     ];
-  }
-
-  getOptions() {
-    return this.options
   }
 
   setOption(name, value) {

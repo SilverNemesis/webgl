@@ -4,13 +4,16 @@ import MaterialModel from '../models/MaterialModel';
 
 class MaterialScene {
   constructor() {
-    this.getOptions = this.getOptions.bind(this);
     this.setOption = this.setOption.bind(this);
     this.initScene = this.initScene.bind(this);
     this.drawScene = this.drawScene.bind(this);
     this.materials = new Array(3).fill(0);
     const materialList = getMaterialList();
     this.options = [
+      {
+        description: 'Various solid geometries with various materials using Phong shading',
+        type: 'description'
+      },
       {
         name: 'Material 1',
         type: 'select',
@@ -27,10 +30,6 @@ class MaterialScene {
         options: materialList
       }
     ];
-  }
-
-  getOptions() {
-    return this.options
   }
 
   setOption(name, value) {

@@ -6,6 +6,12 @@ class TexturedCubeScene {
   constructor() {
     this.initScene = this.initScene.bind(this);
     this.drawScene = this.drawScene.bind(this);
+    this.options = [
+      {
+        description: 'Textured cube with diffuse map only and no lighting',
+        type: 'description'
+      }
+    ];
     this.credits = [
       'Texture from Mozilla WebGL Tutorial',
       'https://developer.mozilla.org/'

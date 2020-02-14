@@ -6,6 +6,12 @@ class LightedCubeScene {
   constructor() {
     this.initScene = this.initScene.bind(this);
     this.drawScene = this.drawScene.bind(this);
+    this.options = [
+      {
+        description: 'Textured cubes with diffuse map only, vertex lighting on left cube, fragment lighting on right cube',
+        type: 'description'
+      }
+    ];
     this.credits = [
       'Texture from Mozilla WebGL Tutorial',
       'https://developer.mozilla.org/'

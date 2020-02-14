@@ -6,6 +6,12 @@ class ColoredCubeScene {
   constructor() {
     this.initScene = this.initScene.bind(this);
     this.drawScene = this.drawScene.bind(this);
+    this.options = [
+      {
+        description: 'Colored cube and dodecahedron with no lighting',
+        type: 'description'
+      }
+    ];
   }
 
   initScene(gl) {
