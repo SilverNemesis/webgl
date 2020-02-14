@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
+<div
+  id="credits"
+>
+  <div>
+    <div
+      className="credit"
+    >
+      These are credits
+    </div>
+    <div
+      className="credit"
+    >
+      Stuff from guy
+    </div>
+    <div
+      className="credit"
+    >
+      More stuff from other guy
+    </div>
+  </div>
+</div>
+`;

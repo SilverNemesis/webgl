@@ -20,5 +20,8 @@ exports[`renders correctly 1`] = `
     onClickPrevious={[Function]}
     show={false}
   />
+  <Credits
+    show={false}
+  />
 </div>
 `;

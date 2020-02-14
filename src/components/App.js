@@ -1,6 +1,7 @@
 import React from 'react';
 import Message from './Message';
 import Controls from './Controls';
+import Credits from './Credits';
 import SceneManager from '../lib/SceneManager';
 
 class App extends React.Component {
@@ -188,6 +189,7 @@ class App extends React.Component {
         </div>
         <Message message={this.state.message} onClick={this.onClickMessage} />
         <Controls show={this.state.showControls} onClickPrevious={this.onClickPrevious} onClickNext={this.onClickNext} onChange={this.onChange} options={this.state.scene ? this.state.scene.options : undefined} />
+        <Credits show={this.state.showControls} credits={this.state.scene ? this.state.scene.credits : undefined} />
       </div>
     );
   }
