@@ -1,8 +1,8 @@
 import * as mat4 from 'gl-matrix/mat4';
 import { clearScreen } from '../lib/utility'
-import ColoredModel from '../models/ColoredModel';
+import ColorModel from '../models/ColorModel';
 
-class ColoredCubeScene {
+class ColorScene {
   constructor() {
     this.initScene = this.initScene.bind(this);
     this.drawScene = this.drawScene.bind(this);
@@ -23,7 +23,7 @@ class ColoredCubeScene {
       [1.0, 1.0, 1.0],    // Front face: white
       [1.0, 0.0, 0.0]     // Back face: red
     ];
-    const model6 = new ColoredModel(gl, 'cube', colors1);
+    const model6 = new ColorModel(gl, 'cube', colors1);
     const colors2 = [
       [1.0, 0.0, 0.0],
       [0.0, 0.0, 1.0],
@@ -38,7 +38,7 @@ class ColoredCubeScene {
       [0.0, 0.5, 1.0],
       [0.5, 0.0, 1.0]
     ];
-    const model12 = new ColoredModel(gl, 'dodecahedron', colors2);
+    const model12 = new ColorModel(gl, 'dodecahedron', colors2);
     this.scene = {
       actors: [
         {
@@ -127,4 +127,4 @@ class ColoredCubeScene {
   }
 }
 
-export default ColoredCubeScene;
+export default ColorScene;

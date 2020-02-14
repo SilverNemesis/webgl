@@ -1,7 +1,7 @@
 import Model from './Model';
 import { getShape } from '../lib/utility';
 
-class ColoredModel extends Model {
+class ColorModel extends Model {
   constructor(gl, shapeName, colors) {
     super(gl);
     this.gl = gl;
@@ -33,4 +33,4 @@ class ColoredModel extends Model {
   }
 }
 
-export default ColoredModel;
+export default ColorModel;
