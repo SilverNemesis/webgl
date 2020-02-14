@@ -13,8 +13,8 @@ class TexturedCubeScene {
       }
     ];
     this.credits = [
-      'Texture from Mozilla WebGL Tutorial',
-      'https://developer.mozilla.org/'
+      'Texture from MDN WebGL Tutorial',
+      'link:https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/Tutorial'
     ];
   }
 

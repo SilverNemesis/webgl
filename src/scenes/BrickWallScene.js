@@ -60,7 +60,7 @@ class BrickWallScene {
     }
     this.credits = [
       'Textures created by João Paulo',
-      'https://3dtextures.me/about/'
+      'link:https://3dtextures.me/about/'
     ];
   }
 

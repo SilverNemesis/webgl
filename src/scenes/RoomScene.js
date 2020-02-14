@@ -55,7 +55,10 @@ class RoomScene {
     }
     this.credits = [
       'Textures created by João Paulo',
-      'https://3dtextures.me/about/'
+      'link:https://3dtextures.me/about/',
+      '',
+      'Maze generation is based on this article',
+      'link:https://journal.stuffwithstuff.com/2014/12/21/rooms-and-mazes/'
     ];
     this.movement = { front: 0.0, side: 0.0 };
   }

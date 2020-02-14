@@ -26,6 +26,11 @@ class MazeScene {
         function: this.updateScene
       }
     ];
+
+    this.credits = [
+      'Maze generation is based on this article',
+      'link:https://journal.stuffwithstuff.com/2014/12/21/rooms-and-mazes/'
+    ]
   }
 
   setOption(name, value) {
