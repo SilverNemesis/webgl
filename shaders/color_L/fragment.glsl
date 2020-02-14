@@ -1,4 +1,4 @@
-precision highp float;
+precision mediump float;
 
 uniform sampler2D uSamplerDiffuse;
 uniform vec3 uAmbientLight;     

@@ -5,7 +5,7 @@ uniform mat4 uModelMatrix;
 uniform mat4 uViewMatrix;
 uniform mat4 uProjectionMatrix;
 
-varying highp vec2 vTextureCoord;
+varying mediump vec2 vTextureCoord;
 
 void main(void) {
   vTextureCoord = aTextureCoord;

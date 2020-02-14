@@ -1,4 +1,4 @@
-precision highp float;
+precision mediump float;
 
 uniform sampler2D uSamplerNormal;
 uniform sampler2D uSamplerDiffuse;
@@ -34,23 +34,20 @@ void main(void)
 
   vec3 albedo = texture2D(uSamplerDiffuse, texCoords).rgb;
 
-  if (uShowDiffuseMap == 0)
-  {
+  if (uShowDiffuseMap == 0) {
     albedo = vec3(0.5, 0.5, 0.5);
   }
 
   float point_intensity;
   float diffuse_intensity;
 
-  if (uShowNormalMap == 0)
-  {
+  if (uShowNormalMap == 0) {
     vec3 normal = frag_normal;
     vec3 light_dir = uPointLight.position - frag_position;
     point_intensity = clamp(10.0 * max(dot(normalize(light_dir), normal), 0.0) / (length(light_dir) * length(light_dir)), 0.0, 1.0);
     diffuse_intensity = max(dot(uDirectionalLight.direction, normal), 0.0);
   }
-  else
-  {
+  else {
     vec3 normal = normalize(texture2D(uSamplerNormal, texCoords).rgb * 2.0 - 1.0);
     vec3 light_dir = ts_light_pos - ts_frag_pos;
     point_intensity = clamp(10.0 * max(dot(normalize(light_dir), normal), 0.0) / (length(light_dir) * length(light_dir)), 0.0, 1.0);
@@ -59,12 +56,10 @@ void main(void)
 
   vec3 ambient;
 
-  if (uShowAmbientOcclusionMap == 0)
-  {
+  if (uShowAmbientOcclusionMap == 0) {
     ambient = uAmbientLight;
   }
-  else
-  {
+  else {
     ambient = texture2D(uSamplerOcclusion, texCoords).r * uAmbientLight;
   }
 
