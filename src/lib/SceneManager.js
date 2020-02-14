@@ -35,20 +35,7 @@ class SceneManager {
       this.gl.enable(this.gl.CULL_FACE);
       this.gl.cullFace(this.gl.BACK);
       const scene = this.scenes[this.sceneIndex];
-      if (!scene.init) {
-        scene.init = true;
-        scene.render.initScene(this.gl);
-        if (scene.render.getOptions) {
-          scene.options = scene.render.getOptions();
-          scene.setOption = scene.render.setOption;
-        }
-        if (scene.render.mouseMovement) {
-          scene.mouseMovement = scene.render.mouseMovement;
-        }
-        if (scene.render.keyboardState) {
-          scene.keyboardState = scene.render.keyboardState;
-        }
-      }
+      this.initScene(scene);
     }
   }
 
@@ -58,6 +45,26 @@ class SceneManager {
     canvas.width = rect.width;
     canvas.height = rect.height;
     this.gl.viewport(0, 0, canvas.width, canvas.height);
+  }
+
+  initScene(scene) {
+    if (!scene.init) {
+      scene.init = true;
+      scene.render.initScene(this.gl);
+      if (scene.render.getOptions) {
+        scene.options = scene.render.getOptions();
+        scene.setOption = scene.render.setOption;
+      }
+      if (scene.render.credits) {
+        scene.credits = scene.render.credits;
+      }
+      if (scene.render.mouseMovement) {
+        scene.mouseMovement = scene.render.mouseMovement;
+      }
+      if (scene.render.keyboardState) {
+        scene.keyboardState = scene.render.keyboardState;
+      }
+    }
   }
 
   getScene() {
@@ -70,28 +77,14 @@ class SceneManager {
       this.sceneIndex = this.scenes.length - 1;
     }
     const scene = this.scenes[this.sceneIndex];
-    if (!scene.init) {
-      scene.init = true;
-      scene.render.initScene(this.gl);
-      if (scene.render.getOptions) {
-        scene.options = scene.render.getOptions();
-        scene.setOption = scene.render.setOption;
-      }
-    }
+    this.initScene(scene);
     return this.scenes[this.sceneIndex];
   }
 
   nextScene() {
     this.sceneIndex = (this.sceneIndex + 1) % this.scenes.length;
     const scene = this.scenes[this.sceneIndex];
-    if (!scene.init) {
-      scene.init = true;
-      scene.render.initScene(this.gl);
-      if (scene.render.getOptions) {
-        scene.options = scene.render.getOptions();
-        scene.setOption = scene.render.setOption;
-      }
-    }
+    this.initScene(scene);
     return this.scenes[this.sceneIndex];
   }
 
