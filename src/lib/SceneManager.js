@@ -51,8 +51,8 @@ class SceneManager {
     if (!scene.init) {
       scene.init = true;
       scene.render.initScene(this.gl);
-      if (scene.render.getOptions) {
-        scene.options = scene.render.getOptions();
+      if (scene.render.options) {
+        scene.options = scene.render.options;
         scene.setOption = scene.render.setOption;
       }
       if (scene.render.credits) {
