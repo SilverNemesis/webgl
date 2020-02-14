@@ -13,8 +13,8 @@ class MazeModel extends Model {
       geometry: this._geometry,
       shaders: [
         {
-          vertex: 'shaders/color/vertex.glsl',
-          fragment: 'shaders/color/fragment.glsl'
+          vertex: 'shaders/color_L/vertex.glsl',
+          fragment: 'shaders/color_L/fragment.glsl'
         },
         {
           vertex: 'shaders/material_L/vertex.glsl',
@@ -33,7 +33,8 @@ class MazeModel extends Model {
       modelMatrix,
       shaderIndex,
       lights,
-      material
+      material,
+      lightingModel: 0
     });
   }
 

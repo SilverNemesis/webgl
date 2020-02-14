@@ -13,8 +13,8 @@ class ColoredModel extends Model {
         addFaces(shape.vertices, shape.faces, { colors });
       },
       shader: {
-        vertex: 'shaders/color/vertex.glsl',
-        fragment: 'shaders/color/fragment.glsl'
+        vertex: 'shaders/color_L/vertex.glsl',
+        fragment: 'shaders/color_L/fragment.glsl'
       }
     });
   }
@@ -27,7 +27,8 @@ class ColoredModel extends Model {
       viewMatrix,
       modelMatrix,
       lights,
-      material
+      material,
+      lightingModel: 0
     });
   }
 }
