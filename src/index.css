@@ -70,7 +70,7 @@ code {
 }
 
 #message {
-  z-index: 2;
+  z-index: 3;
   position: absolute;
   top: 0px;
   left: 0px;
@@ -97,7 +97,7 @@ code {
 }
 
 #note {
-  z-index: 3;
+  z-index: 4;
   position: absolute;
   top: 0px;
   left: 0px;
@@ -121,12 +121,11 @@ code {
 }
 
 #overlay {
-  cursor: pointer;
-  z-index: 1;
+  z-index: 2;
   position: absolute;
   top: 0px;
   right: 0px;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.3);
   color: white;
   font-family: monospace;
   font-size: 1.5rem;
@@ -142,7 +141,29 @@ code {
   display: block;
 }
 
+#credits {
+  z-index: 1;
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  background-color: rgba(0, 0, 0, 0.3);
+  color: white;
+  font-family: monospace;
+  font-size: 1rem;
+  padding: 1rem;
+  width: 20%;
+}
+
+#credits > * {
+  user-select: none;
+}
+
+#credits > div {
+  display: block;
+}
+
 input[type="range"] {
+  margin-top: .2rem;
   display: block;
   width: 95%;
 }
@@ -170,6 +191,10 @@ label {
   display: block;
 }
 
+.clickable {
+  cursor: pointer;
+}
+
 .left {
   float: left;
 }
@@ -187,6 +212,7 @@ label {
 }
 
 .select-css {
+  cursor: pointer;
 	display: block;
 	font-size: 1.2rem;
 	font-family: monospace;
