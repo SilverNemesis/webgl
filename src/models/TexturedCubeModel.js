@@ -12,8 +12,8 @@ class TexturedCubeModel extends Model {
         diffuse: 'images/cubetexture.png'
       },
       shader: {
-        vertex: 'shaders/texture_D/vertex.glsl',
-        fragment: 'shaders/texture_D/fragment.glsl'
+        vertex: 'shaders/texture_LD/vertex.glsl',
+        fragment: 'shaders/texture_LD/fragment.glsl'
       }
     });
   }
@@ -24,7 +24,8 @@ class TexturedCubeModel extends Model {
       model: this.model,
       projectionMatrix,
       viewMatrix,
-      modelMatrix
+      modelMatrix,
+      lightingModel: 0
     });
   }
 

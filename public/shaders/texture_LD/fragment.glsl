@@ -19,19 +19,19 @@ varying vec3 vVertexNormal;
 varying vec3 vLighting;
 
 void main() {
-  if (uLightingModel == 1) {
+  if (uLightingModel == 0) {
+    gl_FragColor = texture2D(uSamplerDiffuse, vTextureCoord);
+  }
+  else if (uLightingModel == 1) {
     vec4 texelColor = texture2D(uSamplerDiffuse, vTextureCoord);
     gl_FragColor = vec4(texelColor.rgb * vLighting, texelColor.a);
   }
   else if (uLightingModel == 2) {
     float directional = max(dot(vVertexNormal, uDirectionalLight.direction), 0.0);
-
     vec3 surfaceToLight = uPointLight.position - vVertexPosition;
     float bright = 50.0 * max(dot(vVertexNormal, normalize(surfaceToLight)), 0.0) / (length(surfaceToLight) * length(surfaceToLight));
     bright = clamp(bright, 0.0, 1.0);
-
     vec3 lighting = uAmbientLight + (uDirectionalLight.color * directional) + (uPointLight.color * bright);
-
     vec4 texelColor = texture2D(uSamplerDiffuse, vTextureCoord);
     gl_FragColor = vec4(texelColor.rgb * lighting, texelColor.a);
   }
