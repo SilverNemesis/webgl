@@ -1,5 +1,14 @@
 import React from 'react';
 
+const DescriptionControl = (props) => {
+  const { control } = props;
+  return (
+    <div className="control">
+      {control.description}
+    </div>
+  );
+}
+
 const SelectControl = (props) => {
   function onChange(event) {
     props.onChange(control, event.target.value);
@@ -80,6 +89,8 @@ const Controls = ({ show, onClickPrevious, onClickNext, onChange, options }) => 
   if (options) {
     controls = options.map((option, index) => {
       switch (option.type) {
+        case 'description':
+          return <DescriptionControl key={index} control={option} />
         case 'select':
           return <SelectControl key={index} control={option} onChange={onChange} />
         case 'bool':
