@@ -91,209 +91,65 @@ class Model {
     };
     shaderParameters.attributes.forEach((attribute) => {
       const location = gl.getAttribLocation(shaderProgram, attribute.name)
-      switch (attribute.name) {
-        case 'aVertexPosition':
-          shader.attribLocations.vertexPosition = location;
-          break;
-        case 'aVertexNormal':
-          shader.attribLocations.vertexNormal = location;
-          break;
-        case 'aVertexTangent':
-          shader.attribLocations.vertexTangent = location;
-          break;
-        case 'aVertexBitangent':
-          shader.attribLocations.vertexBitangent = location;
-          break;
-        case 'aVertexColor':
-          shader.attribLocations.vertexColor = location;
-          break;
-        case 'aTextureCoord':
-          shader.attribLocations.textureCoord = location;
-          break;
-        default:
-          alert('unknown attribute of ' + attribute.name);
-      }
+      this._addShaderNameToJavascript(shader.attribLocations, attribute.name, location);
     });
     shaderParameters.uniforms.forEach((uniform) => {
       const location = gl.getUniformLocation(shaderProgram, uniform.name)
-      switch (uniform.name) {
-        case 'uModelMatrix':
-          shader.uniformLocations.modelMatrix = location;
-          break;
-        case 'uViewMatrix':
-          shader.uniformLocations.viewMatrix = location;
-          break;
-        case 'uNormalMatrix':
-          shader.uniformLocations.normalMatrix = location;
-          break;
-        case 'uProjectionMatrix':
-          shader.uniformLocations.projectionMatrix = location;
-          break;
-        case 'uSamplerDiffuse':
-          shader.uniformLocations.samplerDiffuse = location;
-          break;
-        case 'uSamplerNormal':
-          shader.uniformLocations.samplerNormal = location;
-          break;
-        case 'uSamplerHeight':
-          shader.uniformLocations.samplerHeight = location;
-          break;
-        case 'uSamplerOcclusion':
-          shader.uniformLocations.samplerOcclusion = location;
-          break;
-        case 'uShowDiffuseMap':
-          shader.uniformLocations.showDiffuseMap = location;
-          break;
-        case 'uShowNormalMap':
-          shader.uniformLocations.showNormalMap = location;
-          break;
-        case 'uShowAmbientOcclusionMap':
-          shader.uniformLocations.showAmbientOcclusionMap = location;
-          break;
-        case 'uPerPixel':
-          shader.uniformLocations.perPixel = location;
-          break;
-        case 'uParallaxHeightScale':
-          shader.uniformLocations.parallaxHeightScale = location;
-          break;
-        case 'uParallaxSteps':
-          shader.uniformLocations.parallaxSteps = location;
-          break;
-        case 'uParallaxOcclusionMapping':
-          shader.uniformLocations.parallaxOcclusionMapping = location;
-          break;
-        case 'uCameraPos':
-          shader.uniformLocations.cameraPos = location;
-          break;
-        case 'uAmbientLight':
-          shader.uniformLocations.ambientLight = location;
-          break;
-        case 'uDirectionalLight.color':
-          if (!shader.uniformLocations.directionalLight) {
-            shader.uniformLocations.directionalLight = {};
-          }
-          shader.uniformLocations.directionalLight.color = location;
-          break;
-        case 'uDirectionalLight.direction':
-          if (!shader.uniformLocations.directionalLight) {
-            shader.uniformLocations.directionalLight = {};
-          }
-          shader.uniformLocations.directionalLight.direction = location;
-          break;
-        case 'uPointLight.color':
-          if (!shader.uniformLocations.pointLight) {
-            shader.uniformLocations.pointLight = {};
-          }
-          shader.uniformLocations.pointLight.color = location;
-          break;
-        case 'uPointLight.position':
-          if (!shader.uniformLocations.pointLight) {
-            shader.uniformLocations.pointLight = {};
-          }
-          shader.uniformLocations.pointLight.position = location;
-          break;
-        case 'uLights[0].position':
-          if (!shader.uniformLocations.lights) {
-            shader.uniformLocations.lights = [];
-          }
-          while (shader.uniformLocations.lights.length < 1) {
-            shader.uniformLocations.lights.push({});
-          }
-          shader.uniformLocations.lights[0].position = location;
-          break;
-        case 'uLights[0].ambient':
-          if (!shader.uniformLocations.lights) {
-            shader.uniformLocations.lights = [];
-          }
-          while (shader.uniformLocations.lights.length < 1) {
-            shader.uniformLocations.lights.push({});
-          }
-          shader.uniformLocations.lights[0].ambient = location;
-          break;
-        case 'uLights[0].diffuse':
-          if (!shader.uniformLocations.lights) {
-            shader.uniformLocations.lights = [];
-          }
-          while (shader.uniformLocations.lights.length < 1) {
-            shader.uniformLocations.lights.push({});
-          }
-          shader.uniformLocations.lights[0].diffuse = location;
-          break;
-        case 'uLights[0].specular':
-          if (!shader.uniformLocations.lights) {
-            shader.uniformLocations.lights = [];
-          }
-          while (shader.uniformLocations.lights.length < 1) {
-            shader.uniformLocations.lights.push({});
-          }
-          shader.uniformLocations.lights[0].specular = location;
-          break;
-        case 'uLights[1].position':
-          if (!shader.uniformLocations.lights) {
-            shader.uniformLocations.lights = [];
-          }
-          while (shader.uniformLocations.lights.length < 2) {
-            shader.uniformLocations.lights.push({});
-          }
-          shader.uniformLocations.lights[1].position = location;
-          break;
-        case 'uLights[1].ambient':
-          if (!shader.uniformLocations.lights) {
-            shader.uniformLocations.lights = [];
-          }
-          while (shader.uniformLocations.lights.length < 2) {
-            shader.uniformLocations.lights.push({});
-          }
-          shader.uniformLocations.lights[1].ambient = location;
-          break;
-        case 'uLights[1].diffuse':
-          if (!shader.uniformLocations.lights) {
-            shader.uniformLocations.lights = [];
-          }
-          while (shader.uniformLocations.lights.length < 2) {
-            shader.uniformLocations.lights.push({});
-          }
-          shader.uniformLocations.lights[1].diffuse = location;
-          break;
-        case 'uLights[1].specular':
-          if (!shader.uniformLocations.lights) {
-            shader.uniformLocations.lights = [];
-          }
-          while (shader.uniformLocations.lights.length < 2) {
-            shader.uniformLocations.lights.push({});
-          }
-          shader.uniformLocations.lights[1].specular = location;
-          break;
-        case 'uMaterial.ambient':
-          if (!shader.uniformLocations.material) {
-            shader.uniformLocations.material = {};
-          }
-          shader.uniformLocations.material.ambient = location;
-          break;
-        case 'uMaterial.diffuse':
-          if (!shader.uniformLocations.material) {
-            shader.uniformLocations.material = {};
-          }
-          shader.uniformLocations.material.diffuse = location;
-          break;
-        case 'uMaterial.specular':
-          if (!shader.uniformLocations.material) {
-            shader.uniformLocations.material = {};
-          }
-          shader.uniformLocations.material.specular = location;
-          break;
-        case 'uMaterial.shininess':
-          if (!shader.uniformLocations.material) {
-            shader.uniformLocations.material = {};
-          }
-          shader.uniformLocations.material.shininess = location;
-          break;
-        default:
-          alert('unknown uniform of ' + uniform.name);
-      }
+      this._addShaderNameToJavascript(shader.uniformLocations, uniform.name, location);
     });
-
     return shader;
+  }
+
+  _addShaderNameToJavascript(shaderLocations, inputName, location) {
+    if (inputName[0] !== 'a' && inputName[0] !== 'u') {
+      alert('shader name of ' + inputName + ' is not valid');
+      return;
+    }
+    let outputName = inputName[1].toLowerCase() + inputName.slice(2);
+    const names = outputName.split('.');
+    let out = shaderLocations;
+    for (let i = 0; i < names.length; i++) {
+      let name = names[i];
+      const subBeg = name.indexOf('[');
+      if (subBeg !== -1) {
+        const subEnd = name.indexOf(']');
+        if (subEnd < subBeg + 2) {
+          alert('shader name of ' + inputName + ' is not valid');
+          return;
+        }
+        const index = Number(name.slice(subBeg + 1, subEnd));
+        name = name.slice(0, subBeg);
+        if (i < names.length - 1) {
+          if (!out[name]) {
+            out[name] = [];
+          }
+          if (out[name].length <= index) {
+            out[name].length = index + 1;
+          }
+          if (!out[name][index]) {
+            out[name][index] = {};
+          }
+          out = out[name][index];
+        } else {
+          if (!out[name]) {
+            out[name] = [];
+          }
+          if (out[name].length <= index) {
+            out[name].length = index + 1;
+          }
+          out[name][index] = location;
+        }
+      } else {
+        if (i < names.length - 1) {
+          if (!out[name]) {
+            out[name] = {};
+          }
+          out = out[name];
+        } else {
+          out[name] = location;
+        }
+      }
+    }
   }
 
   _initBuffers(gl, shaders, geometry, bufferCount) {
