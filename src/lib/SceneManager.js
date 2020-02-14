@@ -34,8 +34,9 @@ class SceneManager {
       this.resizeViewport();
       this.gl.enable(this.gl.CULL_FACE);
       this.gl.cullFace(this.gl.BACK);
-      const scene = this.scenes[this.sceneIndex];
-      this.initScene(scene);
+      for (let i = 0; i < this.scenes.length; i++) {
+        this.initScene(this.scenes[i]);
+      }
     }
   }
 
