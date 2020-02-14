@@ -60,6 +60,18 @@ const FloatControl = (props) => {
   );
 }
 
+const FunctionControl = (props) => {
+  function onClick(event) {
+    control.function();
+  }
+  const { control } = props;
+  return (
+    <div className="control">
+      <button onClick={onClick}>{control.name}</button>
+    </div>
+  );
+}
+
 const Controls = ({ show, onClickPrevious, onClickNext, onChange, options }) => {
   if (!show) {
     return null;
@@ -76,6 +88,8 @@ const Controls = ({ show, onClickPrevious, onClickNext, onChange, options }) => 
           return <IntControl key={index} control={option} onChange={onChange} />
         case 'float':
           return <FloatControl key={index} control={option} onChange={onChange} />
+        case 'function':
+          return <FunctionControl key={index} control={option} />
         default:
           return (
             <div key={index} className="control">{option.type} is not supported</div>

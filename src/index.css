@@ -147,6 +147,25 @@ input[type="range"] {
   width: 95%;
 }
 
+button {
+  display: block;
+  width: 90%;
+  border: none;
+  border-radius: .1rem;
+  margin: 1rem;
+  padding: .5rem;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  background-color: black;
+  border: 1px solid #aaa;
+  color: white;
+  font-family: monospace;
+  font-size: 1.5rem;
+  transition-duration: 0.4s;
+  cursor: pointer;
+}
+
 label {
   display: block;
 }
