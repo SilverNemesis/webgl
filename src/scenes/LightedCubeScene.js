@@ -6,6 +6,10 @@ class LightedCubeScene {
   constructor() {
     this.initScene = this.initScene.bind(this);
     this.drawScene = this.drawScene.bind(this);
+    this.credits = [
+      'Texture from Mozilla WebGL Tutorial',
+      'https://developer.mozilla.org/'
+    ];
   }
 
   initScene(gl) {

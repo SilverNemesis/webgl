@@ -55,6 +55,10 @@ class BrickWallScene {
     for (let i = 0; i < this.options.length; i++) {
       this.options[i].value = this.renderOptions[this.options[i].id];
     }
+    this.credits = [
+      'Textures created by João Paulo',
+      'https://3dtextures.me/about/'
+    ];
   }
 
   getOptions() {

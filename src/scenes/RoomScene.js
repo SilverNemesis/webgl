@@ -50,6 +50,10 @@ class RoomScene {
     for (let i = 0; i < this.options.length; i++) {
       this.options[i].value = this.renderOptions[this.options[i].id];
     }
+    this.credits = [
+      'Textures created by João Paulo',
+      'https://3dtextures.me/about/'
+    ];
     this.movement = { front: 0.0, side: 0.0 };
   }
 
@@ -166,7 +170,6 @@ class RoomScene {
           } else if (matrix[7] === '0') {
             angle = 180.0;
           }
-          console.log({ matrix, angle });
           return { location: [x + ofs_x + 0.5, 0.5, z + ofs_z + 0.5], angle: degreesToRadians(angle) };
         }
       }
