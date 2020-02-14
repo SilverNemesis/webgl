@@ -6,6 +6,8 @@ class RoomScene {
   constructor() {
     this.getOptions = this.getOptions.bind(this);
     this.setOption = this.setOption.bind(this);
+    this.mouseMovement = this.mouseMovement.bind(this);
+    this.keyboardState = this.keyboardState.bind(this);
     this.initScene = this.initScene.bind(this);
     this.drawScene = this.drawScene.bind(this);
     this.renderOptions = {
@@ -42,6 +44,7 @@ class RoomScene {
     for (let i = 0; i < this.options.length; i++) {
       this.options[i].value = this.renderOptions[this.options[i].id];
     }
+    this.movement = { front: 0.0, side: 0.0 };
   }
 
   getOptions() {
@@ -54,6 +57,31 @@ class RoomScene {
     this.renderOptions[option.id] = option.value;
   }
 
+  mouseMovement(x, y) {
+    const camera = this.scene.camera;
+    camera.rotations[0].angle -= x * 0.001;
+    camera.rotations[1].angle -= y * 0.001;
+  }
+
+  keyboardState(keys) {
+    let front = 0.0;
+    if (keys['w']) {
+      front -= 1.0;
+    }
+    if (keys['s']) {
+      front += 1.0;
+    }
+    let side = 0.0;
+    if (keys['a']) {
+      side -= 1.0;
+    }
+    if (keys['d']) {
+      side += 1.0;
+    }
+    this.movement.front = front;
+    this.movement.side = side;
+  }
+
   initScene(gl) {
     const model = new RoomModel(gl);
     this.scene = {
@@ -61,13 +89,7 @@ class RoomScene {
         {
           model,
           location: [0.0, 0.0, 0.0],
-          rotations: [
-            {
-              angle: 0.0,
-              axis: [0, 1, 0],
-              speed: 0.4
-            }
-          ]
+          rotations: []
         }
       ],
       camera: {
@@ -75,8 +97,11 @@ class RoomScene {
         rotations: [
           {
             angle: 0.0,
-            axis: [0, 1, 0],
-            speed: 0.0
+            axis: [0, 1, 0]
+          },
+          {
+            angle: 0.0,
+            axis: [1, 0, 0]
           }
         ]
       }
@@ -112,10 +137,17 @@ class RoomScene {
       this._animateActor(deltaTime, actor);
     }
 
-    for (let i = 0; i < camera.rotations.length; i++) {
-      const rotation = camera.rotations[i];
-      rotation.angle += deltaTime * rotation.speed;
-    }
+    mat4.identity(viewMatrix);
+    mat4.rotate(viewMatrix, viewMatrix, camera.rotations[0].angle, camera.rotations[0].axis);
+    mat4.invert(viewMatrix, viewMatrix)
+
+    camera.location[0] += deltaTime * this.movement.front * viewMatrix[2];
+    camera.location[1] += deltaTime * this.movement.front * viewMatrix[6];
+    camera.location[2] += deltaTime * this.movement.front * viewMatrix[10];
+
+    camera.location[0] += deltaTime * this.movement.side * viewMatrix[0];
+    camera.location[1] += deltaTime * this.movement.side * viewMatrix[4];
+    camera.location[2] += deltaTime * this.movement.side * viewMatrix[8];
   }
 
   _renderActor(projectionMatrix, viewMatrix, actor) {
