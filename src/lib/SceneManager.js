@@ -1,4 +1,3 @@
-import ColoredSquareScene from '../scenes/ColoredSquareScene';
 import ColoredCubeScene from '../scenes/ColoredCubeScene';
 import TexturedCubeScene from '../scenes/TexturedCubeScene';
 import LightedCubeScene from '../scenes/LightedCubeScene';
@@ -18,7 +17,6 @@ class SceneManager {
     this.renderScene = this.renderScene.bind(this);
 
     this.scenes = [
-      { init: false, render: new ColoredSquareScene() },
       { init: false, render: new ColoredCubeScene() },
       { init: false, render: new TexturedCubeScene() },
       { init: false, render: new LightedCubeScene() },
