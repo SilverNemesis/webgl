@@ -453,7 +453,7 @@ class Model {
 
       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer.indices);
 
-      if (shader.attribLocations.vertexNormal) {
+      if (shader.attribLocations.vertexNormal && buffer.normal) {
         const numComponents = 3;
         const type = gl.FLOAT;
         const normalize = false;
@@ -464,7 +464,7 @@ class Model {
         gl.enableVertexAttribArray(shader.attribLocations.vertexNormal);
       }
 
-      if (shader.attribLocations.vertexTangent) {
+      if (shader.attribLocations.vertexTangent && buffer.tangent) {
         const numComponents = 3;
         const type = gl.FLOAT;
         const normalize = false;
@@ -475,7 +475,7 @@ class Model {
         gl.enableVertexAttribArray(shader.attribLocations.vertexTangent);
       }
 
-      if (shader.attribLocations.vertexBitangent) {
+      if (shader.attribLocations.vertexBitangent && buffer.bitangent) {
         const numComponents = 3;
         const type = gl.FLOAT;
         const normalize = false;
@@ -486,7 +486,7 @@ class Model {
         gl.enableVertexAttribArray(shader.attribLocations.vertexBitangent);
       }
 
-      if (shader.attribLocations.textureCoord) {
+      if (shader.attribLocations.textureCoord && buffer.textureCoord) {
         const numComponents = 2;
         const type = gl.FLOAT;
         const normalize = false;
@@ -497,7 +497,7 @@ class Model {
         gl.enableVertexAttribArray(shader.attribLocations.textureCoord);
       }
 
-      if (shader.attribLocations.vertexColor) {
+      if (shader.attribLocations.vertexColor && buffer.color) {
         const numComponents = 3;
         const type = gl.FLOAT;
         const normalize = false;
@@ -520,51 +520,51 @@ class Model {
         gl.uniformMatrix4fv(shader.uniformLocations.normalMatrix, false, normalMatrix);
       }
 
-      if (shader.uniformLocations.showDiffuseMap) {
+      if (shader.uniformLocations.showDiffuseMap && options.showDiffuseMap !== undefined) {
         gl.uniform1i(shader.uniformLocations.showDiffuseMap, options.showDiffuseMap);
       }
 
-      if (shader.uniformLocations.showNormalMap) {
+      if (shader.uniformLocations.showNormalMap && options.showNormalMap !== undefined) {
         gl.uniform1i(shader.uniformLocations.showNormalMap, options.showNormalMap);
       }
 
-      if (shader.uniformLocations.showAmbientOcclusionMap) {
+      if (shader.uniformLocations.showAmbientOcclusionMap && options.showAmbientOcclusionMap !== undefined) {
         gl.uniform1i(shader.uniformLocations.showAmbientOcclusionMap, options.showAmbientOcclusionMap);
       }
 
-      if (shader.uniformLocations.lightingModel) {
+      if (shader.uniformLocations.lightingModel && options.lightingModel !== undefined) {
         gl.uniform1i(shader.uniformLocations.lightingModel, options.lightingModel);
       }
 
-      if (shader.uniformLocations.parallaxHeightScale) {
+      if (shader.uniformLocations.parallaxHeightScale && options.parallaxHeightScale !== undefined) {
         gl.uniform1f(shader.uniformLocations.parallaxHeightScale, options.parallaxHeightScale);
       }
 
-      if (shader.uniformLocations.parallaxSteps) {
+      if (shader.uniformLocations.parallaxSteps && options.parallaxSteps !== undefined) {
         gl.uniform1i(shader.uniformLocations.parallaxSteps, options.parallaxSteps);
       }
 
-      if (shader.uniformLocations.parallaxOcclusionMapping) {
+      if (shader.uniformLocations.parallaxOcclusionMapping && options.parallaxOcclusionMapping !== undefined) {
         gl.uniform1i(shader.uniformLocations.parallaxOcclusionMapping, options.parallaxOcclusionMapping);
       }
 
-      if (shader.uniformLocations.ambientLight) {
+      if (shader.uniformLocations.ambientLight && options.ambientLight) {
         gl.uniform3fv(shader.uniformLocations.ambientLight, options.ambientLight);
       }
 
-      if (shader.uniformLocations.directionalLight) {
+      if (shader.uniformLocations.directionalLight && options.directionalLight) {
         const direction = vec3.clone(options.directionalLight.direction);
         vec3.normalize(direction, direction);
         gl.uniform3fv(shader.uniformLocations.directionalLight.color, options.directionalLight.color);
         gl.uniform3fv(shader.uniformLocations.directionalLight.direction, direction);
       }
 
-      if (shader.uniformLocations.pointLight) {
+      if (shader.uniformLocations.pointLight && options.pointLight) {
         gl.uniform3fv(shader.uniformLocations.pointLight.color, options.pointLight.color);
         gl.uniform3fv(shader.uniformLocations.pointLight.position, options.pointLight.position);
       }
 
-      if (options.lights) {
+      if (shader.uniformLocations.lights && options.lights) {
         const lights = options.lights;
         for (let i = 0; i < lights.length; i++) {
           const light = lights[i];
@@ -575,7 +575,7 @@ class Model {
         }
       }
 
-      if (options.material) {
+      if (shader.uniformLocations.material && options.material) {
         const material = options.material;
         gl.uniform3fv(shader.uniformLocations.material.ambient, material.ambient);
         gl.uniform3fv(shader.uniformLocations.material.diffuse, material.diffuse);
@@ -583,29 +583,29 @@ class Model {
         gl.uniform1f(shader.uniformLocations.material.shininess, material.shininess);
       }
 
-      if (shader.uniformLocations.cameraPos) {
+      if (shader.uniformLocations.cameraPos && options.cameraPos) {
         gl.uniform3fv(shader.uniformLocations.cameraPos, options.cameraPos);
       }
 
-      if (shader.uniformLocations.samplerDiffuse) {
+      if (shader.uniformLocations.samplerDiffuse && texture.diffuse) {
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, texture.diffuse);
         gl.uniform1i(shader.uniformLocations.samplerDiffuse, 0);
       }
 
-      if (shader.uniformLocations.samplerNormal) {
+      if (shader.uniformLocations.samplerNormal && texture.normal) {
         gl.activeTexture(gl.TEXTURE1);
         gl.bindTexture(gl.TEXTURE_2D, texture.normal);
         gl.uniform1i(shader.uniformLocations.samplerNormal, 1);
       }
 
-      if (shader.uniformLocations.samplerHeight) {
+      if (shader.uniformLocations.samplerHeight && texture.height) {
         gl.activeTexture(gl.TEXTURE2);
         gl.bindTexture(gl.TEXTURE_2D, texture.height);
         gl.uniform1i(shader.uniformLocations.samplerHeight, 2);
       }
 
-      if (shader.uniformLocations.samplerOcclusion) {
+      if (shader.uniformLocations.samplerOcclusion && texture.occlusion) {
         gl.activeTexture(gl.TEXTURE3);
         gl.bindTexture(gl.TEXTURE_2D, texture.occlusion);
         gl.uniform1i(shader.uniformLocations.samplerOcclusion, 3);
