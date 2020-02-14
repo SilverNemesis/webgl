@@ -26,8 +26,7 @@ varying vec3 ts_view_pos;
 varying vec3 ts_frag_pos;
 varying vec3 ts_diffuse_dir;
 
-void main(void)
-{
+void main(void) {
   vec3 view_dir = normalize(ts_view_pos - ts_frag_pos);
 
   vec2 texCoords = frag_uv;

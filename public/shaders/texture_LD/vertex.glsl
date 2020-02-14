@@ -6,8 +6,8 @@ attribute vec2 aTextureCoord;
 attribute vec3 aVertexNormal;
 
 uniform mat4 uProjectionMatrix;
-uniform mat4 uModelMatrix;
 uniform mat4 uViewMatrix;
+uniform mat4 uModelMatrix;
 uniform mat4 uNormalMatrix;
 
 uniform vec3 uAmbientLight;
@@ -23,8 +23,8 @@ uniform struct {
 uniform int uLightingModel;
 
 varying vec3 vVertexPosition;
-varying vec2 vTextureCoord;
 varying vec3 vVertexNormal;
+varying vec2 vTextureCoord;
 varying vec3 vLighting;
 
 void main(void) {

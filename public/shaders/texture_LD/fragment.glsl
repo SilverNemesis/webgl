@@ -14,11 +14,11 @@ uniform struct {
 uniform int uLightingModel;
 
 varying vec3 vVertexPosition;
-varying vec2 vTextureCoord;
 varying vec3 vVertexNormal;
+varying vec2 vTextureCoord;
 varying vec3 vLighting;
 
-void main() {
+void main(void) {
   if (uLightingModel == 0) {
     gl_FragColor = texture2D(uSamplerDiffuse, vTextureCoord);
   }
