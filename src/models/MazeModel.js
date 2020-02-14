@@ -13,12 +13,12 @@ class MazeModel extends Model {
       geometry: this.geometry,
       shaders: [
         {
-          vertex: 'shaders/colored/vertex.glsl',
-          fragment: 'shaders/colored/fragment.glsl'
+          vertex: 'shaders/color/vertex.glsl',
+          fragment: 'shaders/color/fragment.glsl'
         },
         {
-          vertex: 'shaders/material/vertex.glsl',
-          fragment: 'shaders/material/fragment.glsl'
+          vertex: 'shaders/material_L/vertex.glsl',
+          fragment: 'shaders/material_L/fragment.glsl'
         }
       ]
     });

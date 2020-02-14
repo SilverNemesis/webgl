@@ -1,4 +1,4 @@
-varying highp vec2 vTextureCoord;
+varying mediump vec2 vTextureCoord;
 
 uniform sampler2D uSamplerDiffuse;
 

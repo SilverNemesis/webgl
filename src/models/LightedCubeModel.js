@@ -12,8 +12,8 @@ class LightedCubeModel extends Model {
         diffuse: 'images/cubetexture.png'
       },
       shader: {
-        vertex: 'shaders/lightedcube/vertex.glsl',
-        fragment: 'shaders/lightedcube/fragment.glsl'
+        vertex: 'shaders/color_L/vertex.glsl',
+        fragment: 'shaders/color_L/fragment.glsl'
       }
     });
   }

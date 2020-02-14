@@ -15,8 +15,8 @@ class BrickWallModel extends Model {
         occlusion: 'images/Brick_Wall_017_ambientOcclusion.jpg'
       },
       shader: {
-        vertex: 'shaders/brickwall/vertex.glsl',
-        fragment: 'shaders/brickwall/fragment.glsl'
+        vertex: 'shaders/texture_LDNOP/vertex.glsl',
+        fragment: 'shaders/texture_LDNOP/fragment.glsl'
       }
     });
   }

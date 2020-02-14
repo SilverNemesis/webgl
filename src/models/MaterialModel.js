@@ -13,8 +13,8 @@ class MaterialModel extends Model {
         addFaces(shape.vertices, shape.faces);
       },
       shader: {
-        vertex: 'shaders/material/vertex.glsl',
-        fragment: 'shaders/material/fragment.glsl'
+        vertex: 'shaders/material_L/vertex.glsl',
+        fragment: 'shaders/material_L/fragment.glsl'
       }
     });
   }

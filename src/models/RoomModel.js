@@ -21,8 +21,8 @@ class RoomModel extends Model {
         }
       ],
       shader: {
-        vertex: 'shaders/texture_DNO/vertex.glsl',
-        fragment: 'shaders/texture_DNO/fragment.glsl'
+        vertex: 'shaders/texture_LDNO/vertex.glsl',
+        fragment: 'shaders/texture_LDNO/fragment.glsl'
       }
     });
   }

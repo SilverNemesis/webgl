@@ -1,4 +1,4 @@
-precision highp float;
+precision mediump float;
 
 uniform sampler2D uSamplerNormal;
 uniform sampler2D uSamplerDiffuse;
@@ -30,24 +30,20 @@ varying vec3 ts_view_pos;
 varying vec3 ts_frag_pos;
 varying vec3 ts_diffuse_dir;
 
-float GetDepth(vec2 texCoords)
-{
+float GetDepth(vec2 texCoords) {
   return 1.0 - texture2D(uSamplerHeight, texCoords).r;
 }
 
-vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir, float heightScale)
-{
+vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir, float heightScale) {
   float height = GetDepth(texCoords);
   vec2 p = viewDir.xy / viewDir.z * (height * heightScale);
   return texCoords - p;
 }
 
-vec2 ParallaxMappingSteps(vec2 texCoords, vec3 viewDir, float heightScale)
-{ 
+vec2 ParallaxMappingSteps(vec2 texCoords, vec3 viewDir, float heightScale) { 
   float numLayers = float(uParallaxSteps);
 
-  if (numLayers >= 8.0)
-  {
+  if (numLayers >= 8.0) {
     float minLayers = max(numLayers / 4.0, 2.0);
     float maxLayers = numLayers;
     numLayers = mix(maxLayers, minLayers, abs(dot(vec3(0.0, 0.0, 1.0), viewDir)));
@@ -60,8 +56,7 @@ vec2 ParallaxMappingSteps(vec2 texCoords, vec3 viewDir, float heightScale)
   float currentDepthMapValue = GetDepth(currentTexCoords);
   float currentLayerDepth = 0.0;
 
-  for (int i = 0; i < 32; i++)
-  {
+  for (int i = 0; i < 32; i++) {
     if (currentLayerDepth >= currentDepthMapValue) {
       break;
     }
@@ -70,8 +65,7 @@ vec2 ParallaxMappingSteps(vec2 texCoords, vec3 viewDir, float heightScale)
     currentLayerDepth += layerDepth;
   }
 
-  if (uParallaxOcclusionMapping > 0)
-  {
+  if (uParallaxOcclusionMapping > 0) {
     vec2 prevTexCoords = currentTexCoords + deltaTexCoords;
     float afterDepth  = currentDepthMapValue - currentLayerDepth;
     float beforeDepth = GetDepth(prevTexCoords) - currentLayerDepth + layerDepth;
@@ -82,52 +76,43 @@ vec2 ParallaxMappingSteps(vec2 texCoords, vec3 viewDir, float heightScale)
   return currentTexCoords;
 }
 
-void main(void)
-{
+void main(void) {
   vec3 view_dir = normalize(ts_view_pos - ts_frag_pos);
 
   vec2 texCoords;
 
-  if (uParallaxHeightScale > 0.0)
-  {
-    if (uParallaxSteps > 0)
-    {
+  if (uParallaxHeightScale > 0.0) {
+    if (uParallaxSteps > 0) {
       texCoords = ParallaxMappingSteps(frag_uv, view_dir, uParallaxHeightScale);
     }
-    else
-    {
+    else {
       texCoords = ParallaxMapping(frag_uv, view_dir, uParallaxHeightScale);
     }
 
-    if (texCoords.x > 1.0 || texCoords.y > 1.0 || texCoords.x < 0.0 || texCoords.y < 0.0)
-    {
+    if (texCoords.x > 1.0 || texCoords.y > 1.0 || texCoords.x < 0.0 || texCoords.y < 0.0) {
       discard;
     }
   }
-  else
-  {
+  else {
     texCoords = frag_uv;
   }
 
   vec3 albedo = texture2D(uSamplerDiffuse, texCoords).rgb;
 
-  if (uShowDiffuseMap == 0)
-  {
+  if (uShowDiffuseMap == 0) {
     albedo = vec3(0.5, 0.5, 0.5);
   }
 
   float point_intensity;
   float diffuse_intensity;
 
-  if (uShowNormalMap == 0)
-  {
+  if (uShowNormalMap == 0) {
     vec3 normal = frag_normal;
     vec3 light_dir = uPointLight.position - frag_position;
     point_intensity = clamp(15.0 * max(dot(normalize(light_dir), normal), 0.0) / (length(light_dir) * length(light_dir)), 0.0, 1.0);
     diffuse_intensity = max(dot(uDirectionalLight.direction, normal), 0.0);
   }
-  else
-  {
+  else {
     vec3 normal = normalize(texture2D(uSamplerNormal, texCoords).rgb * 2.0 - 1.0);
     vec3 light_dir = ts_light_pos - ts_frag_pos;
     point_intensity = clamp(15.0 * max(dot(normalize(light_dir), normal), 0.0) / (length(light_dir) * length(light_dir)), 0.0, 1.0);
@@ -136,12 +121,10 @@ void main(void)
 
   vec3 ambient;
 
-  if (uShowAmbientOcclusionMap == 0)
-  {
+  if (uShowAmbientOcclusionMap == 0) {
     ambient = uAmbientLight;
   }
-  else
-  {
+  else {
     ambient = texture2D(uSamplerOcclusion, texCoords).r * uAmbientLight;
   }
 
