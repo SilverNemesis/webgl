@@ -20,6 +20,64 @@ exports[`renders correctly 1`] = `
       NEXT ❯
     </span>
   </div>
-  <div />
+  <div>
+    <SelectControl
+      control={
+        Object {
+          "name": "Select Test",
+          "options": Array [
+            "gold",
+            "silver",
+            "platinum",
+          ],
+          "type": "select",
+        }
+      }
+      onChange={[Function]}
+    />
+    <BoolControl
+      control={
+        Object {
+          "id": "boolTest",
+          "name": "Bool Test",
+          "type": "bool",
+        }
+      }
+      onChange={[Function]}
+    />
+    <IntControl
+      control={
+        Object {
+          "id": "intTest",
+          "max": 32,
+          "min": 0,
+          "name": "Int test",
+          "type": "int",
+        }
+      }
+      onChange={[Function]}
+    />
+    <FloatControl
+      control={
+        Object {
+          "id": "floatTest",
+          "max": 1,
+          "min": 0,
+          "name": "Float Test",
+          "type": "float",
+        }
+      }
+      onChange={[Function]}
+    />
+    <FunctionControl
+      control={
+        Object {
+          "function": null,
+          "name": "Function Test",
+          "type": "function",
+        }
+      }
+    />
+  </div>
 </div>
 `;

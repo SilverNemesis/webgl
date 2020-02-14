@@ -28,7 +28,7 @@ const BoolControl = (props) => {
   const { control } = props;
   return (
     <div className="control">
-      <label htmlFor={control.name}><input id={control.name} type="checkbox" checked={control.value} onChange={onChange} />{control.name}</label>
+      <label className="clickable" htmlFor={control.name}><input className="clickable" id={control.name} type="checkbox" checked={control.value} onChange={onChange} />{control.name}</label>
     </div>
   );
 }
@@ -41,7 +41,7 @@ const IntControl = (props) => {
   return (
     <div className="control">
       <label htmlFor={control.name}>{control.name} {control.value}</label>
-      <input id={control.name} type="range" min={control.min} max={control.max} value={control.value} onChange={onChange} />
+      <input id={control.name} className="clickable" type="range" min={control.min} max={control.max} value={control.value} onChange={onChange} />
     </div>
   );
 }
@@ -55,7 +55,7 @@ const FloatControl = (props) => {
   return (
     <div className="control">
       <label htmlFor={control.name}>{control.name} {control.value.toFixed(3)}</label>
-      <input id={control.name} type="range" min={Math.floor(control.min * factor)} max={Math.floor(control.max * factor)} value={Math.floor(control.value * factor)} onChange={onChange} />
+      <input id={control.name} className="clickable" type="range" min={Math.floor(control.min * factor)} max={Math.floor(control.max * factor)} value={Math.floor(control.value * factor)} onChange={onChange} />
     </div>
   );
 }
