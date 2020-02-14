@@ -1,4 +1,5 @@
 precision mediump float;
+precision lowp int;
 
 attribute vec3 aVertexPosition;
 attribute vec2 aTextureCoord;
@@ -19,7 +20,7 @@ uniform struct {
   vec3 color;
 } uPointLight;
 
-uniform bool uPerPixel;
+uniform int uLightingModel;
 
 varying vec3 vVertexPosition;
 varying vec2 vTextureCoord;
@@ -28,22 +29,18 @@ varying vec3 vLighting;
 
 void main(void) {
   gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);
+  vTextureCoord = aTextureCoord;
 
-  if (uPerPixel) {
-    vTextureCoord = aTextureCoord;
-    vVertexNormal = normalize(vec3(uNormalMatrix * vec4(aVertexNormal, 1.0)));
-    vVertexPosition = vec3(uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0));
-  }
-  else {
-    vTextureCoord = aTextureCoord;
-
+  if (uLightingModel == 1) {
     vec3 transformedNormal = vec3(uNormalMatrix * vec4(aVertexNormal, 1.0));
     float directional = max(dot(transformedNormal, uDirectionalLight.direction), 0.0);
-
     vec3 surfaceToLight = uPointLight.position - aVertexPosition.xyz;
     float bright = 50.0 * max(dot(transformedNormal, normalize(surfaceToLight)), 0.0) / (length(surfaceToLight) * length(surfaceToLight));
     bright = clamp(bright, 0.0, 1.0);
-
     vLighting = uAmbientLight + (uDirectionalLight.color * directional) + (uPointLight.color * bright);
+  }
+  else if (uLightingModel == 2) {
+    vVertexNormal = normalize(vec3(uNormalMatrix * vec4(aVertexNormal, 1.0)));
+    vVertexPosition = vec3(uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0));
   }
 }
