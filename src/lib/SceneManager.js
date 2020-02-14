@@ -42,6 +42,12 @@ class SceneManager {
           scene.options = scene.render.getOptions();
           scene.setOption = scene.render.setOption;
         }
+        if (scene.render.mouseMovement) {
+          scene.mouseMovement = scene.render.mouseMovement;
+        }
+        if (scene.render.keyboardState) {
+          scene.keyboardState = scene.render.keyboardState;
+        }
       }
     }
   }
