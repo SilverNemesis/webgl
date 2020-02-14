@@ -2,7 +2,7 @@ precision mediump float;
 precision lowp int;
 
 attribute vec3 aVertexPosition;
-attribute vec2 aTextureCoord;
+attribute vec3 aVertexColor;
 attribute vec3 aVertexNormal;
 
 uniform mat4 uProjectionMatrix;
@@ -24,12 +24,12 @@ uniform int uLightingModel;
 
 varying vec3 vVertexPosition;
 varying vec3 vVertexNormal;
-varying vec2 vTextureCoord;
+varying vec3 vColor;
 varying vec3 vLighting;
 
 void main(void) {
   gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);
-  vTextureCoord = aTextureCoord;
+  vColor = aVertexColor;
 
   if (uLightingModel == 1) {
     vec3 transformedNormal = vec3(uNormalMatrix * vec4(aVertexNormal, 1.0));

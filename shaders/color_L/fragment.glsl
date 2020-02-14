@@ -15,15 +15,15 @@ uniform int uLightingModel;
 
 varying vec3 vVertexPosition;
 varying vec3 vVertexNormal;
-varying vec2 vTextureCoord;
+varying vec3 vColor;
 varying vec3 vLighting;
 
 void main(void) {
   if (uLightingModel == 0) {
-    gl_FragColor = texture2D(uSamplerDiffuse, vTextureCoord);
+    gl_FragColor = vec4(vColor, 1.0);
   }
   else if (uLightingModel == 1) {
-    vec4 texelColor = texture2D(uSamplerDiffuse, vTextureCoord);
+    vec4 texelColor = vec4(vColor, 1.0);
     gl_FragColor = vec4(texelColor.rgb * vLighting, texelColor.a);
   }
   else if (uLightingModel == 2) {
@@ -32,7 +32,7 @@ void main(void) {
     float bright = 50.0 * max(dot(vVertexNormal, normalize(surfaceToLight)), 0.0) / (length(surfaceToLight) * length(surfaceToLight));
     bright = clamp(bright, 0.0, 1.0);
     vec3 lighting = uAmbientLight + (uDirectionalLight.color * directional) + (uPointLight.color * bright);
-    vec4 texelColor = texture2D(uSamplerDiffuse, vTextureCoord);
+    vec4 texelColor = vec4(vColor, 1.0);
     gl_FragColor = vec4(texelColor.rgb * lighting, texelColor.a);
   }
 }
