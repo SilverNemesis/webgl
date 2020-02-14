@@ -19,7 +19,7 @@ class ColorScene {
       },
       cameraPos: [0.0, 0.0, 0.0],
       lightingModel: 0
-    }
+    };
     this.options = [
       {
         description: 'Colored cube and dodecahedron with no lighting',
@@ -29,7 +29,8 @@ class ColorScene {
         name: 'Lighting Model',
         id: 'lightingModel',
         type: 'select',
-        options: ['Unlit', 'Vertex Lighting', 'Fragment Lighting']
+        options: ['Unlit', 'Vertex Lighting', 'Fragment Lighting'],
+        value: this.renderOptions.lightingModel
       }
     ];
   }
