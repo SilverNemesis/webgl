@@ -128,9 +128,9 @@ class App extends React.Component {
     }
   }
 
-  onChange(control, value) {
-    if (value !== control.value) {
-      this.state.scene.setOption(control.name, value);
+  onChange(option, value) {
+    if (value !== option.value) {
+      this.state.scene.setOption(option, value);
       this.forceUpdate();
     }
   }

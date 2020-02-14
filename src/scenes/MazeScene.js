@@ -27,24 +27,23 @@ class MazeScene {
       }
     ];
 
+    this.setOption(this.options[1], 1);
+
     this.credits = [
       'Maze generation is based on this article',
       'link:https://journal.stuffwithstuff.com/2014/12/21/rooms-and-mazes/'
     ]
   }
 
-  setOption(name, value) {
-    const option = this.options.find((option) => option.name === name);
+  setOption(option, value) {
     option.value = Number(value);
-
-    const actor = this.scene.actors[0];
 
     if (option.name === 'Material') {
       const materialName = option.options[option.value];
       if (materialName !== 'useColors') {
-        actor.material = getMaterial(materialName);
+        this.material = getMaterial(materialName);
       } else {
-        actor.material = undefined;
+        this.material = undefined;
       }
     }
   }
@@ -63,8 +62,6 @@ class MazeScene {
       ],
       camera: [0.0, 0.0, 0.0]
     };
-
-    this.setOption('Material', 1);
   }
 
   updateScene() {
@@ -104,6 +101,8 @@ class MazeScene {
 
   _renderActor(projectionMatrix, viewMatrix, actor) {
     const model = actor.model;
+
+    actor.material = this.material;
 
     const modelMatrix = mat4.create();
     mat4.translate(modelMatrix, modelMatrix, actor.location);

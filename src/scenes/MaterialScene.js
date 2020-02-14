@@ -30,10 +30,13 @@ class MaterialScene {
         options: materialList
       }
     ];
+
+    this.setOption(this.options[1], 8);
+    this.setOption(this.options[2], 10);
+    this.setOption(this.options[3], 2);
   }
 
-  setOption(name, value) {
-    const option = this.options.find((option) => option.name === name);
+  setOption(option, value) {
     option.value = Number(value);
 
     if (option.name === 'Material 1') {
@@ -369,10 +372,6 @@ class MaterialScene {
       ],
       camera: [0.0, 0.0, 0.0]
     };
-
-    this.setOption('Material 1', 8);
-    this.setOption('Material 2', 10);
-    this.setOption('Material 3', 2);
   }
 
   drawScene(gl, deltaTime) {

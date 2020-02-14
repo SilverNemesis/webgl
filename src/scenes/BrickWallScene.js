@@ -64,8 +64,7 @@ class BrickWallScene {
     ];
   }
 
-  setOption(name, value) {
-    const option = this.options.find((option) => option.name === name);
+  setOption(option, value) {
     option.value = Number(value);
     this.renderOptions[option.id] = option.value;
   }
