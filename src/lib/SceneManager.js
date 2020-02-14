@@ -19,13 +19,13 @@ class SceneManager {
     this.scenes = [
       { init: false, render: new ColoredCubeScene() },
       { init: false, render: new TexturedCubeScene() },
-      { init: false, render: new LightedCubeScene() },
-      { init: false, render: new MazeScene() },
-      { init: false, render: new BrickWallScene() },
       { init: false, render: new MaterialScene() },
+      { init: false, render: new MazeScene() },
+      { init: false, render: new LightedCubeScene() },
+      { init: false, render: new BrickWallScene() },
       { init: false, render: new RoomScene() }
     ];
-    this.sceneIndex = this.scenes.length - 1;
+    this.sceneIndex = 0;
 
     this.gl = canvas.getContext('webgl');
     if (this.gl === null) {
