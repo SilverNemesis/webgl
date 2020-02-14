@@ -27,14 +27,14 @@ class LightedCubeScene {
           location: [-2.0, 0.0, -5.5],
           rotation: 0.0,
           rotationSpeed: 1.0,
-          perPixel: false
+          lightingModel: 1
         },
         {
           model,
           location: [2.0, 0.0, -5.5],
           rotation: 0.0,
           rotationSpeed: 1.0,
-          perPixel: true
+          lightingModel: 2
         }
       ],
       camera: [0.0, 0.0, 0.0],
@@ -86,7 +86,7 @@ class LightedCubeScene {
     mat4.rotate(modelMatrix, modelMatrix, actor.rotation * 0.7, [0, 1, 0]);
     mat4.rotate(modelMatrix, modelMatrix, actor.rotation * 0.3, [1, 0, 0]);
 
-    model.draw(projectionMatrix, viewMatrix, modelMatrix, actor.perPixel);
+    model.draw(projectionMatrix, viewMatrix, modelMatrix, actor.lightingModel);
   }
 
   _animateActor(deltaTime, actor) {

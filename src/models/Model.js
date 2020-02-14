@@ -532,8 +532,8 @@ class Model {
         gl.uniform1i(shader.uniformLocations.showAmbientOcclusionMap, options.showAmbientOcclusionMap);
       }
 
-      if (shader.uniformLocations.perPixel) {
-        gl.uniform1i(shader.uniformLocations.perPixel, options.perPixel);
+      if (shader.uniformLocations.lightingModel) {
+        gl.uniform1i(shader.uniformLocations.lightingModel, options.lightingModel);
       }
 
       if (shader.uniformLocations.parallaxHeightScale) {

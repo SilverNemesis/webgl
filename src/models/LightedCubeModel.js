@@ -12,13 +12,13 @@ class LightedCubeModel extends Model {
         diffuse: 'images/cubetexture.png'
       },
       shader: {
-        vertex: 'shaders/color_L/vertex.glsl',
-        fragment: 'shaders/color_L/fragment.glsl'
+        vertex: 'shaders/texture_LD/vertex.glsl',
+        fragment: 'shaders/texture_LD/fragment.glsl'
       }
     });
   }
 
-  draw(projectionMatrix, viewMatrix, modelMatrix, perPixel) {
+  draw(projectionMatrix, viewMatrix, modelMatrix, lightingModel) {
     this._drawModel({
       gl: this.gl,
       model: this.model,
@@ -35,7 +35,7 @@ class LightedCubeModel extends Model {
         position: [0.0, 0.0, 0.0]
       },
       cameraPos: [0.0, 0.0, 0.0],
-      perPixel
+      lightingModel
     });
   }
 
