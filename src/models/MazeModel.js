@@ -6,11 +6,11 @@ class MazeModel extends Model {
     this.gl = gl;
     this.draw = this.draw.bind(this);
     this.update = this.update.bind(this);
-    this.geometry = this.geometry.bind(this);
+    this._geometry = this._geometry.bind(this);
     this.maze = maze;
     this._initModel({
       gl,
-      geometry: this.geometry,
+      geometry: this._geometry,
       shaders: [
         {
           vertex: 'shaders/color/vertex.glsl',
@@ -38,13 +38,11 @@ class MazeModel extends Model {
   }
 
   update(maze) {
-    const gl = this.gl;
-    this._deleteBuffers(gl, this.model.buffers);
     this.maze = maze;
-    this.model.buffers = this._initBuffers(gl, this.model.shaders, this.geometry, 1);
+    this._updateModel(this._geometry);
   }
 
-  geometry({ addSquare }) {
+  _geometry({ addSquare }) {
     const maze = this.maze;
 
     const floorColor = [.2, .2, .2];

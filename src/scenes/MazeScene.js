@@ -7,6 +7,7 @@ class MazeScene {
     this.getOptions = this.getOptions.bind(this);
     this.setOption = this.setOption.bind(this);
     this.initScene = this.initScene.bind(this);
+    this.updateScene = this.updateScene.bind(this);
     this.drawScene = this.drawScene.bind(this);
     this.totalDelta = 0.0;
 
@@ -15,6 +16,11 @@ class MazeScene {
         name: 'Material',
         type: 'select',
         options: ['useColors', ...getMaterialList()]
+      },
+      {
+        name: 'Update Maze',
+        type: 'function',
+        function: this.updateScene
       }
     ];
   }
@@ -55,6 +61,12 @@ class MazeScene {
     };
 
     this.setOption('Material', 1);
+  }
+
+  updateScene() {
+    const { size, maze } = this._generateMaze();
+    this.scene.actors[0].location = [0.0, 0.0, -2.0 * size];
+    this.scene.actors[0].model.update(maze);
   }
 
   _generateMaze() {
