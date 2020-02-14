@@ -8,7 +8,12 @@ exports[`renders correctly 1`] = `
     id="canvas"
     onClick={[Function]}
   />
-  <Message />
+  <div
+    id="note"
+  />
+  <Message
+    onClick={[Function]}
+  />
   <Controls
     onChange={[Function]}
     onClickNext={[Function]}

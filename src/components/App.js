@@ -15,6 +15,7 @@ class App extends React.Component {
     this.onChange = this.onChange.bind(this);
     this.onClickPrevious = this.onClickPrevious.bind(this);
     this.onClickNext = this.onClickNext.bind(this);
+    this.onClickMessage = this.onClickMessage.bind(this);
     this.onAnimationFrame = this.onAnimationFrame.bind(this);
     this.state = {
       showControls: false
@@ -28,6 +29,7 @@ class App extends React.Component {
     const note = scene.mouseMovement ? 'Click the canvas to explore the scene' : undefined;
     this.setState({ scene, note });
     this.canvas.requestPointerLock = this.canvas.requestPointerLock || this.canvas.mozRequestPointerLock;
+    document.exitPointerLock = document.exitPointerLock || document.mozExitPointerLock;
     this.frame = window.requestAnimationFrame(this.onAnimationFrame);
     window.addEventListener('resize', this.onResize);
     window.addEventListener('keydown', this.onKeyDown);
@@ -44,6 +46,12 @@ class App extends React.Component {
     window.removeEventListener('keyup', this.onKeyUp);
     document.removeEventListener('pointerlockchange', this.onLockChange);
     document.removeEventListener('mozpointerlockchange', this.onLockChange);
+  }
+
+  cancelLock() {
+    this.captureMouse = false;
+    this.captureKeys = false;
+    document.exitPointerLock();
   }
 
   onResize() {
@@ -77,10 +85,12 @@ class App extends React.Component {
         this.setState({ showControls: !this.state.showControls });
       }
     } else if (key === 'PageUp') {
+      this.cancelLock();
       const scene = this.sceneManager.previousScene();
       const note = scene.mouseMovement ? 'Click the canvas to explore the scene' : undefined;
       this.setState({ scene, note });
     } else if (key === 'PageDown') {
+      this.cancelLock();
       const scene = this.sceneManager.nextScene();
       const note = scene.mouseMovement ? 'Click the canvas to explore the scene' : undefined;
       this.setState({ scene, note });
@@ -88,7 +98,9 @@ class App extends React.Component {
   }
 
   onMouseMove(event) {
-    this.state.scene.mouseMovement(event.movementX, event.movementY);
+    if (this.captureMouse) {
+      this.state.scene.mouseMovement(event.movementX, event.movementY);
+    }
   }
 
   onLockChange(event) {
@@ -124,6 +136,7 @@ class App extends React.Component {
 
   onClickPrevious(event) {
     event.preventDefault();
+    this.cancelLock();
     const scene = this.sceneManager.previousScene();
     const note = scene.mouseMovement ? 'Click the canvas to explore the scene' : undefined;
     this.setState({ scene, note });
@@ -131,9 +144,17 @@ class App extends React.Component {
 
   onClickNext(event) {
     event.preventDefault();
+    this.cancelLock();
     const scene = this.sceneManager.nextScene();
     const note = scene.mouseMovement ? 'Click the canvas to explore the scene' : undefined;
     this.setState({ scene, note });
+  }
+
+  onClickMessage(event) {
+    event.preventDefault();
+    if (this.messageTimer) {
+      this.cancelMessage();
+    }
   }
 
   showMessage(message) {
@@ -153,6 +174,7 @@ class App extends React.Component {
 
   onAnimationFrame(timeStamp) {
     this.sceneManager.renderScene(timeStamp);
+    this.setState({ fps: this.state.scene.fps });
     this.frame = window.requestAnimationFrame(this.onAnimationFrame);
   }
 
@@ -160,8 +182,11 @@ class App extends React.Component {
     return (
       <div className="screen">
         <canvas id="canvas" ref={elem => this.canvas = elem} onClick={this.onClickCanvas}></canvas>
-        {this.state.note ? (<div id="note">{this.state.note}</div>) : null}
-        <Message message={this.state.message} />
+        <div id="note">
+          {this.state.fps ? (<div>{this.state.fps} fps</div>) : null}
+          {this.state.note ? (<div>{this.state.note}</div>) : null}
+        </div>
+        <Message message={this.state.message} onClick={this.onClickMessage} />
         <Controls show={this.state.showControls} onClickPrevious={this.onClickPrevious} onClickNext={this.onClickNext} onChange={this.onChange} options={this.state.scene ? this.state.scene.options : undefined} />
       </div>
     );
