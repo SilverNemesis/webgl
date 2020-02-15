@@ -8,6 +8,7 @@ uniform sampler2D uSamplerOcclusion;
 uniform int uShowDiffuseMap;
 uniform int uShowNormalMap;
 uniform int uShowAmbientOcclusionMap;
+uniform int uShowParallaxMap;
 uniform float uParallaxHeightScale;
 uniform int uParallaxSteps;
 uniform int uParallaxOcclusionMapping;
@@ -81,16 +82,12 @@ void main(void) {
 
   vec2 texCoords;
 
-  if (uParallaxHeightScale > 0.0) {
+  if (uShowParallaxMap != 0) {
     if (uParallaxSteps > 0) {
       texCoords = ParallaxMappingSteps(frag_uv, view_dir, uParallaxHeightScale);
     }
     else {
       texCoords = ParallaxMapping(frag_uv, view_dir, uParallaxHeightScale);
-    }
-
-    if (texCoords.x > 1.0 || texCoords.y > 1.0 || texCoords.x < 0.0 || texCoords.y < 0.0) {
-      discard;
     }
   }
   else {
