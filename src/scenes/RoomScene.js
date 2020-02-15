@@ -122,39 +122,47 @@ class RoomScene {
   }
 
   initScene(gl) {
-    const map = generateMaze(11, 11);
-    const { location, angle } = this._findStartLocation(map);
-    const model = new RoomModel(gl, map);
-    this.scene = {
-      actors: [
-        {
-          model,
-          location: [0.0, 0.0, 0.0],
-          rotations: []
-        }
-      ],
-      camera: {
-        location,
-        rotations: [
-          {
-            angle,
-            axis: [0, 1, 0]
-          },
-          {
-            angle: 0.0,
-            axis: [1, 0, 0]
-          }
-        ]
-      }
-    };
+    this._updateMap(gl);
   }
 
   updateScene() {
-    const map = generateMaze(11, 11);
-    const { location, angle } = this._findStartLocation(map);
-    this.scene.camera.location = location;
-    this.scene.camera.rotations[0].angle = angle;
-    this.scene.actors[0].model.update(map);
+    this._updateMap();
+  }
+
+  _updateMap(gl) {
+    this.ready = false;
+    this.map = generateMaze(11, 11);
+    const { location, angle } = this._findStartLocation(this.map);
+    if (this.scene) {
+      this.scene.actors[0].model.update(this.map);
+      this.scene.camera.location = location;
+      this.scene.camera.rotations[0].angle = angle;
+    } else {
+      const model = new RoomModel(gl, this.map);
+      this.scene = {
+        actors: [
+          {
+            model,
+            location: [0.0, 0.0, 0.0],
+            rotations: []
+          }
+        ],
+        camera: {
+          location,
+          rotations: [
+            {
+              angle,
+              axis: [0, 1, 0]
+            },
+            {
+              angle: 0.0,
+              axis: [1, 0, 0]
+            }
+          ]
+        }
+      };
+    }
+    this.ready = true;
   }
 
   _findStartLocation(map) {
@@ -207,6 +215,10 @@ class RoomScene {
   }
 
   drawScene(gl, deltaTime) {
+    if (!this.ready) {
+      return;
+    }
+
     const scene = this.scene;
     const camera = scene.camera;
 
