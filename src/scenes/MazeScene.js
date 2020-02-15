@@ -127,7 +127,7 @@ class MazeScene {
 
       model.draw(projectionMatrix, viewMatrix, modelMatrix, 1, lights, actor.material);
     } else {
-      model.draw(projectionMatrix, viewMatrix, modelMatrix);
+      model.draw(projectionMatrix, viewMatrix, modelMatrix, 0, undefined, undefined);
     }
   }
 
