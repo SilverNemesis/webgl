@@ -4,6 +4,9 @@ import Controls from './Controls';
 import Credits from './Credits';
 import SceneManager from '../lib/SceneManager';
 
+const exploreNotes = ['Click the canvas to explore the scene'];
+const movementNotes = ['Use the mouse to look', 'Use the WASD keys to move around'];
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -27,8 +30,8 @@ class App extends React.Component {
   componentDidMount() {
     this.sceneManager = new SceneManager(this.canvas);
     const scene = this.sceneManager.getScene();
-    const note = scene.mouseMovement ? 'Click the canvas to explore the scene' : undefined;
-    this.setState({ scene, note });
+    const notes = scene.mouseMovement ? exploreNotes : undefined;
+    this.setState({ scene, notes });
     this.canvas.requestPointerLock = this.canvas.requestPointerLock || this.canvas.mozRequestPointerLock;
     document.exitPointerLock = document.exitPointerLock || document.mozExitPointerLock;
     this.frame = window.requestAnimationFrame(this.onAnimationFrame);
@@ -88,13 +91,13 @@ class App extends React.Component {
     } else if (key === 'PageUp') {
       this.cancelLock();
       const scene = this.sceneManager.previousScene();
-      const note = scene.mouseMovement ? 'Click the canvas to explore the scene' : undefined;
-      this.setState({ scene, note });
+      const notes = scene.mouseMovement ? exploreNotes : undefined;
+      this.setState({ scene, notes });
     } else if (key === 'PageDown') {
       this.cancelLock();
       const scene = this.sceneManager.nextScene();
-      const note = scene.mouseMovement ? 'Click the canvas to explore the scene' : undefined;
-      this.setState({ scene, note });
+      const notes = scene.mouseMovement ? exploreNotes : undefined;
+      this.setState({ scene, notes });
     }
   }
 
@@ -112,11 +115,12 @@ class App extends React.Component {
       if (this.state.scene.keyboardState) {
         this.captureKeys = true;
       }
+      this.setState({ notes: movementNotes });
     } else {
       document.removeEventListener("mousemove", this.onMouseMove);
       this.captureMouse = false;
       this.captureKeys = false;
-      this.forceUpdate();
+      this.setState({ notes: undefined });
     }
   }
 
@@ -124,7 +128,7 @@ class App extends React.Component {
     event.preventDefault();
     if (this.state.scene.mouseMovement) {
       this.canvas.requestPointerLock();
-      this.setState({ showControls: false, note: undefined });
+      this.setState({ showControls: false, notes: undefined });
     }
   }
 
@@ -139,16 +143,16 @@ class App extends React.Component {
     event.preventDefault();
     this.cancelLock();
     const scene = this.sceneManager.previousScene();
-    const note = scene.mouseMovement ? 'Click the canvas to explore the scene' : undefined;
-    this.setState({ scene, note });
+    const notes = scene.mouseMovement ? exploreNotes : undefined;
+    this.setState({ scene, notes });
   }
 
   onClickNext(event) {
     event.preventDefault();
     this.cancelLock();
     const scene = this.sceneManager.nextScene();
-    const note = scene.mouseMovement ? 'Click the canvas to explore the scene' : undefined;
-    this.setState({ scene, note });
+    const notes = scene.mouseMovement ? exploreNotes : undefined;
+    this.setState({ scene, notes });
   }
 
   onClickMessage(event) {
@@ -175,7 +179,6 @@ class App extends React.Component {
 
   onAnimationFrame(timeStamp) {
     this.sceneManager.renderScene(timeStamp);
-    this.setState({ fps: this.state.scene.fps });
     this.frame = window.requestAnimationFrame(this.onAnimationFrame);
   }
 
@@ -184,8 +187,7 @@ class App extends React.Component {
       <div className="screen">
         <canvas id="canvas" ref={elem => this.canvas = elem} onClick={this.onClickCanvas}></canvas>
         <div id="note">
-          {this.state.fps ? (<div>{this.state.fps} fps</div>) : null}
-          {this.state.note ? (<div>{this.state.note}</div>) : null}
+          {this.state.notes ? (this.state.notes.map((note, key) => (<div key={key}>{note}</div>))) : null}
         </div>
         <Message message={this.state.message} onClick={this.onClickMessage} />
         <Controls show={this.state.showControls} onClickPrevious={this.onClickPrevious} onClickNext={this.onClickNext} onChange={this.onChange} options={this.state.scene ? this.state.scene.options : undefined} />
