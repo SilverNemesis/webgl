@@ -27,7 +27,7 @@ class MazeScene {
       }
     ];
 
-    this.setOption(this.options[1], 1);
+    this.setOption(this.options[1], 0);
 
     this.credits = [
       'Maze generation is based on this article',
