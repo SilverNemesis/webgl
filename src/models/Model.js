@@ -621,6 +621,11 @@ class Model {
         const offset = 0;
         gl.drawElements(gl.TRIANGLES, vertexCount, type, offset);
       }
+
+      const numAttributes = gl.getProgramParameter(shader.program, gl.ACTIVE_ATTRIBUTES);
+      for (let i = 0; i < numAttributes; i++) {
+        gl.disableVertexAttribArray(i);
+      }
     }
   }
 }
