@@ -132,6 +132,7 @@ class RoomScene {
   _updateMap(gl) {
     this.ready = false;
     this.map = generateMaze(11, 11);
+    this.mapBounds = this._createMapBounds(this.map);
     const { location, angle } = this._findStartLocation(this.map);
     if (this.scene) {
       this.scene.actors[0].model.update(this.map);
@@ -165,13 +166,63 @@ class RoomScene {
     this.ready = true;
   }
 
+  _createMapBounds(map) {
+    const { width, height, data } = map;
+    const mapBounds = [];
+    const ofs_x = -width / 2;
+    const ofs_z = -height / 2;
+    for (let z = 0; z < height; z++) {
+      for (let x = 0; x < width; x++) {
+        if (data[z][x] === 1) {
+          mapBounds.push({ x1: x + ofs_x, y1: z + ofs_z, x2: x + ofs_x + 1, y2: z + ofs_z + 1 });
+        }
+      }
+    }
+    return mapBounds;
+  }
+
+  _collideRectangles(r1, r2) {
+    if (r1.x2 <= r2.x1 || r1.x1 >= r2.x2 || r1.y2 <= r2.y1 || r1.y1 >= r2.y2) {
+      return false;
+    }
+    return true;
+  }
+
+  _collideCircleRectangle(cx, cy, radius, x1, y1, x2, y2) {
+    const epsilon = 0.1;
+    let type = 0;
+    let testX = cx;
+    let testY = cy;
+    if (cx < x1 - epsilon) {
+      type |= 1;
+      testX = x1;
+    } else if (cx > x2 + epsilon) {
+      type |= 1;
+      testX = x2;
+    }
+    if (cy < y1 - epsilon) {
+      type |= 2;
+      testY = y1;
+    } else if (cy > y2 + epsilon) {
+      type |= 2;
+      testY = y2;
+    }
+    const distX = cx - testX;
+    const distY = cy - testY;
+    const distance = (distX * distX) + (distY * distY);
+    if (distance <= radius * radius) {
+      return type;
+    }
+    return 0;
+  }
+
   _findStartLocation(map) {
     const { width, height, data } = map;
     const isSolid = (x, y) => {
       if (x < 0 || x >= width || y < 0 || y >= height) {
         return true;
       }
-      if (data[y][x] !== 0) {
+      if (data[y][x] === 1) {
         return true;
       }
       return false;
@@ -180,7 +231,7 @@ class RoomScene {
     const ofs_z = -height / 2;
     for (let z = 0; z < height; z++) {
       for (let x = 0; x < width; x++) {
-        if (data[z][x] === 0) {
+        if (data[z][x] !== 1) {
           let angle = 0.0;
           const matrix = [];
           for (let r = -1; r < 2; r++) {
@@ -252,6 +303,9 @@ class RoomScene {
     mat4.rotate(viewMatrix, viewMatrix, camera.rotations[0].angle, camera.rotations[0].axis);
     mat4.invert(viewMatrix, viewMatrix)
 
+    const x = camera.location[0];
+    const y = camera.location[2];
+
     camera.location[0] += deltaTime * this.movement.front * viewMatrix[2];
     camera.location[1] += deltaTime * this.movement.front * viewMatrix[6];
     camera.location[2] += deltaTime * this.movement.front * viewMatrix[10];
@@ -259,6 +313,27 @@ class RoomScene {
     camera.location[0] += deltaTime * this.movement.side * viewMatrix[0];
     camera.location[1] += deltaTime * this.movement.side * viewMatrix[4];
     camera.location[2] += deltaTime * this.movement.side * viewMatrix[8];
+
+    const cx = camera.location[0];
+    const cy = camera.location[2];
+    const radius = 0.3;
+    const mapBounds = this.mapBounds;
+    const len = mapBounds.length;
+    let collision = 0;
+    for (let i = 0; i < len; i++) {
+      const rect = mapBounds[i];
+      collision |= this._collideCircleRectangle(cx, cy, radius, rect.x1, rect.y1, rect.x2, rect.y2);
+    }
+    if (collision !== 0) {
+      if (collision === 1) {
+        camera.location[0] = x;
+      } else if (collision === 2) {
+        camera.location[2] = y;
+      } else {
+        camera.location[0] = x;
+        camera.location[2] = y;
+      }
+    }
   }
 
   _renderActor(projectionMatrix, viewMatrix, actor) {
