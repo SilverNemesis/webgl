@@ -11,13 +11,14 @@ class BrickWallScene {
       showDiffuseMap: true,
       showNormalMap: true,
       showAmbientOcclusionMap: true,
+      showParallaxMap: true,
       parallaxHeightScale: 0.04,
       parallaxSteps: 32,
       parallaxOcclusionMapping: true
     };
     this.options = [
       {
-        description: 'Brick cube with diffuse, normal, height, and ambient occlusion maps',
+        description: 'Brick cube with diffuse, normal, ambient occlusion, and parallax maps',
         type: 'description'
       },
       {
@@ -33,6 +34,11 @@ class BrickWallScene {
       {
         name: 'Show Ambient Occlusion Map',
         id: 'showAmbientOcclusionMap',
+        type: 'bool'
+      },
+      {
+        name: 'Show Parallax Map',
+        id: 'showParallaxMap',
         type: 'bool'
       },
       {

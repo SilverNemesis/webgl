@@ -532,6 +532,10 @@ class Model {
         gl.uniform1i(shader.uniformLocations.showAmbientOcclusionMap, options.showAmbientOcclusionMap);
       }
 
+      if (shader.uniformLocations.showParallaxMap && options.showParallaxMap !== undefined) {
+        gl.uniform1i(shader.uniformLocations.showParallaxMap, options.showParallaxMap);
+      }
+
       if (shader.uniformLocations.lightingModel && options.lightingModel !== undefined) {
         gl.uniform1i(shader.uniformLocations.lightingModel, options.lightingModel);
       }

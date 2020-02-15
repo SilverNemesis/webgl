@@ -14,6 +14,10 @@ class RoomScene {
       showDiffuseMap: true,
       showNormalMap: true,
       showAmbientOcclusionMap: true,
+      showParallaxMap: true,
+      parallaxHeightScale: 0.02,
+      parallaxSteps: 32,
+      parallaxOcclusionMapping: true,
       ambientLight: [0.1, 0.1, 0.1],
       directionalLight: {
         color: [0.0, 0.0, 0.0],
@@ -26,7 +30,7 @@ class RoomScene {
     };
     this.options = [
       {
-        description: 'Explorable random maze geometry with diffuse, normal, and ambient occlusion maps',
+        description: 'Explorable random maze geometry with diffuse, normal, ambient occlusion, and parallax maps',
         type: 'description'
       },
       {
@@ -42,6 +46,30 @@ class RoomScene {
       {
         name: 'Show Ambient Occlusion Map',
         id: 'showAmbientOcclusionMap',
+        type: 'bool'
+      },
+      {
+        name: 'Show Parallax Map',
+        id: 'showParallaxMap',
+        type: 'bool'
+      },
+      {
+        name: 'Parallax Height Scale',
+        id: 'parallaxHeightScale',
+        type: 'float',
+        min: 0.0,
+        max: 0.1
+      },
+      {
+        name: 'Parallax Steps',
+        id: 'parallaxSteps',
+        type: 'int',
+        min: 0,
+        max: 32
+      },
+      {
+        name: 'Use Parallax Occlusion Mapping',
+        id: 'parallaxOcclusionMapping',
         type: 'bool'
       },
       {

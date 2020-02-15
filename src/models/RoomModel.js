@@ -15,22 +15,25 @@ class RoomModel extends Model {
         {
           diffuse: 'images/Brick_Wall_017_basecolor.jpg',
           normal: 'images/Brick_Wall_017_normal.jpg',
+          height: 'images/Brick_Wall_017_height.png',
           occlusion: 'images/Brick_Wall_017_ambientOcclusion.jpg'
         },
         {
           diffuse: 'images/Tiles_035_basecolor.jpg',
           normal: 'images/Tiles_035_normal.jpg',
+          height: 'images/Tiles_035_height.png',
           occlusion: 'images/Tiles_035_ambientOcclusion.jpg'
         },
         {
           diffuse: 'images/Wood_planks_011_basecolor.jpg',
           normal: 'images/Wood_planks_011_normal.jpg',
+          height: 'images/Wood_planks_011_height.png',
           occlusion: 'images/Wood_planks_011_ambientOcclusion.jpg'
         }
       ],
       shader: {
-        vertex: 'shaders/texture_LDNO/vertex.glsl',
-        fragment: 'shaders/texture_LDNO/fragment.glsl'
+        vertex: 'shaders/texture_LDNOP/vertex.glsl',
+        fragment: 'shaders/texture_LDNOP/fragment.glsl'
       }
     });
   }
@@ -40,6 +43,10 @@ class RoomModel extends Model {
       showDiffuseMap,
       showNormalMap,
       showAmbientOcclusionMap,
+      showParallaxMap,
+      parallaxHeightScale,
+      parallaxSteps,
+      parallaxOcclusionMapping,
       ambientLight,
       directionalLight,
       pointLight,
@@ -54,6 +61,10 @@ class RoomModel extends Model {
       showDiffuseMap,
       showNormalMap,
       showAmbientOcclusionMap,
+      showParallaxMap,
+      parallaxHeightScale,
+      parallaxSteps,
+      parallaxOcclusionMapping,
       ambientLight,
       directionalLight,
       pointLight,
