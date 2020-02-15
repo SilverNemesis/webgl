@@ -21,6 +21,11 @@ class RoomModel extends Model {
           diffuse: 'images/Tiles_035_basecolor.jpg',
           normal: 'images/Tiles_035_normal.jpg',
           occlusion: 'images/Tiles_035_ambientOcclusion.jpg'
+        },
+        {
+          diffuse: 'images/Wood_planks_011_basecolor.jpg',
+          normal: 'images/Wood_planks_011_normal.jpg',
+          occlusion: 'images/Wood_planks_011_ambientOcclusion.jpg'
         }
       ],
       shader: {
@@ -85,6 +90,7 @@ class RoomModel extends Model {
 
         if (data[z][x] === 0) {
           addSquare(b2, b3, f3, f2, { bufferIndex: 1 });
+          addSquare(b0, b1, f1, f0, { bufferIndex: 2 });
 
           if (z === 0 || data[z - 1][x] !== 0) {
             addSquare(b1, b0, b3, b2);
