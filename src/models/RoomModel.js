@@ -53,8 +53,6 @@ class RoomModel extends Model {
       cameraPos
     } = options;
     this._drawModel({
-      gl: this.gl,
-      model: this.model,
       projectionMatrix,
       viewMatrix,
       modelMatrix,

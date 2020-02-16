@@ -32,8 +32,6 @@ class BrickWallModel extends Model {
       parallaxOcclusionMapping,
     } = options;
     this._drawModel({
-      gl: this.gl,
-      model: this.model,
       projectionMatrix,
       viewMatrix,
       modelMatrix,

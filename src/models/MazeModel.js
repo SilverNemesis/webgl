@@ -26,8 +26,6 @@ class MazeModel extends Model {
 
   draw(projectionMatrix, viewMatrix, modelMatrix, shaderIndex, lights, material) {
     this._drawModel({
-      gl: this.gl,
-      model: this.model,
       projectionMatrix,
       viewMatrix,
       modelMatrix,
