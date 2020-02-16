@@ -1,5 +1,5 @@
 import ColorScene from '../scenes/ColorScene';
-import TexturedCubeScene from '../scenes/TexturedCubeScene';
+import TextureScene from '../scenes/TextureScene';
 import MazeScene from '../scenes/MazeScene';
 import BrickWallScene from '../scenes/BrickWallScene';
 import MaterialScene from '../scenes/MaterialScene';
@@ -25,7 +25,7 @@ class SceneManager {
       this.gl.cullFace(this.gl.BACK);
       this.scenes = [
         new ColorScene(this.gl),
-        new TexturedCubeScene(this.gl),
+        new TextureScene(this.gl),
         new MaterialScene(this.gl),
         new MazeScene(this.gl),
         new BrickWallScene(this.gl),

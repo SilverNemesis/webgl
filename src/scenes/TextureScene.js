@@ -2,7 +2,7 @@ import * as mat4 from 'gl-matrix/mat4';
 import { clearScreen } from '../lib/utility'
 import TexturedCubeModel from '../models/TexturedCubeModel';
 
-class TexturedCubeScene {
+class TextureScene {
   constructor(gl) {
     this.gl = gl;
     this.setOption = this.setOption.bind(this);
@@ -117,4 +117,4 @@ class TexturedCubeScene {
   }
 }
 
-export default TexturedCubeScene;
+export default TextureScene;
