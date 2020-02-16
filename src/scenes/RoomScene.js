@@ -3,7 +3,8 @@ import { clearScreen, degreesToRadians, generateMaze } from '../lib/utility'
 import RoomModel from '../models/RoomModel';
 
 class RoomScene {
-  constructor() {
+  constructor(gl) {
+    this.gl = gl;
     this.setOption = this.setOption.bind(this);
     this.mouseMovement = this.mouseMovement.bind(this);
     this.keyboardState = this.keyboardState.bind(this);
@@ -121,12 +122,12 @@ class RoomScene {
     this.movement.side = side;
   }
 
-  initScene(gl) {
-    this._updateMap(gl);
+  initScene() {
+    this._updateMap(this.gl);
   }
 
   updateScene() {
-    this._updateMap();
+    this._updateMap(this.gl);
   }
 
   _updateMap(gl) {
@@ -265,11 +266,12 @@ class RoomScene {
     return { location: [0.0, 0.5, 0.0] };
   }
 
-  drawScene(gl, deltaTime) {
+  drawScene(deltaTime) {
     if (!this.ready) {
       return;
     }
 
+    const gl = this.gl;
     const scene = this.scene;
     const camera = scene.camera;
 

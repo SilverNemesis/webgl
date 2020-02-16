@@ -3,7 +3,8 @@ import { clearScreen, getMaterialList, getMaterial } from '../lib/utility'
 import MaterialModel from '../models/MaterialModel';
 
 class MaterialScene {
-  constructor() {
+  constructor(gl) {
+    this.gl = gl;
     this.setOption = this.setOption.bind(this);
     this.initScene = this.initScene.bind(this);
     this.drawScene = this.drawScene.bind(this);
@@ -53,7 +54,8 @@ class MaterialScene {
     }
   }
 
-  initScene(gl) {
+  initScene() {
+    const gl = this.gl;
     const model4 = new MaterialModel(gl, 'tetrahedron');
     const model6 = new MaterialModel(gl, 'cube');
     const model8 = new MaterialModel(gl, 'octahedron');
@@ -374,7 +376,8 @@ class MaterialScene {
     };
   }
 
-  drawScene(gl, deltaTime) {
+  drawScene(deltaTime) {
+    const gl = this.gl;
     const scene = this.scene;
 
     clearScreen(gl);

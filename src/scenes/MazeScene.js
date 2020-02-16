@@ -3,7 +3,8 @@ import { clearScreen, degreesToRadians, generateMaze, getMaterialList, getMateri
 import MazeModel from '../models/MazeModel';
 
 class MazeScene {
-  constructor() {
+  constructor(gl) {
+    this.gl = gl;
     this.setOption = this.setOption.bind(this);
     this.initScene = this.initScene.bind(this);
     this.updateScene = this.updateScene.bind(this);
@@ -48,7 +49,8 @@ class MazeScene {
     }
   }
 
-  initScene(gl) {
+  initScene() {
+    const gl = this.gl;
     const { size, maze } = this._generateMaze();
 
     const model = new MazeModel(gl, maze);
@@ -76,7 +78,8 @@ class MazeScene {
     return { size, maze };
   }
 
-  drawScene(gl, deltaTime) {
+  drawScene(deltaTime) {
+    const gl = this.gl;
     const scene = this.scene;
 
     clearScreen(gl);

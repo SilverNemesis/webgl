@@ -3,7 +3,8 @@ import { clearScreen } from '../lib/utility'
 import ColorModel from '../models/ColorModel';
 
 class ColorScene {
-  constructor() {
+  constructor(gl) {
+    this.gl = gl;
     this.setOption = this.setOption.bind(this);
     this.initScene = this.initScene.bind(this);
     this.drawScene = this.drawScene.bind(this);
@@ -40,7 +41,8 @@ class ColorScene {
     this.renderOptions[option.id] = option.value;
   }
 
-  initScene(gl) {
+  initScene() {
+    const gl = this.gl;
     const colors1 = [
       [0.0, 0.0, 1.0],    // Bottom face: blue
       [0.0, 1.0, 0.0],    // Top face: green
@@ -106,7 +108,8 @@ class ColorScene {
     };
   }
 
-  drawScene(gl, deltaTime) {
+  drawScene(deltaTime) {
+    const gl = this.gl;
     const scene = this.scene;
 
     clearScreen(gl);

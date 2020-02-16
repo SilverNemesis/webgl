@@ -3,7 +3,8 @@ import { clearScreen } from '../lib/utility'
 import TexturedCubeModel from '../models/TexturedCubeModel';
 
 class TexturedCubeScene {
-  constructor() {
+  constructor(gl) {
+    this.gl = gl;
     this.setOption = this.setOption.bind(this);
     this.initScene = this.initScene.bind(this);
     this.drawScene = this.drawScene.bind(this);
@@ -44,7 +45,8 @@ class TexturedCubeScene {
     this.renderOptions[option.id] = option.value;
   }
 
-  initScene(gl) {
+  initScene() {
+    const gl = this.gl;
     const model = new TexturedCubeModel(gl);
     this.scene = {
       actors: [
@@ -69,7 +71,8 @@ class TexturedCubeScene {
     };
   }
 
-  drawScene(gl, deltaTime) {
+  drawScene(deltaTime) {
+    const gl = this.gl;
     const scene = this.scene;
 
     clearScreen(gl);

@@ -15,16 +15,6 @@ class SceneManager {
     this.nextScene = this.nextScene.bind(this);
     this.renderScene = this.renderScene.bind(this);
 
-    this.scenes = [
-      { init: false, render: new ColorScene() },
-      { init: false, render: new TexturedCubeScene() },
-      { init: false, render: new MaterialScene() },
-      { init: false, render: new MazeScene() },
-      { init: false, render: new BrickWallScene() },
-      { init: false, render: new RoomScene() }
-    ];
-    this.sceneIndex = 0;
-
     this.gl = canvas.getContext('webgl');
     if (this.gl === null) {
       alert("Unable to initialize WebGL. Your browser or machine may not support it.");
@@ -32,6 +22,16 @@ class SceneManager {
       this.resizeViewport();
       this.gl.enable(this.gl.CULL_FACE);
       this.gl.cullFace(this.gl.BACK);
+      this.scenes = [
+        { init: false, render: new ColorScene(this.gl) },
+        { init: false, render: new TexturedCubeScene(this.gl) },
+        { init: false, render: new MaterialScene(this.gl) },
+        { init: false, render: new MazeScene(this.gl) },
+        { init: false, render: new BrickWallScene(this.gl) },
+        { init: false, render: new RoomScene(this.gl) }
+      ];
+      this.sceneIndex = 0;
+
       for (let i = 0; i < this.scenes.length; i++) {
         this.initScene(this.scenes[i]);
       }
@@ -49,7 +49,7 @@ class SceneManager {
   initScene(scene) {
     if (!scene.init) {
       scene.init = true;
-      scene.render.initScene(this.gl);
+      scene.render.initScene();
       if (scene.render.options) {
         scene.options = scene.render.options;
         scene.setOption = scene.render.setOption;
@@ -95,7 +95,7 @@ class SceneManager {
     const deltaTime = timeStamp - this.timeStamp;
     this.timeStamp = timeStamp;
     const scene = this.scenes[this.sceneIndex];
-    scene.render.drawScene(this.gl, deltaTime);
+    scene.render.drawScene(deltaTime);
   }
 }
 

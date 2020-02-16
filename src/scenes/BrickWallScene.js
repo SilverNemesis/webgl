@@ -3,7 +3,8 @@ import { clearScreen } from '../lib/utility'
 import BrickWallModel from '../models/BrickWallModel';
 
 class BrickWallScene {
-  constructor() {
+  constructor(gl) {
+    this.gl = gl;
     this.setOption = this.setOption.bind(this);
     this.initScene = this.initScene.bind(this);
     this.drawScene = this.drawScene.bind(this);
@@ -75,7 +76,8 @@ class BrickWallScene {
     this.renderOptions[option.id] = option.value;
   }
 
-  initScene(gl) {
+  initScene() {
+    const gl = this.gl;
     const model = new BrickWallModel(gl);
     this.scene = {
       actors: [
@@ -100,7 +102,8 @@ class BrickWallScene {
     };
   }
 
-  drawScene(gl, deltaTime) {
+  drawScene(deltaTime) {
+    const gl = this.gl;
     const scene = this.scene;
 
     clearScreen(gl);
