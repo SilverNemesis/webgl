@@ -229,7 +229,7 @@ export function getShape(shape) {
   }
 
   if (shape === 'cube') {
-    const r = .3;
+    const r = .35;
 
     const vertices = [
       [-r, -r, -r],
@@ -255,8 +255,8 @@ export function getShape(shape) {
   }
 
   if (shape === 'octahedron') {
-    const a = 1 / (2 * Math.sqrt(2));
-    const b = 1 / 2;
+    const a = 1 / (2 * Math.sqrt(2)) * 1.3;
+    const b = 1 / 2 * 1.3;
 
     const vertices = [
       [-a, 0, a],    // front left

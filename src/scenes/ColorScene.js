@@ -72,7 +72,7 @@ class ColorScene {
         {
           model: model6,
           location: [-1.6, 0.0, -6.0],
-          scale: [3.0, 3.0, 3.0],
+          scale: [2.8, 2.8, 2.8],
           rotations: [
             {
               angle: 0.0,
