@@ -18,6 +18,14 @@ class RoomScene {
     this.initScene = this.initScene.bind(this);
     this.updateScene = this.updateScene.bind(this);
     this.drawScene = this.drawScene.bind(this);
+    const ambientLight = [0.1, 0.1, 0.1];
+    const directionalLight = {
+      color: [0.0, 0.0, 0.0],
+      direction: [0.0, 0.0, 0.0]
+    };
+    const pointLight = {
+      color: [0.6, 0.6, 0.6]
+    };
     this.renderOptions = {
       showDiffuseMap: true,
       showNormalMap: true,
@@ -26,15 +34,21 @@ class RoomScene {
       parallaxHeightScale: 0.02,
       parallaxSteps: 32,
       parallaxOcclusionMapping: true,
-      ambientLight: [0.1, 0.1, 0.1],
-      directionalLight: {
-        color: [0.0, 0.0, 0.0],
-        direction: [0.0, 0.0, 0.0]
-      },
-      pointLight: {
-        color: [0.6, 0.6, 0.6],
-        position: [0.0, 1.0, 0.0]
-      }
+      ambientLight,
+      directionalLight,
+      pointLight,
+      lights: [
+        {
+          ambient: [Math.min(ambientLight[0] * 2.0, 1.0), Math.min(ambientLight[1] * 2.0, 1.0), Math.min(ambientLight[2] * 2.0, 1.0)],
+          diffuse: pointLight.color,
+          specular: [Math.min(pointLight.color[0] * 2.0, 1.0), Math.min(pointLight.color[1] * 2.0, 1.0), Math.min(pointLight.color[2] * 2.0, 1.0)]
+        },
+        {
+          ambient: [0.0, 0.0, 0.0],
+          diffuse: [0.0, 0.0, 0.0],
+          specular: [0.0, 0.0, 0.0]
+        }
+      ]
     };
     this.options = [
       {
@@ -358,6 +372,8 @@ class RoomScene {
 
     this.renderOptions.cameraPos = camera.location;
     this.renderOptions.pointLight.position = camera.location;
+    this.renderOptions.lights[0].position = camera.location;
+    this.renderOptions.lights[1].position = camera.location;
 
     for (let i = 0; i < scene.actors.length; i++) {
       const actor = scene.actors[i];
@@ -434,32 +450,10 @@ class RoomScene {
     }
 
     if (actor.material) {
-      const ambient = [...this.renderOptions.ambientLight];
-      ambient[0] = Math.min(ambient[0] * 2.0, 1.0);
-      ambient[1] = Math.min(ambient[1] * 2.0, 1.0);
-      ambient[2] = Math.min(ambient[2] * 2.0, 1.0);
-      const specular = [...this.renderOptions.pointLight.color];
-      specular[0] = Math.min(specular[0] * 2.0, 1.0);
-      specular[1] = Math.min(specular[1] * 2.0, 1.0);
-      specular[2] = Math.min(specular[2] * 2.0, 1.0);
-      const lights = [
-        {
-          position: this.renderOptions.pointLight.position,
-          ambient: ambient,
-          diffuse: this.renderOptions.pointLight.color,
-          specular: specular
-        },
-        {
-          position: this.renderOptions.cameraPos,
-          ambient: [0.0, 0.0, 0.0],
-          diffuse: [0.0, 0.0, 0.0],
-          specular: [0.0, 0.0, 0.0]
-        }
-      ];
-      model.draw(projectionMatrix, viewMatrix, modelMatrix, this.renderOptions.cameraPos, lights, actor.material);
-    } else {
-      model.draw(projectionMatrix, viewMatrix, modelMatrix, this.renderOptions);
+      this.renderOptions.material = actor.material;
     }
+
+    model.draw(projectionMatrix, viewMatrix, modelMatrix, this.renderOptions);
   }
 
   _animateActor(deltaTime, actor) {

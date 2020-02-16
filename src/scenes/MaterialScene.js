@@ -8,7 +8,23 @@ class MaterialScene {
     this.setOption = this.setOption.bind(this);
     this.initScene = this.initScene.bind(this);
     this.drawScene = this.drawScene.bind(this);
-    this.materials = new Array(3).fill(0);
+    this.renderOptions = {
+      lights: [
+        {
+          position: [10.0, -10.0, 0.0],
+          ambient: [0.2, 0.2, 0.2],
+          diffuse: [0.5, 0.5, 0.5],
+          specular: [0.9, 0.9, 0.9]
+        },
+        {
+          position: [-10.0, 10.0, 0.0],
+          ambient: [0.2, 0.2, 0.2],
+          diffuse: [0.5, 0.5, 0.5],
+          specular: [0.9, 0.9, 0.9]
+        }
+      ],
+      materials: new Array(3).fill(0)
+    };
     const materialList = getMaterialList();
     this.options = [
       {
@@ -42,15 +58,15 @@ class MaterialScene {
 
     if (option.name === 'Material 1') {
       const materialName = option.options[option.value];
-      this.materials[0] = getMaterial(materialName);
+      this.renderOptions.materials[0] = getMaterial(materialName);
     }
     else if (option.name === 'Material 2') {
       const materialName = option.options[option.value];
-      this.materials[1] = getMaterial(materialName);
+      this.renderOptions.materials[1] = getMaterial(materialName);
     }
     else if (option.name === 'Material 3') {
       const materialName = option.options[option.value];
-      this.materials[2] = getMaterial(materialName);
+      this.renderOptions.materials[2] = getMaterial(materialName);
     }
   }
 
@@ -393,14 +409,16 @@ class MaterialScene {
     mat4.translate(viewMatrix, viewMatrix, scene.camera);
     mat4.invert(viewMatrix, viewMatrix)
 
+    this.renderOptions.cameraPos = scene.camera;
+
     for (let i = 0; i < scene.actors.length; i++) {
       const actor = scene.actors[i];
-      this._renderActor(projectionMatrix, viewMatrix, scene, actor);
+      this._renderActor(projectionMatrix, viewMatrix, actor);
       this._animateActor(deltaTime, actor);
     }
   }
 
-  _renderActor(projectionMatrix, viewMatrix, scene, actor) {
+  _renderActor(projectionMatrix, viewMatrix, actor) {
     const model = actor.model;
 
     const modelMatrix = mat4.create();
@@ -410,22 +428,9 @@ class MaterialScene {
       mat4.rotate(modelMatrix, modelMatrix, rotation.angle, rotation.axis);
     }
 
-    const lights = [
-      {
-        position: [10.0, -10.0, 0.0],
-        ambient: [0.2, 0.2, 0.2],
-        diffuse: [0.5, 0.5, 0.5],
-        specular: [0.9, 0.9, 0.9]
-      },
-      {
-        position: [-10.0, 10.0, 0.0],
-        ambient: [0.2, 0.2, 0.2],
-        diffuse: [0.5, 0.5, 0.5],
-        specular: [0.9, 0.9, 0.9]
-      }
-    ];
+    this.renderOptions.material = this.renderOptions.materials[actor.materialIndex]
 
-    model.draw(projectionMatrix, viewMatrix, modelMatrix, scene.camera, lights, this.materials[actor.materialIndex]);
+    model.draw(projectionMatrix, viewMatrix, modelMatrix, this.renderOptions);
   }
 
   _animateActor(deltaTime, actor) {
