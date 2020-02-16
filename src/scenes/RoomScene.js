@@ -1,6 +1,10 @@
 import * as mat4 from 'gl-matrix/mat4';
-import { clearScreen, degreesToRadians, generateMaze } from '../lib/utility'
+import { clearScreen, degreesToRadians, generateMaze, getMaterial } from '../lib/utility'
 import RoomModel from '../models/RoomModel';
+import MaterialModel from '../models/MaterialModel';
+
+const shapes = ['tetrahedron', 'cube', 'octahedron', 'dodecahedron', 'icosahedron'];
+const materials = ['gold', 'chrome', 'copper'];
 
 class RoomScene {
   constructor(gl) {
@@ -8,6 +12,8 @@ class RoomScene {
     this.setOption = this.setOption.bind(this);
     this.mouseMovement = this.mouseMovement.bind(this);
     this.keyboardState = this.keyboardState.bind(this);
+    this.registerDataChange = this.registerDataChange.bind(this);
+    this.forceDataChange = this.forceDataChange.bind(this);
     this.initScene = this.initScene.bind(this);
     this.updateScene = this.updateScene.bind(this);
     this.drawScene = this.drawScene.bind(this);
@@ -122,6 +128,14 @@ class RoomScene {
     this.movement.side = side;
   }
 
+  registerDataChange(onDataChange) {
+    this.onDataChange = onDataChange;
+  }
+
+  forceDataChange() {
+    this._updatePowerUpInfo(this.scene.actors);
+  }
+
   initScene() {
     this._updateMap(this.gl);
   }
@@ -133,8 +147,12 @@ class RoomScene {
   _updateMap(gl) {
     this.ready = false;
     this.map = generateMaze(11, 11);
-    const { location, angle } = this._findStartLocation(this.map);
+    const { location, angle, square, nextSquare } = this._findStartLocation(this.map);
     if (this.scene) {
+      if (this.scene.actors.length > 1) {
+        this.scene.actors.length = 1;
+      }
+      this.scene.actors[0].boundingRectagles = this._createMapBounds(this.map);
       this.scene.actors[0].model.update(this.map);
       this.scene.camera.location = location;
       this.scene.camera.rotations[0].angle = angle;
@@ -165,7 +183,64 @@ class RoomScene {
         }
       };
     }
+    this._placePowerUps(this.scene, this.map, square.x, square.y, nextSquare.x, nextSquare.y);
     this.ready = true;
+  }
+
+  _placePowerUps(scene, map, sx, sy, tx, ty) {
+    const { width, height, data } = map;
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        if (data[y][x] !== 1) {
+          if (x === sx && y === sy) {
+            continue;
+          }
+          if ((x === tx && y === ty) || Math.random() < 0.2) {
+            const location = this._getSquareCenter(map, x, y, 0.4);
+            scene.actors.push({
+              active: true,
+              boundingRadius: 0.2,
+              model: new MaterialModel(this.gl, this._pickRandom(shapes)),
+              material: getMaterial(this._pickRandom(materials)),
+              location,
+              scale: [0.15, 0.15, 0.15],
+              rotations: [
+                {
+                  angle: 0.0,
+                  axis: [1, 0, 0],
+                  speed: 1.0 + Math.random()
+                },
+                {
+                  angle: 0.0,
+                  axis: [0, 1, 0],
+                  speed: 2.0 + Math.random() + Math.random()
+                }
+              ]
+            });
+          }
+        }
+      }
+    }
+    this._updatePowerUpInfo(scene.actors);
+  }
+
+  _pickRandom(data) {
+    return data[Math.floor(Math.random() * data.length)];
+  }
+
+  _updatePowerUpInfo(actors) {
+    let collected = 0;
+    let total = 0;
+    for (let i = 0; i < actors.length; i++) {
+      const actor = actors[i];
+      if (actor.boundingRadius) {
+        total++;
+        if (!actor.active) {
+          collected++;
+        }
+      }
+    }
+    this.onDataChange({ collected, total });
   }
 
   _createMapBounds(map) {
@@ -188,6 +263,14 @@ class RoomScene {
       return false;
     }
     return true;
+  }
+
+  _collideCircles(cx, cy, radius, tx, ty, targetRadius) {
+    const distance = (cx - tx) * (cx - tx) + (cy - ty) * (cy - ty);
+    if (distance < (radius + targetRadius) * (radius + targetRadius)) {
+      return true;
+    }
+    return false;
   }
 
   _collideCircleRectangle(cx, cy, radius, x1, y1, x2, y2) {
@@ -245,26 +328,52 @@ class RoomScene {
               }
             }
           }
+          let tx, ty;
           if (matrix[0] === '0') {
+            tx = x + 1;
+            ty = y + 1;
             angle = -45.0;
           } else if (matrix[2] === '0') {
+            tx = x - 1;
+            ty = y + 1;
             angle = 45.0;
           } else if (matrix[6] === '0') {
+            tx = x + 1;
+            ty = y - 1;
             angle = -225.0;
           } else if (matrix[8] === '0') {
+            tx = x - 1;
+            ty = y - 1;
             angle = 225.0;
           } else if (matrix[3] === '0') {
+            tx = x - 1;
+            ty = y;
             angle = 90.0;
           } else if (matrix[5] === '0') {
+            tx = x + 1;
+            ty = y;
             angle = -90.0;
           } else if (matrix[7] === '0') {
+            tx = x;
+            ty = y + 1;
             angle = 180.0;
+          } else {
+            tx = x;
+            ty = y - 1;
+            angle = 0.0;
           }
-          return { location: [x + ofs_x + 0.5, 0.5, y + ofs_y + 0.5], angle: degreesToRadians(angle) };
+          return { location: [x + ofs_x + 0.5, 0.5, y + ofs_y + 0.5], angle: degreesToRadians(angle), square: { x, y }, nextSquare: { x: tx, y: ty } };
         }
       }
     }
     return { location: [0.0, 0.5, 0.0] };
+  }
+
+  _getSquareCenter(map, x, y, z) {
+    const { width, height } = map;
+    const ofs_x = -width / 2;
+    const ofs_y = -height / 2;
+    return [x + ofs_x + 0.5, z, y + ofs_y + 0.5]
   }
 
   drawScene(deltaTime) {
@@ -340,6 +449,21 @@ class RoomScene {
         camera.location[2] = y;
       }
     }
+
+    // collision detection against power-ups
+    collision = 0;
+    for (let i = 0; i < scene.actors.length; i++) {
+      const actor = scene.actors[i];
+      if (actor.active && actor.boundingRadius) {
+        if (this._collideCircles(cx, cy, radius, actor.location[0], actor.location[2], actor.boundingRadius)) {
+          collision++;
+          actor.active = false;
+        }
+      }
+    }
+    if (collision > 0) {
+      this._updatePowerUpInfo(scene.actors);
+    }
   }
 
   _renderActor(projectionMatrix, viewMatrix, actor) {
@@ -355,7 +479,33 @@ class RoomScene {
       mat4.rotate(modelMatrix, modelMatrix, rotation.angle, rotation.axis);
     }
 
-    model.draw(projectionMatrix, viewMatrix, modelMatrix, this.renderOptions);
+    if (actor.material) {
+      const ambient = [...this.renderOptions.ambientLight];
+      ambient[0] = Math.min(ambient[0] * 2.0, 1.0);
+      ambient[1] = Math.min(ambient[1] * 2.0, 1.0);
+      ambient[2] = Math.min(ambient[2] * 2.0, 1.0);
+      const specular = [...this.renderOptions.pointLight.color];
+      specular[0] = Math.min(specular[0] * 2.0, 1.0);
+      specular[1] = Math.min(specular[1] * 2.0, 1.0);
+      specular[2] = Math.min(specular[2] * 2.0, 1.0);
+      const lights = [
+        {
+          position: this.renderOptions.pointLight.position,
+          ambient: ambient,
+          diffuse: this.renderOptions.pointLight.color,
+          specular: specular
+        },
+        {
+          position: this.renderOptions.cameraPos,
+          ambient: [0.0, 0.0, 0.0],
+          diffuse: [0.0, 0.0, 0.0],
+          specular: [0.0, 0.0, 0.0]
+        }
+      ];
+      model.draw(projectionMatrix, viewMatrix, modelMatrix, this.renderOptions.cameraPos, lights, actor.material);
+    } else {
+      model.draw(projectionMatrix, viewMatrix, modelMatrix, this.renderOptions);
+    }
   }
 
   _animateActor(deltaTime, actor) {
