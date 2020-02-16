@@ -395,12 +395,12 @@ class MaterialScene {
 
     for (let i = 0; i < scene.actors.length; i++) {
       const actor = scene.actors[i];
-      this._renderActor(projectionMatrix, viewMatrix, actor);
+      this._renderActor(projectionMatrix, viewMatrix, scene, actor);
       this._animateActor(deltaTime, actor);
     }
   }
 
-  _renderActor(projectionMatrix, viewMatrix, actor) {
+  _renderActor(projectionMatrix, viewMatrix, scene, actor) {
     const model = actor.model;
 
     const modelMatrix = mat4.create();
@@ -425,7 +425,7 @@ class MaterialScene {
       }
     ];
 
-    model.draw(projectionMatrix, viewMatrix, modelMatrix, lights, this.materials[actor.materialIndex]);
+    model.draw(projectionMatrix, viewMatrix, modelMatrix, scene.camera, lights, this.materials[actor.materialIndex]);
   }
 
   _animateActor(deltaTime, actor) {

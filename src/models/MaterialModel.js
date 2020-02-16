@@ -19,13 +19,14 @@ class MaterialModel extends Model {
     });
   }
 
-  draw(projectionMatrix, viewMatrix, modelMatrix, lights, material) {
+  draw(projectionMatrix, viewMatrix, modelMatrix, cameraPos, lights, material) {
     this._drawModel({
       gl: this.gl,
       model: this.model,
       projectionMatrix,
       viewMatrix,
       modelMatrix,
+      cameraPos,
       lights,
       material
     });
