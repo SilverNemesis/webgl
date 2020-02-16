@@ -133,7 +133,6 @@ class RoomScene {
   _updateMap(gl) {
     this.ready = false;
     this.map = generateMaze(11, 11);
-    this.mapBounds = this._createMapBounds(this.map);
     const { location, angle } = this._findStartLocation(this.map);
     if (this.scene) {
       this.scene.actors[0].model.update(this.map);
@@ -144,6 +143,8 @@ class RoomScene {
       this.scene = {
         actors: [
           {
+            active: true,
+            boundingRectagles: this._createMapBounds(this.map),
             model,
             location: [0.0, 0.0, 0.0],
             rotations: []
@@ -171,11 +172,11 @@ class RoomScene {
     const { width, height, data } = map;
     const mapBounds = [];
     const ofs_x = -width / 2;
-    const ofs_z = -height / 2;
-    for (let z = 0; z < height; z++) {
+    const ofs_y = -height / 2;
+    for (let y = 0; y < height; y++) {
       for (let x = 0; x < width; x++) {
-        if (data[z][x] === 1) {
-          mapBounds.push({ x1: x + ofs_x, y1: z + ofs_z, x2: x + ofs_x + 1, y2: z + ofs_z + 1 });
+        if (data[y][x] === 1) {
+          mapBounds.push({ x1: x + ofs_x, y1: y + ofs_y, x2: x + ofs_x + 1, y2: y + ofs_y + 1 });
         }
       }
     }
@@ -297,8 +298,10 @@ class RoomScene {
 
     for (let i = 0; i < scene.actors.length; i++) {
       const actor = scene.actors[i];
-      this._renderActor(projectionMatrix, viewMatrix, actor);
-      this._animateActor(deltaTime, actor);
+      if (actor.active) {
+        this._renderActor(projectionMatrix, viewMatrix, actor);
+        this._animateActor(deltaTime, actor);
+      }
     }
 
     mat4.identity(viewMatrix);
@@ -316,10 +319,11 @@ class RoomScene {
     camera.location[1] += deltaTime * this.movement.side * viewMatrix[4];
     camera.location[2] += deltaTime * this.movement.side * viewMatrix[8];
 
+    // colision detection against map
     const cx = camera.location[0];
     const cy = camera.location[2];
     const radius = 0.3;
-    const mapBounds = this.mapBounds;
+    const mapBounds = scene.actors[0].boundingRectagles;
     const len = mapBounds.length;
     let collision = 0;
     for (let i = 0; i < len; i++) {
@@ -343,6 +347,9 @@ class RoomScene {
 
     const modelMatrix = mat4.create();
     mat4.translate(modelMatrix, modelMatrix, actor.location);
+    if (actor.scale) {
+      mat4.scale(modelMatrix, modelMatrix, actor.scale);
+    }
     for (let i = 0; i < actor.rotations.length; i++) {
       const rotation = actor.rotations[i];
       mat4.rotate(modelMatrix, modelMatrix, rotation.angle, rotation.axis);
