@@ -1,5 +1,6 @@
 import * as mat4 from 'gl-matrix/mat4';
-import { clearScreen, degreesToRadians, generateMaze, getMaterial } from '../lib/utility'
+import { clearScreen, degreesToRadians, pickRandom, generateMaze, getMaterial } from '../lib/utility';
+import { collideCircleRectangle, collideCircles } from '../lib/collision';
 import RoomModel from '../models/RoomModel';
 import MaterialModel from '../models/MaterialModel';
 
@@ -200,8 +201,8 @@ class RoomScene {
             scene.actors.push({
               active: true,
               boundingRadius: 0.2,
-              model: new MaterialModel(this.gl, this._pickRandom(shapes)),
-              material: getMaterial(this._pickRandom(materials)),
+              model: new MaterialModel(this.gl, pickRandom(shapes)),
+              material: getMaterial(pickRandom(materials)),
               location,
               scale: [0.15, 0.15, 0.15],
               rotations: [
@@ -222,10 +223,6 @@ class RoomScene {
       }
     }
     this._updatePowerUpInfo(scene.actors);
-  }
-
-  _pickRandom(data) {
-    return data[Math.floor(Math.random() * data.length)];
   }
 
   _updatePowerUpInfo(actors) {
@@ -256,49 +253,6 @@ class RoomScene {
       }
     }
     return mapBounds;
-  }
-
-  _collideRectangles(r1, r2) {
-    if (r1.x2 <= r2.x1 || r1.x1 >= r2.x2 || r1.y2 <= r2.y1 || r1.y1 >= r2.y2) {
-      return false;
-    }
-    return true;
-  }
-
-  _collideCircles(cx, cy, radius, tx, ty, targetRadius) {
-    const distance = (cx - tx) * (cx - tx) + (cy - ty) * (cy - ty);
-    if (distance < (radius + targetRadius) * (radius + targetRadius)) {
-      return true;
-    }
-    return false;
-  }
-
-  _collideCircleRectangle(cx, cy, radius, x1, y1, x2, y2) {
-    const epsilon = 0.1;
-    let type = 0;
-    let testX = cx;
-    let testY = cy;
-    if (cx < x1 - epsilon) {
-      type |= 1;
-      testX = x1;
-    } else if (cx > x2 + epsilon) {
-      type |= 1;
-      testX = x2;
-    }
-    if (cy < y1 - epsilon) {
-      type |= 2;
-      testY = y1;
-    } else if (cy > y2 + epsilon) {
-      type |= 2;
-      testY = y2;
-    }
-    const distX = cx - testX;
-    const distY = cy - testY;
-    const distance = (distX * distX) + (distY * distY);
-    if (distance <= radius * radius) {
-      return type;
-    }
-    return 0;
   }
 
   _findStartLocation(map) {
@@ -437,7 +391,7 @@ class RoomScene {
     let collision = 0;
     for (let i = 0; i < len; i++) {
       const rect = mapBounds[i];
-      collision |= this._collideCircleRectangle(cx, cy, radius, rect.x1, rect.y1, rect.x2, rect.y2);
+      collision |= collideCircleRectangle(cx, cy, radius, rect.x1, rect.y1, rect.x2, rect.y2);
     }
     if (collision !== 0) {
       if (collision === 1) {
@@ -455,7 +409,7 @@ class RoomScene {
     for (let i = 0; i < scene.actors.length; i++) {
       const actor = scene.actors[i];
       if (actor.active && actor.boundingRadius) {
-        if (this._collideCircles(cx, cy, radius, actor.location[0], actor.location[2], actor.boundingRadius)) {
+        if (collideCircles(cx, cy, radius, actor.location[0], actor.location[2], actor.boundingRadius)) {
           collision++;
           actor.active = false;
         }

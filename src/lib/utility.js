@@ -137,6 +137,10 @@ const _directions = [
   { x: 0, y: 1 }
 ];
 
+export function pickRandom(data) {
+  return data[Math.floor(Math.random() * data.length)];
+}
+
 export function generateMaze(width, height, windiness = 0.8) {
   const carve = (pos) => {
     data[pos.y][pos.x] = 0;
