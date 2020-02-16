@@ -128,9 +128,17 @@ class MazeScene {
         }
       ];
 
-      model.draw(projectionMatrix, viewMatrix, modelMatrix, 1, lights, actor.material);
+      model.draw(projectionMatrix, viewMatrix, modelMatrix, {
+        shaderIndex: 1,
+        lights,
+        material: actor.material,
+        lightingModel: 0
+      });
     } else {
-      model.draw(projectionMatrix, viewMatrix, modelMatrix, 0, undefined, undefined);
+      model.draw(projectionMatrix, viewMatrix, modelMatrix, {
+        shaderIndex: 0,
+        lightingModel: 0
+      });
     }
   }
 
