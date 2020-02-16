@@ -11,12 +11,12 @@ class TexturedCubeScene {
     this.renderOptions = {
       ambientLight: [0.2, 0.2, 0.2],
       directionalLight: {
-        color: [0.5, 0.5, 0.5],
-        direction: [-1.0, -1.0, 0.0]
+        color: [1.0, 1.0, 1.0],
+        direction: [-1.0, 1.0, 0.0]
       },
       pointLight: {
-        color: [0.7, 0.7, 0.7],
-        position: [1.0, 1.0, 0.0],
+        color: [1.0, 1.0, 1.0],
+        position: [1.0, -1.0, 0.0],
         brightness: 25.0
       },
       cameraPos: [0.0, 0.0, 0.0],
