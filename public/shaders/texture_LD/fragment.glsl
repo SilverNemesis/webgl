@@ -10,6 +10,7 @@ uniform struct {
 uniform struct {
   vec3 position;
   vec3 color;
+  float brightness;
 } uPointLight;
 uniform int uLightingModel;
 
@@ -29,7 +30,7 @@ void main(void) {
   else if (uLightingModel == 2) {
     float directional = max(dot(vVertexNormal, uDirectionalLight.direction), 0.0);
     vec3 surfaceToLight = uPointLight.position - vVertexPosition;
-    float bright = 50.0 * max(dot(vVertexNormal, normalize(surfaceToLight)), 0.0) / (length(surfaceToLight) * length(surfaceToLight));
+    float bright = uPointLight.brightness * max(dot(vVertexNormal, normalize(surfaceToLight)), 0.0) / (length(surfaceToLight) * length(surfaceToLight));
     bright = clamp(bright, 0.0, 1.0);
     vec3 lighting = uAmbientLight + (uDirectionalLight.color * directional) + (uPointLight.color * bright);
     vec4 texelColor = texture2D(uSamplerDiffuse, vTextureCoord);

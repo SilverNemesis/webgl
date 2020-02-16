@@ -23,7 +23,8 @@ class MaterialScene {
           specular: [0.9, 0.9, 0.9]
         }
       ],
-      materials: new Array(3).fill(0)
+      materials: new Array(3).fill(0),
+      lightingModel: 2
     };
     const materialList = getMaterialList();
     this.options = [
@@ -55,7 +56,9 @@ class MaterialScene {
 
   setOption(option, value) {
     option.value = Number(value);
-
+    if (option.id) {
+      this.renderOptions[option.id] = option.value;
+    }
     if (option.name === 'Material 1') {
       const materialName = option.options[option.value];
       this.renderOptions.materials[0] = getMaterial(materialName);

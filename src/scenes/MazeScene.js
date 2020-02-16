@@ -11,6 +11,31 @@ class MazeScene {
     this.drawScene = this.drawScene.bind(this);
     this.totalDelta = 0.0;
 
+    this.renderOptions = {
+      lights: [
+        {
+          position: [10.0, -10.0, 0.0],
+          ambient: [0.2, 0.2, 0.2],
+          diffuse: [0.5, 0.5, 0.5],
+          specular: [0.9, 0.9, 0.9]
+        },
+        {
+          position: [-10.0, 10.0, 0.0],
+          ambient: [0.2, 0.2, 0.2],
+          diffuse: [0.5, 0.5, 0.5],
+          specular: [0.9, 0.9, 0.9]
+        }
+      ],
+      ambientLight: [0.2, 0.2, 0.2],
+      directionalLight: {
+        color: [1.0, 1.0, 1.0],
+        direction: [-1.0, -1.0, 0.0]
+      },
+      pointLight: {
+        color: [1.0, 1.0, 1.0]
+      }
+    };
+
     this.options = [
       {
         description: 'Random maze geometry with colors or materials using Phong shading',
@@ -38,7 +63,9 @@ class MazeScene {
 
   setOption(option, value) {
     option.value = Number(value);
-
+    if (option.id) {
+      this.renderOptions[option.id] = option.value;
+    }
     if (option.name === 'Material') {
       const materialName = option.options[option.value];
       if (materialName !== 'useColors') {
@@ -64,12 +91,15 @@ class MazeScene {
       ],
       camera: [0.0, 0.0, 0.0]
     };
+    this.renderOptions.pointLight.position = [0.0, size, -2.0 * size];
+    this.renderOptions.pointLight.brightness = size * size;
   }
 
   updateScene() {
     const { size, maze } = this._generateMaze();
     this.scene.actors[0].location = [0.0, 0.0, -2.0 * size];
     this.scene.actors[0].model.update(maze);
+    this.renderOptions.pointLight.position = [0.0, 10.0, -2.0 * size];
   }
 
   _generateMaze() {
@@ -105,41 +135,22 @@ class MazeScene {
   _renderActor(projectionMatrix, viewMatrix, actor) {
     const model = actor.model;
 
-    actor.material = this.material;
-
     const modelMatrix = mat4.create();
     mat4.translate(modelMatrix, modelMatrix, actor.location);
     mat4.rotate(modelMatrix, modelMatrix, degreesToRadians(45), [1, 0, 0]);
     mat4.rotate(modelMatrix, modelMatrix, actor.rotation.angle, actor.rotation.axis);
 
-    if (actor.material) {
-      const lights = [
-        {
-          position: [10.0, -10.0, 0.0],
-          ambient: [0.2, 0.2, 0.2],
-          diffuse: [0.5, 0.5, 0.5],
-          specular: [0.9, 0.9, 0.9]
-        },
-        {
-          position: [-10.0, 10.0, 0.0],
-          ambient: [0.2, 0.2, 0.2],
-          diffuse: [0.5, 0.5, 0.5],
-          specular: [0.9, 0.9, 0.9]
-        }
-      ];
+    this.renderOptions.material = this.material;
 
-      model.draw(projectionMatrix, viewMatrix, modelMatrix, {
-        shaderIndex: 1,
-        lights,
-        material: actor.material,
-        lightingModel: 0
-      });
+    if (this.material) {
+      this.renderOptions.shaderIndex = 1;
+      this.renderOptions.lightingModel = 2;
     } else {
-      model.draw(projectionMatrix, viewMatrix, modelMatrix, {
-        shaderIndex: 0,
-        lightingModel: 0
-      });
+      this.renderOptions.shaderIndex = 0;
+      this.renderOptions.lightingModel = 0;
     }
+
+    model.draw(projectionMatrix, viewMatrix, modelMatrix, this.renderOptions);
   }
 
   _animateActor(deltaTime, actor) {

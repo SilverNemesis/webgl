@@ -24,7 +24,8 @@ class RoomScene {
       direction: [0.0, 0.0, 0.0]
     };
     const pointLight = {
-      color: [0.6, 0.6, 0.6]
+      color: [0.6, 0.6, 0.6],
+      brightness: 15.0
     };
     this.renderOptions = {
       showDiffuseMap: true,
@@ -48,7 +49,8 @@ class RoomScene {
           diffuse: [0.0, 0.0, 0.0],
           specular: [0.0, 0.0, 0.0]
         }
-      ]
+      ],
+      lightingModel: 2
     };
     this.options = [
       {

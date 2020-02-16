@@ -568,6 +568,7 @@ class Model {
       if (shader.uniformLocations.pointLight && options.pointLight) {
         gl.uniform3fv(shader.uniformLocations.pointLight.color, options.pointLight.color);
         gl.uniform3fv(shader.uniformLocations.pointLight.position, options.pointLight.position);
+        gl.uniform1f(shader.uniformLocations.pointLight.brightness, options.pointLight.brightness);
       }
 
       if (shader.uniformLocations.lights && options.lights) {

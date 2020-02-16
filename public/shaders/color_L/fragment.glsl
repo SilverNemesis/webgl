@@ -1,8 +1,7 @@
 precision mediump float;
 precision lowp int;
 
-uniform sampler2D uSamplerDiffuse;
-uniform vec3 uAmbientLight;     
+uniform vec3 uAmbientLight;
 uniform struct {
   vec3 direction;
   vec3 color;
@@ -10,7 +9,9 @@ uniform struct {
 uniform struct {
   vec3 position;
   vec3 color;
+  float brightness;
 } uPointLight;
+
 uniform int uLightingModel;
 
 varying vec3 vVertexPosition;
@@ -28,7 +29,7 @@ void main(void) {
   else if (uLightingModel == 2) {
     float directional = max(dot(vVertexNormal, uDirectionalLight.direction), 0.0);
     vec3 surfaceToLight = uPointLight.position - vVertexPosition;
-    float bright = 50.0 * max(dot(vVertexNormal, normalize(surfaceToLight)), 0.0) / (length(surfaceToLight) * length(surfaceToLight));
+    float bright = uPointLight.brightness * max(dot(vVertexNormal, normalize(surfaceToLight)), 0.0) / (length(surfaceToLight) * length(surfaceToLight));
     bright = clamp(bright, 0.0, 1.0);
     vec3 lighting = uAmbientLight + (uDirectionalLight.color * directional) + (uPointLight.color * bright);
     gl_FragColor = vec4(vColor * lighting, 1.0);

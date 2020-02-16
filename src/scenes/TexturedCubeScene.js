@@ -16,7 +16,8 @@ class TexturedCubeScene {
       },
       pointLight: {
         color: [0.7, 0.7, 0.7],
-        position: [1.0, 1.0, 0.0]
+        position: [1.0, 1.0, 0.0],
+        brightness: 25.0
       },
       cameraPos: [0.0, 0.0, 0.0],
       lightingModel: 0

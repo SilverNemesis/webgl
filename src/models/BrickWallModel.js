@@ -49,7 +49,8 @@ class BrickWallModel extends Model {
       },
       pointLight: {
         color: [1.0, 1.0, 1.0],
-        position: [0.0, 0.0, 0.0]
+        position: [0.0, 0.0, 0.0],
+        brightness: 15.0
       },
       cameraPos: [0.0, 0.0, 0.0]
     });

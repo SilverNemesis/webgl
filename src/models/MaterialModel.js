@@ -20,14 +20,15 @@ class MaterialModel extends Model {
   }
 
   draw(projectionMatrix, viewMatrix, modelMatrix, options) {
-    const { cameraPos, lights, material } = options;
+    const { cameraPos, lights, material, lightingModel } = options;
     this._drawModel({
       projectionMatrix,
       viewMatrix,
       modelMatrix,
       cameraPos,
       lights,
-      material
+      material,
+      lightingModel
     });
   }
 }
