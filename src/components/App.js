@@ -14,6 +14,7 @@ class App extends React.Component {
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onKeyUp = this.onKeyUp.bind(this);
     this.onMouseMove = this.onMouseMove.bind(this);
+    this.onDataChange = this.onDataChange.bind(this);
     this.onLockChange = this.onLockChange.bind(this);
     this.onClickCanvas = this.onClickCanvas.bind(this);
     this.onChange = this.onChange.bind(this);
@@ -28,10 +29,10 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    this.sceneManager = new SceneManager(this.canvas);
+    this.sceneManager = new SceneManager(this.canvas, this.onDataChange);
     const scene = this.sceneManager.getScene();
     const notes = scene.mouseMovement ? exploreNotes : undefined;
-    this.setState({ scene, notes });
+    this.setState({ scene, notes, sceneData: undefined });
     this.canvas.requestPointerLock = this.canvas.requestPointerLock || this.canvas.mozRequestPointerLock;
     document.exitPointerLock = document.exitPointerLock || document.mozExitPointerLock;
     this.frame = window.requestAnimationFrame(this.onAnimationFrame);
@@ -90,11 +91,13 @@ class App extends React.Component {
       }
     } else if (key === 'PageUp') {
       this.cancelLock();
+      this.setState({ sceneData: undefined });
       const scene = this.sceneManager.previousScene();
       const notes = scene.mouseMovement ? exploreNotes : undefined;
       this.setState({ scene, notes });
     } else if (key === 'PageDown') {
       this.cancelLock();
+      this.setState({ sceneData: undefined });
       const scene = this.sceneManager.nextScene();
       const notes = scene.mouseMovement ? exploreNotes : undefined;
       this.setState({ scene, notes });
@@ -105,6 +108,10 @@ class App extends React.Component {
     if (this.captureMouse) {
       this.state.scene.mouseMovement(event.movementX, event.movementY);
     }
+  }
+
+  onDataChange(sceneData) {
+    this.setState({ sceneData });
   }
 
   onLockChange(event) {
@@ -142,6 +149,7 @@ class App extends React.Component {
   onClickPrevious(event) {
     event.preventDefault();
     this.cancelLock();
+    this.setState({ sceneData: undefined });
     const scene = this.sceneManager.previousScene();
     const notes = scene.mouseMovement ? exploreNotes : undefined;
     this.setState({ scene, notes });
@@ -150,6 +158,7 @@ class App extends React.Component {
   onClickNext(event) {
     event.preventDefault();
     this.cancelLock();
+    this.setState({ sceneData: undefined });
     const scene = this.sceneManager.nextScene();
     const notes = scene.mouseMovement ? exploreNotes : undefined;
     this.setState({ scene, notes });
@@ -188,6 +197,7 @@ class App extends React.Component {
         <canvas id="canvas" ref={elem => this.canvas = elem} onClick={this.onClickCanvas}></canvas>
         <div id="note">
           {this.state.notes ? (this.state.notes.map((note, key) => (<div key={key}>{note}</div>))) : null}
+          {this.state.sceneData && this.state.sceneData.total ? (<div>{this.state.sceneData.collected}/{this.state.sceneData.total} power-ups collected</div>) : null}
         </div>
         <Message message={this.state.message} onClick={this.onClickMessage} />
         <Controls show={this.state.showControls} onClickPrevious={this.onClickPrevious} onClickNext={this.onClickNext} onChange={this.onChange} options={this.state.scene ? this.state.scene.options : undefined} />

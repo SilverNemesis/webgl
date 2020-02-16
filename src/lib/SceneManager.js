@@ -6,8 +6,9 @@ import MaterialScene from '../scenes/MaterialScene';
 import RoomScene from '../scenes/RoomScene';
 
 class SceneManager {
-  constructor(canvas) {
+  constructor(canvas, onDataChange) {
     this.canvas = canvas;
+    this.onDataChange = onDataChange;
 
     this.resizeViewport = this.resizeViewport.bind(this);
     this.getScene = this.getScene.bind(this);
@@ -23,17 +24,21 @@ class SceneManager {
       this.gl.enable(this.gl.CULL_FACE);
       this.gl.cullFace(this.gl.BACK);
       this.scenes = [
-        { init: false, render: new ColorScene(this.gl) },
-        { init: false, render: new TexturedCubeScene(this.gl) },
-        { init: false, render: new MaterialScene(this.gl) },
-        { init: false, render: new MazeScene(this.gl) },
-        { init: false, render: new BrickWallScene(this.gl) },
-        { init: false, render: new RoomScene(this.gl) }
+        new ColorScene(this.gl),
+        new TexturedCubeScene(this.gl),
+        new MaterialScene(this.gl),
+        new MazeScene(this.gl),
+        new BrickWallScene(this.gl),
+        new RoomScene(this.gl)
       ];
       this.sceneIndex = 0;
 
       for (let i = 0; i < this.scenes.length; i++) {
-        this.initScene(this.scenes[i]);
+        const scene = this.scenes[i];
+        if (scene.registerDataChange) {
+          scene.registerDataChange(this.onDataChange);
+        }
+        scene.initScene();
       }
     }
   }
@@ -46,26 +51,6 @@ class SceneManager {
     this.gl.viewport(0, 0, canvas.width, canvas.height);
   }
 
-  initScene(scene) {
-    if (!scene.init) {
-      scene.init = true;
-      scene.render.initScene();
-      if (scene.render.options) {
-        scene.options = scene.render.options;
-        scene.setOption = scene.render.setOption;
-      }
-      if (scene.render.credits) {
-        scene.credits = scene.render.credits;
-      }
-      if (scene.render.mouseMovement) {
-        scene.mouseMovement = scene.render.mouseMovement;
-      }
-      if (scene.render.keyboardState) {
-        scene.keyboardState = scene.render.keyboardState;
-      }
-    }
-  }
-
   getScene() {
     return this.scenes[this.sceneIndex];
   }
@@ -76,14 +61,18 @@ class SceneManager {
       this.sceneIndex = this.scenes.length - 1;
     }
     const scene = this.scenes[this.sceneIndex];
-    this.initScene(scene);
+    if (scene.forceDataChange) {
+      scene.forceDataChange();
+    }
     return this.scenes[this.sceneIndex];
   }
 
   nextScene() {
     this.sceneIndex = (this.sceneIndex + 1) % this.scenes.length;
     const scene = this.scenes[this.sceneIndex];
-    this.initScene(scene);
+    if (scene.forceDataChange) {
+      scene.forceDataChange();
+    }
     return this.scenes[this.sceneIndex];
   }
 
@@ -95,7 +84,7 @@ class SceneManager {
     const deltaTime = timeStamp - this.timeStamp;
     this.timeStamp = timeStamp;
     const scene = this.scenes[this.sceneIndex];
-    scene.render.drawScene(deltaTime);
+    scene.drawScene(deltaTime);
   }
 }
 
