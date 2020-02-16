@@ -229,15 +229,15 @@ class RoomScene {
       return false;
     }
     const ofs_x = -width / 2;
-    const ofs_z = -height / 2;
-    for (let z = 0; z < height; z++) {
+    const ofs_y = -height / 2;
+    for (let y = 0; y < height; y++) {
       for (let x = 0; x < width; x++) {
-        if (data[z][x] !== 1) {
+        if (data[y][x] !== 1) {
           let angle = 0.0;
           const matrix = [];
           for (let r = -1; r < 2; r++) {
             for (let c = -1; c < 2; c++) {
-              if (isSolid(x + c, z + r)) {
+              if (isSolid(x + c, y + r)) {
                 matrix.push('1');
               } else {
                 matrix.push('0');
@@ -259,7 +259,7 @@ class RoomScene {
           } else if (matrix[7] === '0') {
             angle = 180.0;
           }
-          return { location: [x + ofs_x + 0.5, 0.5, z + ofs_z + 0.5], angle: degreesToRadians(angle) };
+          return { location: [x + ofs_x + 0.5, 0.5, y + ofs_y + 0.5], angle: degreesToRadians(angle) };
         }
       }
     }
