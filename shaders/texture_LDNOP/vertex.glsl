@@ -19,6 +19,7 @@ uniform struct {
 uniform struct {
   vec3 position;
   vec3 color;
+  float brightness;
 } uPointLight;
 
 varying vec2 frag_uv;

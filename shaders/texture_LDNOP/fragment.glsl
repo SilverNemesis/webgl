@@ -21,6 +21,7 @@ uniform struct {
 uniform struct {
   vec3 position;
   vec3 color;
+  float brightness;
 } uPointLight;
 
 varying vec2 frag_uv;
@@ -106,13 +107,13 @@ void main(void) {
   if (uShowNormalMap == 0) {
     vec3 normal = frag_normal;
     vec3 light_dir = uPointLight.position - frag_position;
-    point_intensity = clamp(15.0 * max(dot(normalize(light_dir), normal), 0.0) / (length(light_dir) * length(light_dir)), 0.0, 1.0);
+    point_intensity = clamp(uPointLight.brightness * max(dot(normalize(light_dir), normal), 0.0) / (length(light_dir) * length(light_dir)), 0.0, 1.0);
     diffuse_intensity = max(dot(uDirectionalLight.direction, normal), 0.0);
   }
   else {
     vec3 normal = normalize(texture2D(uSamplerNormal, texCoords).rgb * 2.0 - 1.0);
     vec3 light_dir = ts_light_pos - ts_frag_pos;
-    point_intensity = clamp(15.0 * max(dot(normalize(light_dir), normal), 0.0) / (length(light_dir) * length(light_dir)), 0.0, 1.0);
+    point_intensity = clamp(uPointLight.brightness * max(dot(normalize(light_dir), normal), 0.0) / (length(light_dir) * length(light_dir)), 0.0, 1.0);
     diffuse_intensity = max(dot(ts_diffuse_dir, normal), 0.0);
   }
 
