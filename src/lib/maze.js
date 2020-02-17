@@ -76,7 +76,7 @@ export function generateMaze(width, height, windiness = 0.8) {
   };
 }
 
-export function generateDungeon(width, height, windiness) {
+export function generateDungeon(width, height, windiness = 0.8) {
   const regions = [];
   let region = 0;
 
