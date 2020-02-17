@@ -229,7 +229,7 @@ function _addRooms(data, mx, my, incrementRegion, carveRegion, numRoomTries, roo
     }
     let x = (_range(0, (mx - width - 1) >> 1) << 1) + 1;
     let y = (_range(0, (my - height - 1) >> 1) << 1) + 1;
-    if (x + width > mx - 1 || y + height > my - 1) {
+    if (x + width > mx - 1 || y + height > my - 1 || width >= mx / 2 || height >= my / 2) {
       continue;
     }
     const room = { x, y, width, height };
