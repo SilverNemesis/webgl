@@ -11,6 +11,7 @@ class MazeModel extends Model {
     this._initModel({
       gl,
       geometry: this._geometry,
+      bufferCount: 3,
       shaders: [
         {
           vertex: 'shaders/color_L/vertex.glsl',
@@ -25,7 +26,7 @@ class MazeModel extends Model {
   }
 
   draw(projectionMatrix, viewMatrix, modelMatrix, options) {
-    const { shaderIndex, lights, material, ambientLight, directionalLight, pointLight, lightingModel } = options;
+    const { shaderIndex, lights, material, materials, ambientLight, directionalLight, pointLight, lightingModel } = options;
     this._drawModel({
       projectionMatrix,
       viewMatrix,
@@ -33,6 +34,7 @@ class MazeModel extends Model {
       shaderIndex,
       lights,
       material,
+      materials,
       ambientLight,
       directionalLight,
       pointLight,
@@ -76,9 +78,9 @@ class MazeModel extends Model {
         const b3 = [left, bottom, back];
 
         if (maze.data[y][x] === 0) {
-          addSquare(b2, b3, f3, f2, { color: floorColor });
+          addSquare(b2, b3, f3, f2, { color: floorColor, bufferIndex: 1 });
         } else {
-          addSquare(b1, b0, f0, f1, { color: ceilingColor });
+          addSquare(b1, b0, f0, f1, { color: ceilingColor, bufferIndex: 2 });
 
           if (y === 0 || maze.data[y - 1][x] === 0) {
             addSquare(b0, b1, b2, b3, { color: wallColor_Back });

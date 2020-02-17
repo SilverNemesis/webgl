@@ -34,7 +34,10 @@ class MazeScene {
       },
       pointLight: {
         color: [1.0, 1.0, 1.0]
-      }
+      },
+      useMaterials: false,
+      materials: new Array(3).fill(undefined),
+      lightingModel: 0
     };
 
     this.options = [
@@ -43,9 +46,32 @@ class MazeScene {
         type: 'description'
       },
       {
-        name: 'Material',
+        name: 'Use Materials',
+        id: 'useMaterials',
+        type: 'bool',
+        value: false
+      },
+      {
+        name: 'Wall Material',
         type: 'select',
-        options: ['useColors', ...getMaterialList()]
+        options: getMaterialList()
+      },
+      {
+        name: 'Floor Material',
+        type: 'select',
+        options: getMaterialList()
+      },
+      {
+        name: 'Ceiling Material',
+        type: 'select',
+        options: getMaterialList()
+      },
+      {
+        name: 'Lighting Model',
+        id: 'lightingModel',
+        type: 'select',
+        options: ['Unlit', 'Vertex Lighting', 'Fragment Lighting'],
+        value: this.renderOptions.lightingModel
       },
       {
         name: 'Update Maze',
@@ -54,7 +80,9 @@ class MazeScene {
       }
     ];
 
-    this.setOption(this.options[1], 0);
+    this.setOption(this.options[2], 0);
+    this.setOption(this.options[3], 9);
+    this.setOption(this.options[4], 10);
 
     this.credits = [
       'Maze generation is based on this article',
@@ -67,13 +95,17 @@ class MazeScene {
     if (option.id) {
       this.renderOptions[option.id] = option.value;
     }
-    if (option.name === 'Material') {
+    if (option.name === 'Wall Material') {
       const materialName = option.options[option.value];
-      if (materialName !== 'useColors') {
-        this.material = getMaterial(materialName);
-      } else {
-        this.material = undefined;
-      }
+      this.renderOptions.materials[0] = getMaterial(materialName);
+    }
+    if (option.name === 'Floor Material') {
+      const materialName = option.options[option.value];
+      this.renderOptions.materials[1] = getMaterial(materialName);
+    }
+    if (option.name === 'Ceiling Material') {
+      const materialName = option.options[option.value];
+      this.renderOptions.materials[2] = getMaterial(materialName);
     }
   }
 
@@ -141,14 +173,10 @@ class MazeScene {
     mat4.rotate(modelMatrix, modelMatrix, degreesToRadians(45), [1, 0, 0]);
     mat4.rotate(modelMatrix, modelMatrix, actor.rotation.angle, actor.rotation.axis);
 
-    this.renderOptions.material = this.material;
-
-    if (this.material) {
+    if (this.renderOptions.useMaterials) {
       this.renderOptions.shaderIndex = 1;
-      this.renderOptions.lightingModel = 2;
     } else {
       this.renderOptions.shaderIndex = 0;
-      this.renderOptions.lightingModel = 0;
     }
 
     model.draw(projectionMatrix, viewMatrix, modelMatrix, this.renderOptions);
