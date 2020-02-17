@@ -14,7 +14,7 @@ export function collideCircles(cx, cy, radius, tx, ty, targetRadius) {
 }
 
 export function collideCircleRectangle(cx, cy, radius, x1, y1, x2, y2) {
-  const epsilon = 0.1;
+  const epsilon = radius / 3.0;
   let type = 0;
   let testX = cx;
   let testY = cy;

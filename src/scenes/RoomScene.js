@@ -216,7 +216,7 @@ class RoomScene {
             const location = this._getSquareCenter(map, x, y, 0.4);
             scene.actors.push({
               active: true,
-              boundingRadius: 0.2,
+              boundingRadius: 0.1,
               model: new MaterialModel(this.gl, pickRandom(shapes)),
               material: getMaterial(pickRandom(materials)),
               location,
@@ -403,7 +403,7 @@ class RoomScene {
     // colision detection against map
     const cx = camera.location[0];
     const cy = camera.location[2];
-    const radius = 0.3;
+    const radius = 0.2;
     const mapBounds = scene.actors[0].boundingRectagles;
     const len = mapBounds.length;
     let collision = 0;
