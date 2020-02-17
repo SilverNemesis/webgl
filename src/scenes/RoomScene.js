@@ -1,6 +1,6 @@
 import * as mat4 from 'gl-matrix/mat4';
 import { clearScreen, pickRandom, getMaterial } from '../lib/utility';
-import { generateMaze, getMazeBoundingSquares, getMazeStartLocation, getMazeSquareCenter } from '../lib/maze';
+import { generateMaze, generateDungeon, getMazeBoundingSquares, getMazeStartLocation, getMazeSquareCenter } from '../lib/maze';
 import { collideCircleRectangle, collideCircles } from '../lib/collision';
 import RoomModel from '../models/RoomModel';
 import MaterialModel from '../models/MaterialModel';
@@ -17,7 +17,8 @@ class RoomScene {
     this.registerDataChange = this.registerDataChange.bind(this);
     this.forceDataChange = this.forceDataChange.bind(this);
     this.initScene = this.initScene.bind(this);
-    this.updateScene = this.updateScene.bind(this);
+    this.createMaze = this.createMaze.bind(this);
+    this.createDungeon = this.createDungeon.bind(this);
     this.drawScene = this.drawScene.bind(this);
     const ambientLight = [0.1, 0.1, 0.1];
     const directionalLight = {
@@ -98,9 +99,14 @@ class RoomScene {
         type: 'bool'
       },
       {
-        name: 'Update Geometry',
+        name: 'Create Maze',
         type: 'function',
-        function: this.updateScene
+        function: this.createMaze
+      },
+      {
+        name: 'Create Dungeon',
+        type: 'function',
+        function: this.createDungeon
       }
     ];
     for (let i = 0; i < this.options.length; i++) {
@@ -155,16 +161,24 @@ class RoomScene {
   }
 
   initScene() {
-    this._updateMap(this.gl);
+    this._updateMap(this.gl, false);
   }
 
-  updateScene() {
-    this._updateMap(this.gl);
+  createMaze() {
+    this._updateMap(this.gl, false);
   }
 
-  _updateMap(gl) {
+  createDungeon() {
+    this._updateMap(this.gl, true);
+  }
+
+  _updateMap(gl, dungeon) {
     this.ready = false;
-    this.map = generateMaze(11, 11);
+    if (dungeon) {
+      this.map = generateDungeon(15, 15);
+    } else {
+      this.map = generateMaze(11, 11);
+    }
     const { location, angle, square, nextSquare } = getMazeStartLocation(this.map);
     if (this.scene) {
       if (this.scene.actors.length > 1) {

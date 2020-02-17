@@ -77,13 +77,24 @@ class RoomModel extends Model {
 
   _geometry({ addSquare }) {
     const { width, height, data } = this.map;
+
+    const check = (x, y) => {
+      if (x < 0 || y < 0 || x > width - 1 || y > height - 1) {
+        return true;
+      }
+      if (data[y][x] === 1) {
+        return true;
+      }
+      return false;
+    }
+
     const ofs_x = -width / 2;
-    const ofs_z = -height / 2;
-    for (let z = 0; z < height; z++) {
+    const ofs_y = -height / 2;
+    for (let y = 0; y < height; y++) {
       for (let x = 0; x < width; x++) {
         const left = x + ofs_x;
         const right = left + 1;
-        const back = z + ofs_z;
+        const back = y + ofs_y;
         const front = back + 1;
         const top = 1;
         const bottom = 0;
@@ -97,24 +108,73 @@ class RoomModel extends Model {
         const b2 = [right, bottom, back];
         const b3 = [left, bottom, back];
 
-        if (data[z][x] === 0) {
+        const f0h = [left, top + 1, front];
+        const f1h = [right, top + 1, front];
+        const f2h = [right, bottom + 1, front];
+        const f3h = [left, bottom + 1, front];
+        const b0h = [left, top + 1, back];
+        const b1h = [right, top + 1, back];
+        const b2h = [right, bottom + 1, back];
+        const b3h = [left, bottom + 1, back];
+
+        if (data[y][x] === 0) {
           addSquare(b2, b3, f3, f2, { bufferIndex: 1 });
           addSquare(b0, b1, f1, f0, { bufferIndex: 2 });
 
-          if (z === 0 || data[z - 1][x] !== 0) {
+          if (y === 0 || data[y - 1][x] === 1) {
             addSquare(b1, b0, b3, b2);
           }
 
-          if (x === 0 || data[z][x - 1] !== 0) {
+          if (x === 0 || data[y][x - 1] === 1) {
             addSquare(b0, f0, f3, b3);
           }
 
-          if (z === height - 1 || data[z + 1][x] !== 0) {
+          if (y === height - 1 || data[y + 1][x] === 1) {
             addSquare(f0, f1, f2, f3);
           }
 
-          if (x === width - 1 || data[z][x + 1] !== 0) {
+          if (x === width - 1 || data[y][x + 1] === 1) {
             addSquare(f1, b1, b2, f2);
+          }
+        }
+        else if (data[y][x] === 2) {
+          const neighbors = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+          for (let yo = -1; yo < 2; yo++) {
+            for (let xo = -1; xo < 2; xo++) {
+              neighbors[(yo + 1) * 3 + (xo + 1)] = check(x + xo, y + yo);
+            }
+          }
+
+          addSquare(b2, b3, f3, f2, { bufferIndex: 1 });
+          addSquare(b0h, b1h, f1h, f0h, { bufferIndex: 2 });
+
+          if (neighbors[1]) {
+            addSquare(b1, b0, b3, b2);
+            addSquare(b1h, b0h, b3h, b2h);
+          } else if (neighbors[0] && neighbors[2]) {
+            addSquare(b1h, b0h, b3h, b2h);
+          }
+
+          if (neighbors[3]) {
+            addSquare(b0, f0, f3, b3);
+            addSquare(b0h, f0h, f3h, b3h);
+          } else if (neighbors[0] && neighbors[6]) {
+            addSquare(b0h, f0h, f3h, b3h);
+          }
+
+          if (neighbors[7]) {
+            addSquare(f0, f1, f2, f3);
+            addSquare(f0h, f1h, f2h, f3h);
+          } else if (neighbors[6] && neighbors[8]) {
+            addSquare(f0h, f1h, f2h, f3h);
+          }
+
+          if (neighbors[5]) {
+            addSquare(f1, b1, b2, f2);
+            addSquare(f1h, b1h, b2h, f2h);
+          } else if (neighbors[2] && neighbors[8]) {
+            addSquare(f1h, b1h, b2h, f2h);
           }
         }
       }
