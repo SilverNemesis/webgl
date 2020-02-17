@@ -24,7 +24,7 @@ class ColorScene {
     };
     this.options = [
       {
-        description: 'Colored cube and dodecahedron with no lighting',
+        description: 'Colored cube and dodecahedron with your choice of lighting',
         type: 'description'
       },
       {
