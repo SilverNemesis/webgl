@@ -1,5 +1,6 @@
 import * as mat4 from 'gl-matrix/mat4';
-import { clearScreen, degreesToRadians, pickRandom, generateMaze, getMaterial } from '../lib/utility';
+import { clearScreen, pickRandom, getMaterial } from '../lib/utility';
+import { generateMaze, getMazeBoundingSquares, getMazeStartLocation, getMazeSquareCenter } from '../lib/maze';
 import { collideCircleRectangle, collideCircles } from '../lib/collision';
 import RoomModel from '../models/RoomModel';
 import MaterialModel from '../models/MaterialModel';
@@ -164,12 +165,12 @@ class RoomScene {
   _updateMap(gl) {
     this.ready = false;
     this.map = generateMaze(11, 11);
-    const { location, angle, square, nextSquare } = this._findStartLocation(this.map);
+    const { location, angle, square, nextSquare } = getMazeStartLocation(this.map);
     if (this.scene) {
       if (this.scene.actors.length > 1) {
         this.scene.actors.length = 1;
       }
-      this.scene.actors[0].boundingRectagles = this._createMapBounds(this.map);
+      this.scene.actors[0].boundingRectagles = getMazeBoundingSquares(this.map);
       this.scene.actors[0].model.update(this.map);
       this.scene.camera.location = location;
       this.scene.camera.rotations[0].angle = angle;
@@ -179,7 +180,7 @@ class RoomScene {
         actors: [
           {
             active: true,
-            boundingRectagles: this._createMapBounds(this.map),
+            boundingRectagles: getMazeBoundingSquares(this.map),
             model,
             location: [0.0, 0.0, 0.0],
             rotations: []
@@ -213,7 +214,7 @@ class RoomScene {
             continue;
           }
           if ((x === tx && y === ty) || Math.random() < 0.2) {
-            const location = this._getSquareCenter(map, x, y, 0.4);
+            const location = getMazeSquareCenter(map, x, y, 0.4);
             scene.actors.push({
               active: true,
               boundingRadius: 0.1,
@@ -254,96 +255,6 @@ class RoomScene {
       }
     }
     this.onDataChange({ collected, total });
-  }
-
-  _createMapBounds(map) {
-    const { width, height, data } = map;
-    const mapBounds = [];
-    const ofs_x = -width / 2;
-    const ofs_y = -height / 2;
-    for (let y = 0; y < height; y++) {
-      for (let x = 0; x < width; x++) {
-        if (data[y][x] === 1) {
-          mapBounds.push({ x1: x + ofs_x, y1: y + ofs_y, x2: x + ofs_x + 1, y2: y + ofs_y + 1 });
-        }
-      }
-    }
-    return mapBounds;
-  }
-
-  _findStartLocation(map) {
-    const { width, height, data } = map;
-    const isSolid = (x, y) => {
-      if (x < 0 || x >= width || y < 0 || y >= height) {
-        return true;
-      }
-      if (data[y][x] === 1) {
-        return true;
-      }
-      return false;
-    }
-    const ofs_x = -width / 2;
-    const ofs_y = -height / 2;
-    for (let y = 0; y < height; y++) {
-      for (let x = 0; x < width; x++) {
-        if (data[y][x] !== 1) {
-          let angle = 0.0;
-          const matrix = [];
-          for (let r = -1; r < 2; r++) {
-            for (let c = -1; c < 2; c++) {
-              if (isSolid(x + c, y + r)) {
-                matrix.push('1');
-              } else {
-                matrix.push('0');
-              }
-            }
-          }
-          let tx, ty;
-          if (matrix[0] === '0') {
-            tx = x + 1;
-            ty = y + 1;
-            angle = -45.0;
-          } else if (matrix[2] === '0') {
-            tx = x - 1;
-            ty = y + 1;
-            angle = 45.0;
-          } else if (matrix[6] === '0') {
-            tx = x + 1;
-            ty = y - 1;
-            angle = -225.0;
-          } else if (matrix[8] === '0') {
-            tx = x - 1;
-            ty = y - 1;
-            angle = 225.0;
-          } else if (matrix[3] === '0') {
-            tx = x - 1;
-            ty = y;
-            angle = 90.0;
-          } else if (matrix[5] === '0') {
-            tx = x + 1;
-            ty = y;
-            angle = -90.0;
-          } else if (matrix[7] === '0') {
-            tx = x;
-            ty = y + 1;
-            angle = 180.0;
-          } else {
-            tx = x;
-            ty = y - 1;
-            angle = 0.0;
-          }
-          return { location: [x + ofs_x + 0.5, 0.5, y + ofs_y + 0.5], angle: degreesToRadians(angle), square: { x, y }, nextSquare: { x: tx, y: ty } };
-        }
-      }
-    }
-    return { location: [0.0, 0.5, 0.0] };
-  }
-
-  _getSquareCenter(map, x, y, z) {
-    const { width, height } = map;
-    const ofs_x = -width / 2;
-    const ofs_y = -height / 2;
-    return [x + ofs_x + 0.5, z, y + ofs_y + 0.5]
   }
 
   drawScene(deltaTime) {
@@ -400,7 +311,11 @@ class RoomScene {
     camera.location[1] += deltaTime * this.movement.side * viewMatrix[4];
     camera.location[2] += deltaTime * this.movement.side * viewMatrix[8];
 
-    // colision detection against map
+    this._detectCollisions(camera, x, y, scene);
+  }
+
+  _detectCollisions(camera, x, y, scene) {
+    // collision detection against map
     const cx = camera.location[0];
     const cy = camera.location[2];
     const radius = 0.2;
