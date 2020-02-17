@@ -24,7 +24,7 @@ class TextureScene {
     };
     this.options = [
       {
-        description: 'Textured cube with diffuse map only and no lighting',
+        description: 'Textured cube with diffuse map only with your choice of lighting',
         type: 'description'
       },
       {
