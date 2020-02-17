@@ -4,7 +4,8 @@ import { loadTexture, initShaderProgram, getShaderParameters } from '../lib/util
 
 class Model {
   _initModel(options) {
-    const { gl, geometry } = options;
+    const { gl, geometry, bufferCount } = options;
+
     const textures = [];
     if (options.texture) {
       const texture = {};
@@ -48,7 +49,7 @@ class Model {
         fetch(options.shader.fragment).then((response) => response.text()).then((text) => fragmentShader = text)
       ]).then(() => {
         const shader = this._setupShader(gl, vertexShader, fragmentShader);
-        const buffers = this._initBuffers(gl, [shader], geometry, textures.length || 1);
+        const buffers = this._initBuffers(gl, [shader], geometry, bufferCount || textures.length || 1);
         this.model = {
           shaders: [shader],
           buffers,
@@ -71,7 +72,7 @@ class Model {
           for (let i = 0; i < options.shaders.length; i++) {
             shaders.push(this._setupShader(gl, vertexShaders[i], fragmentShaders[i]));
           }
-          const buffers = this._initBuffers(gl, shaders, geometry, textures.length || 1);
+          const buffers = this._initBuffers(gl, shaders, geometry, bufferCount || textures.length || 1);
           this.model = {
             shaders,
             buffers,
@@ -82,8 +83,9 @@ class Model {
   }
 
   _updateModel(geometry) {
+    const bufferCount = this.model.buffers.length;
     this._deleteBuffers();
-    this.model.buffers = this._initBuffers(this.gl, this.model.shaders, geometry, this.model.textures.length || 1);
+    this.model.buffers = this._initBuffers(this.gl, this.model.shaders, geometry, bufferCount);
   }
 
   _setupShader(gl, vertexShader, fragmentShader) {
@@ -441,6 +443,7 @@ class Model {
     for (let i = 0; i < buffers.length; i++) {
       const buffer = buffers[i];
       const texture = textures[i];
+      const material = options.material ? options.material : (options.materials ? options.materials[i] : undefined);
 
       {
         const numComponents = 3;
@@ -582,8 +585,7 @@ class Model {
         }
       }
 
-      if (shader.uniformLocations.material && options.material) {
-        const material = options.material;
+      if (shader.uniformLocations.material && material) {
         gl.uniform3fv(shader.uniformLocations.material.ambient, material.ambient);
         gl.uniform3fv(shader.uniformLocations.material.diffuse, material.diffuse);
         gl.uniform3fv(shader.uniformLocations.material.specular, material.specular);
