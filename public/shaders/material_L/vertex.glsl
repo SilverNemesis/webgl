@@ -13,11 +13,11 @@ struct Material {
   vec3 diffuse;
   vec3 specular;
   float shininess;
-}; 
+};
 
 attribute vec3 aVertexPosition;
 attribute vec3 aVertexNormal;
-  
+
 uniform mat4 uProjectionMatrix;
 uniform mat4 uViewMatrix;
 uniform mat4 uModelMatrix;

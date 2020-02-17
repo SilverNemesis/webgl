@@ -42,7 +42,7 @@ vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir, float heightScale) {
   return texCoords - p;
 }
 
-vec2 ParallaxMappingSteps(vec2 texCoords, vec3 viewDir, float heightScale) { 
+vec2 ParallaxMappingSteps(vec2 texCoords, vec3 viewDir, float heightScale) {
   float numLayers = float(uParallaxSteps);
 
   if (numLayers >= 8.0) {
@@ -52,7 +52,7 @@ vec2 ParallaxMappingSteps(vec2 texCoords, vec3 viewDir, float heightScale) {
   }
 
   float layerDepth = 1.0 / numLayers;
-  vec2 P = viewDir.xy / viewDir.z * heightScale; 
+  vec2 P = viewDir.xy / viewDir.z * heightScale;
   vec2 deltaTexCoords = P / numLayers;
   vec2 currentTexCoords = texCoords;
   float currentDepthMapValue = GetDepth(currentTexCoords);
@@ -74,7 +74,7 @@ vec2 ParallaxMappingSteps(vec2 texCoords, vec3 viewDir, float heightScale) {
     float weight = afterDepth / (afterDepth - beforeDepth);
     currentTexCoords = prevTexCoords * weight + currentTexCoords * (1.0 - weight);
   }
-  
+
   return currentTexCoords;
 }
 
@@ -126,6 +126,6 @@ void main(void) {
     ambient = texture2D(uSamplerOcclusion, texCoords).r * uAmbientLight;
   }
 
-  vec3 lighting = ambient + (uDirectionalLight.color * diffuse_intensity) + (uPointLight.color * point_intensity); 
+  vec3 lighting = ambient + (uDirectionalLight.color * diffuse_intensity) + (uPointLight.color * point_intensity);
   gl_FragColor = vec4(albedo * lighting, 1.0);
 }
