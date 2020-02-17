@@ -33,7 +33,7 @@ class RoomScene {
       showDiffuseMap: true,
       showNormalMap: true,
       showAmbientOcclusionMap: true,
-      showParallaxMap: true,
+      showParallaxMap: false,
       parallaxHeightScale: 0.02,
       parallaxSteps: 32,
       parallaxOcclusionMapping: true,
