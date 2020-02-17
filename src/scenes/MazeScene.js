@@ -1,6 +1,6 @@
 import * as mat4 from 'gl-matrix/mat4';
 import { clearScreen, degreesToRadians, getMaterialList, getMaterial } from '../lib/utility';
-import { generateMaze } from '../lib/maze';
+import { generateMaze, generateDungeon } from '../lib/maze';
 import MazeModel from '../models/MazeModel';
 
 class MazeScene {
@@ -8,7 +8,8 @@ class MazeScene {
     this.gl = gl;
     this.setOption = this.setOption.bind(this);
     this.initScene = this.initScene.bind(this);
-    this.updateScene = this.updateScene.bind(this);
+    this.createMaze = this.createMaze.bind(this);
+    this.createDungeon = this.createDungeon.bind(this);
     this.drawScene = this.drawScene.bind(this);
     this.totalDelta = 0.0;
 
@@ -42,7 +43,7 @@ class MazeScene {
 
     this.options = [
       {
-        description: 'Random maze geometry with colors or materials using Phong shading',
+        description: 'Random maze/dungeon geometry with colors or materials using Phong shading with your choice of lighting',
         type: 'description'
       },
       {
@@ -74,9 +75,14 @@ class MazeScene {
         value: this.renderOptions.lightingModel
       },
       {
-        name: 'Update Maze',
+        name: 'Create Maze',
         type: 'function',
-        function: this.updateScene
+        function: this.createMaze
+      },
+      {
+        name: 'Create Dungeon',
+        type: 'function',
+        function: this.createDungeon
       }
     ];
 
@@ -128,7 +134,7 @@ class MazeScene {
     this.renderOptions.pointLight.brightness = size * size;
   }
 
-  updateScene() {
+  createMaze() {
     const { size, maze } = this._generateMaze();
     this.scene.actors[0].location = [0.0, 0.0, -2.0 * size];
     this.scene.actors[0].model.update(maze);
@@ -138,6 +144,19 @@ class MazeScene {
   _generateMaze() {
     const size = Math.floor(Math.random() * 35) * 2 + 11;
     const maze = generateMaze(size, size);
+    return { size, maze };
+  }
+
+  createDungeon() {
+    const { size, maze } = this._generateDungeon();
+    this.scene.actors[0].location = [0.0, 0.0, -2.0 * size];
+    this.scene.actors[0].model.update(maze);
+    this.renderOptions.pointLight.position = [0.0, 10.0, -2.0 * size];
+  }
+
+  _generateDungeon() {
+    const size = Math.floor(Math.random() * 35) * 2 + 11;
+    const maze = generateDungeon(size, size);
     return { size, maze };
   }
 

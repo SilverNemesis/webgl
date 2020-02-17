@@ -77,24 +77,24 @@ class MazeModel extends Model {
         const b2 = [right, bottom, back];
         const b3 = [left, bottom, back];
 
-        if (maze.data[y][x] === 0) {
+        if (maze.data[y][x] !== 1) {
           addSquare(b2, b3, f3, f2, { color: floorColor, bufferIndex: 1 });
         } else {
           addSquare(b1, b0, f0, f1, { color: ceilingColor, bufferIndex: 2 });
 
-          if (y === 0 || maze.data[y - 1][x] === 0) {
+          if (y === 0 || maze.data[y - 1][x] !== 1) {
             addSquare(b0, b1, b2, b3, { color: wallColor_Back });
           }
 
-          if (x === 0 || maze.data[y][x - 1] === 0) {
+          if (x === 0 || maze.data[y][x - 1] !== 1) {
             addSquare(f0, b0, b3, f3, { color: wallColor_Left });
           }
 
-          if (y === maze.height - 1 || maze.data[y + 1][x] === 0) {
+          if (y === maze.height - 1 || maze.data[y + 1][x] !== 1) {
             addSquare(f1, f0, f3, f2, { color: wallColor_Front });
           }
 
-          if (x === maze.width - 1 || maze.data[y][x + 1] === 0) {
+          if (x === maze.width - 1 || maze.data[y][x + 1] !== 1) {
             addSquare(b1, f1, f2, b2, { color: wallColor_Right });
           }
         }
