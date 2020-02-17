@@ -189,7 +189,9 @@ button {
   width: 90%;
   border: none;
   border-radius: .1rem;
-  margin: 1rem;
+  margin-top: 1rem;
+  margin-left: 1rem;
+  margin-right: 1rem;
   padding: .5rem;
   text-align: center;
   text-decoration: none;
