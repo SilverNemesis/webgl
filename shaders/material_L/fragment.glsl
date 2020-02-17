@@ -13,7 +13,7 @@ struct Material {
   vec3 diffuse;
   vec3 specular;
   float shininess;
-}; 
+};
 
 uniform vec3 uCameraPos;
 uniform Light uLights[2];

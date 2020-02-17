@@ -22,6 +22,7 @@ uniform struct {
 } uPointLight;
 
 uniform int uLightingModel;
+uniform vec3 uCameraPos;
 
 varying vec3 vVertexPosition;
 varying vec3 vVertexNormal;
@@ -36,9 +37,15 @@ void main(void) {
 
   if (uLightingModel == 1) {
     float directional = max(dot(vVertexNormal, uDirectionalLight.direction), 0.0);
+
     vec3 surfaceToLight = uPointLight.position - vVertexPosition;
     float bright = uPointLight.brightness * max(dot(vVertexNormal, normalize(surfaceToLight)), 0.0) / (length(surfaceToLight) * length(surfaceToLight));
     bright = clamp(bright, 0.0, 1.0);
-    vLighting = uAmbientLight + (uDirectionalLight.color * directional) + (uPointLight.color * bright);
+
+    vec3 viewDir = normalize(uCameraPos - vVertexPosition);
+    vec3 reflectDir = reflect(-normalize(surfaceToLight), vVertexNormal);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 5.0);
+
+    vLighting = uAmbientLight + (uDirectionalLight.color * directional) + (uPointLight.color * bright) + spec;
   }
 }
