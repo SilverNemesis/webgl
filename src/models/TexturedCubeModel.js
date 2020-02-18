@@ -1,7 +1,7 @@
 import Model from './Model';
 
 class TexturedCubeModel extends Model {
-  constructor(gl) {
+  constructor(gl, textureName) {
     super(gl);
     this.gl = gl;
     this.draw = this.draw.bind(this);
@@ -9,7 +9,7 @@ class TexturedCubeModel extends Model {
       gl,
       geometry: this._geometry,
       texture: {
-        diffuse: 'images/cubetexture.png'
+        diffuse: textureName
       },
       shader: {
         vertex: 'shaders/texture_LD/vertex.glsl',

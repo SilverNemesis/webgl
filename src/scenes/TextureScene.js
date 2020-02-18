@@ -24,7 +24,7 @@ class TextureScene {
     };
     this.options = [
       {
-        description: 'Textured cube with diffuse map only with your choice of lighting',
+        description: 'Textured cubes with diffuse maps only with your choice of lighting',
         type: 'description'
       },
       {
@@ -36,8 +36,8 @@ class TextureScene {
       }
     ];
     this.credits = [
-      'Texture from MDN WebGL Tutorial',
-      'link:https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/Tutorial'
+      'Textures created by João Paulo',
+      'link:https://3dtextures.me/about/'
     ];
   }
 
@@ -47,13 +47,27 @@ class TextureScene {
   }
 
   initScene() {
-    const gl = this.gl;
-    const model = new TexturedCubeModel(gl);
     this.scene = {
       actors: [
         {
-          model,
-          location: [0.0, 0.0, -6.0],
+          model: new TexturedCubeModel(this.gl, 'images/Tiles_035_basecolor.jpg'),
+          location: [-1.6, 0.0, -6.0],
+          rotations: [
+            {
+              angle: 0.0,
+              axis: [1, 0, 0],
+              speed: 1.0
+            },
+            {
+              angle: 0.0,
+              axis: [0, 1, 0],
+              speed: 0.7
+            }
+          ]
+        },
+        {
+          model: new TexturedCubeModel(this.gl, 'images/Wood_planks_011_basecolor.jpg'),
+          location: [1.6, 0.0, -6.0],
           rotations: [
             {
               angle: 0.0,
