@@ -51,7 +51,7 @@ class MazeScene {
         name: 'Use Materials',
         id: 'useMaterials',
         type: 'bool',
-        value: false
+        value: this.renderOptions.useMaterials
       },
       {
         name: 'Wall Material',
