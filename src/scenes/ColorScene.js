@@ -11,12 +11,12 @@ class ColorScene {
     this.renderOptions = {
       ambientLight: [0.2, 0.2, 0.2],
       directionalLight: {
-        color: [1.0, 1.0, 1.0],
-        direction: [-1.0, 1.0, 0.0]
+        color: [0.0, 0.0, 0.0],
+        direction: [0.0, 0.0, 0.0]
       },
       pointLight: {
         color: [1.0, 1.0, 1.0],
-        position: [1.0, -1.0, 0.0],
+        position: [0.0, 0.0, 0.0],
         brightness: 25.0
       },
       cameraPos: [0.0, 0.0, 0.0],
@@ -81,12 +81,12 @@ class ColorScene {
             {
               angle: 0.0,
               axis: [1, 0, 0],
-              speed: 1.0
+              speed: 0.4
             },
             {
               angle: 0.0,
               axis: [0, 1, 0],
-              speed: 0.7
+              speed: 0.2
             }
           ]
         },
@@ -98,12 +98,12 @@ class ColorScene {
             {
               angle: 0.0,
               axis: [1, 0, 0],
-              speed: 1.0
+              speed: 0.4
             },
             {
               angle: 0.0,
               axis: [0, 1, 0],
-              speed: 0.7
+              speed: 0.2
             }
           ]
         }
