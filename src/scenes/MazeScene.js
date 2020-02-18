@@ -1,5 +1,6 @@
 import * as mat4 from 'gl-matrix/mat4';
-import { clearScreen, degreesToRadians, getMaterialList, getMaterial } from '../lib/utility';
+import { clearScreen, degreesToRadians } from '../lib/utility';
+import { getMaterialList, getMaterial } from '../lib/materials';
 import { generateMaze, generateDungeon } from '../lib/maze';
 import MazeModel from '../models/MazeModel';
 

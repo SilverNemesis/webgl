@@ -1,5 +1,6 @@
 import * as mat4 from 'gl-matrix/mat4';
-import { clearScreen, pickRandom, getMaterial } from '../lib/utility';
+import { clearScreen, pickRandom } from '../lib/utility';
+import { getMaterial } from '../lib/materials';
 import { generateMaze, generateDungeon, getMazeBoundingSquares, getMazeStartLocation, getMazeSquareCenter } from '../lib/maze';
 import { collideCircleRectangle, collideCircles } from '../lib/collision';
 import RoomModel from '../models/RoomModel';

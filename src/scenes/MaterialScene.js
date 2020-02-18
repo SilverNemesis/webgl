@@ -1,5 +1,6 @@
 import * as mat4 from 'gl-matrix/mat4';
-import { clearScreen, getMaterialList, getMaterial } from '../lib/utility'
+import { clearScreen } from '../lib/utility';
+import { getMaterialList, getMaterial } from '../lib/materials';
 import MaterialModel from '../models/MaterialModel';
 
 class MaterialScene {

@@ -1,5 +1,5 @@
 import Model from './Model';
-import { getShape } from '../lib/utility';
+import { getShape } from '../lib/shapes';
 
 class MaterialModel extends Model {
   constructor(gl, shapeName) {

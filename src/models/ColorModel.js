@@ -1,5 +1,5 @@
 import Model from './Model';
-import { getShape } from '../lib/utility';
+import { getShape } from '../lib/shapes';
 
 class ColorModel extends Model {
   constructor(gl, shapeName, colors) {
