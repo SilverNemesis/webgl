@@ -24,7 +24,7 @@ class ColorScene {
     };
     this.options = [
       {
-        description: 'Colored cube and dodecahedron with your choice of lighting',
+        description: 'Colored dodecahedron and icosahedron with your choice of lighting',
         type: 'description'
       },
       {
@@ -44,16 +44,8 @@ class ColorScene {
 
   initScene() {
     const gl = this.gl;
-    const colors1 = [
-      [0.0, 0.0, 1.0],    // Bottom face: blue
-      [0.0, 1.0, 0.0],    // Top face: green
-      [1.0, 0.0, 1.0],    // Left face: purple
-      [1.0, 1.0, 0.0],    // Right face: yellow
-      [1.0, 1.0, 1.0],    // Front face: white
-      [1.0, 0.0, 0.0]     // Back face: red
-    ];
-    const model6 = new ColorModel(gl, 'cube', colors1);
-    const colors2 = [
+
+    const colors = [
       [1.0, 0.0, 0.0],
       [0.0, 0.0, 1.0],
       [0.0, 1.0, 0.0],
@@ -65,13 +57,24 @@ class ColorScene {
       [1.0, 0.0, 0.5],
       [0.5, 1.0, 0.0],
       [0.0, 0.5, 1.0],
-      [0.5, 0.0, 1.0]
+      [0.5, 0.0, 1.0],
+      [1.0, 0.5, 0.5],
+      [0.5, 1.0, 0.5],
+      [0.5, 0.5, 1.0],
+      [1.0, 1.0, 0.5],
+      [1.0, 0.5, 1.0],
+      [0.5, 1.0, 1.0],
+      [0.5, 0.5, 0.5],
+      [1.0, 1.0, 1.0]
     ];
-    const model12 = new ColorModel(gl, 'dodecahedron', colors2);
+
+    const model1 = new ColorModel(gl, 'dodecahedron', colors);
+    const model2 = new ColorModel(gl, 'icosahedron', colors);
+
     this.scene = {
       actors: [
         {
-          model: model6,
+          model: model1,
           location: [-1.6, 0.0, -6.0],
           scale: [2.8, 2.8, 2.8],
           rotations: [
@@ -88,7 +91,7 @@ class ColorScene {
           ]
         },
         {
-          model: model12,
+          model: model2,
           location: [1.6, 0.0, -6.0],
           scale: [2.8, 2.8, 2.8],
           rotations: [
