@@ -15,6 +15,8 @@ class MazeScene {
     this.totalDelta = 0.0;
 
     this.renderOptions = {
+      projectionMatrix: mat4.create(),
+      viewMatrix: mat4.create(),
       lights: [
         {
           position: [10.0, -10.0, 0.0],
@@ -125,6 +127,7 @@ class MazeScene {
     this.scene = {
       actors: [
         {
+          modelMatrix: mat4.create(),
           model,
           location: [0.0, 0.0, -2.0 * size],
           rotation: { angle: 0.0, axis: [0, 1, 0], speed: 0.5 }
@@ -165,6 +168,7 @@ class MazeScene {
   drawScene(deltaTime) {
     const gl = this.gl;
     const scene = this.scene;
+    const { projectionMatrix, viewMatrix } = this.renderOptions;
 
     clearScreen(gl);
 
@@ -172,24 +176,22 @@ class MazeScene {
     const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
     const zNear = 0.1;
     const zFar = 500.0;
-    const projectionMatrix = mat4.create();
     mat4.perspective(projectionMatrix, fieldOfView, aspect, zNear, zFar);
 
-    const viewMatrix = mat4.create();
+    mat4.identity(viewMatrix);
     mat4.translate(viewMatrix, viewMatrix, scene.camera);
     mat4.invert(viewMatrix, viewMatrix)
 
     for (let i = 0; i < scene.actors.length; i++) {
       const actor = scene.actors[i];
-      this._renderActor(projectionMatrix, viewMatrix, actor);
+      this._renderActor(actor);
       this._animateActor(deltaTime, actor);
     }
   }
 
-  _renderActor(projectionMatrix, viewMatrix, actor) {
-    const model = actor.model;
-
-    const modelMatrix = mat4.create();
+  _renderActor(actor) {
+    const { model, modelMatrix } = actor;
+    mat4.identity(modelMatrix);
     mat4.translate(modelMatrix, modelMatrix, actor.location);
     mat4.rotate(modelMatrix, modelMatrix, degreesToRadians(45), [1, 0, 0]);
     mat4.rotate(modelMatrix, modelMatrix, actor.rotation.angle, actor.rotation.axis);
@@ -200,7 +202,7 @@ class MazeScene {
       this.renderOptions.shaderIndex = 0;
     }
 
-    model.draw(Object.assign({ projectionMatrix, viewMatrix, modelMatrix }, this.renderOptions));
+    model.draw(modelMatrix, this.renderOptions);
   }
 
   _animateActor(deltaTime, actor) {

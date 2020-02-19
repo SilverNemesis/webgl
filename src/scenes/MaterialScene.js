@@ -10,6 +10,8 @@ class MaterialScene {
     this.initScene = this.initScene.bind(this);
     this.drawScene = this.drawScene.bind(this);
     this.renderOptions = {
+      projectionMatrix: mat4.create(),
+      viewMatrix: mat4.create(),
       lights: [
         {
           position: [10.0, -10.0, 0.0],
@@ -86,6 +88,7 @@ class MaterialScene {
     this.scene = {
       actors: [
         {
+          modelMatrix: mat4.create(),
           model: model4,
           materialIndex: 1,
           location: [-3.75, 0.0, -8.0],
@@ -103,6 +106,7 @@ class MaterialScene {
           ]
         },
         {
+          modelMatrix: mat4.create(),
           model: model6,
           materialIndex: 1,
           location: [-2.25, 0.0, -8.0],
@@ -120,6 +124,7 @@ class MaterialScene {
           ]
         },
         {
+          modelMatrix: mat4.create(),
           model: model8,
           materialIndex: 1,
           location: [-0.75, 0.0, -8.0],
@@ -137,6 +142,7 @@ class MaterialScene {
           ]
         },
         {
+          modelMatrix: mat4.create(),
           model: model10,
           materialIndex: 1,
           location: [0.75, 0.0, -8.0],
@@ -154,6 +160,7 @@ class MaterialScene {
           ]
         },
         {
+          modelMatrix: mat4.create(),
           model: model12,
           materialIndex: 1,
           location: [2.25, 0.0, -8.0],
@@ -171,6 +178,7 @@ class MaterialScene {
           ]
         },
         {
+          modelMatrix: mat4.create(),
           model: model20,
           materialIndex: 1,
           location: [3.75, 0.0, -8.0],
@@ -188,6 +196,7 @@ class MaterialScene {
           ]
         },
         {
+          modelMatrix: mat4.create(),
           model: model4,
           materialIndex: 0,
           location: [-3.75, 2.0, -8.0],
@@ -205,6 +214,7 @@ class MaterialScene {
           ]
         },
         {
+          modelMatrix: mat4.create(),
           model: model6,
           materialIndex: 0,
           location: [-2.25, 2.0, -8.0],
@@ -222,6 +232,7 @@ class MaterialScene {
           ]
         },
         {
+          modelMatrix: mat4.create(),
           model: model8,
           materialIndex: 0,
           location: [-0.75, 2.0, -8.0],
@@ -239,6 +250,7 @@ class MaterialScene {
           ]
         },
         {
+          modelMatrix: mat4.create(),
           model: model10,
           materialIndex: 0,
           location: [0.75, 2.0, -8.0],
@@ -256,6 +268,7 @@ class MaterialScene {
           ]
         },
         {
+          modelMatrix: mat4.create(),
           model: model12,
           materialIndex: 0,
           location: [2.25, 2.0, -8.0],
@@ -273,6 +286,7 @@ class MaterialScene {
           ]
         },
         {
+          modelMatrix: mat4.create(),
           model: model20,
           materialIndex: 0,
           location: [3.75, 2.0, -8.0],
@@ -290,6 +304,7 @@ class MaterialScene {
           ]
         },
         {
+          modelMatrix: mat4.create(),
           model: model4,
           materialIndex: 2,
           location: [-3.75, -2.0, -8.0],
@@ -307,6 +322,7 @@ class MaterialScene {
           ]
         },
         {
+          modelMatrix: mat4.create(),
           model: model6,
           materialIndex: 2,
           location: [-2.25, -2.0, -8.0],
@@ -324,6 +340,7 @@ class MaterialScene {
           ]
         },
         {
+          modelMatrix: mat4.create(),
           model: model8,
           materialIndex: 2,
           location: [-0.75, -2.0, -8.0],
@@ -341,6 +358,7 @@ class MaterialScene {
           ]
         },
         {
+          modelMatrix: mat4.create(),
           model: model10,
           materialIndex: 2,
           location: [0.75, -2.0, -8.0],
@@ -358,6 +376,7 @@ class MaterialScene {
           ]
         },
         {
+          modelMatrix: mat4.create(),
           model: model12,
           materialIndex: 2,
           location: [2.25, -2.0, -8.0],
@@ -375,6 +394,7 @@ class MaterialScene {
           ]
         },
         {
+          modelMatrix: mat4.create(),
           model: model20,
           materialIndex: 2,
           location: [3.75, -2.0, -8.0],
@@ -399,6 +419,7 @@ class MaterialScene {
   drawScene(deltaTime) {
     const gl = this.gl;
     const scene = this.scene;
+    const { projectionMatrix, viewMatrix } = this.renderOptions;
 
     clearScreen(gl);
 
@@ -406,10 +427,9 @@ class MaterialScene {
     const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
     const zNear = 0.1;
     const zFar = 100.0;
-    const projectionMatrix = mat4.create();
     mat4.perspective(projectionMatrix, fieldOfView, aspect, zNear, zFar);
 
-    const viewMatrix = mat4.create();
+    mat4.identity(viewMatrix);
     mat4.translate(viewMatrix, viewMatrix, scene.camera);
     mat4.invert(viewMatrix, viewMatrix)
 
@@ -417,15 +437,14 @@ class MaterialScene {
 
     for (let i = 0; i < scene.actors.length; i++) {
       const actor = scene.actors[i];
-      this._renderActor(projectionMatrix, viewMatrix, actor);
+      this._renderActor(actor);
       this._animateActor(deltaTime, actor);
     }
   }
 
-  _renderActor(projectionMatrix, viewMatrix, actor) {
-    const model = actor.model;
-
-    const modelMatrix = mat4.create();
+  _renderActor(actor) {
+    const { model, modelMatrix } = actor;
+    mat4.identity(modelMatrix);
     mat4.translate(modelMatrix, modelMatrix, actor.location);
     for (let i = 0; i < actor.rotations.length; i++) {
       const rotation = actor.rotations[i];
@@ -434,7 +453,7 @@ class MaterialScene {
 
     this.renderOptions.material = this.renderOptions.materials[actor.materialIndex]
 
-    model.draw(Object.assign({ projectionMatrix, viewMatrix, modelMatrix }, this.renderOptions));
+    model.draw(modelMatrix, this.renderOptions);
   }
 
   _animateActor(deltaTime, actor) {

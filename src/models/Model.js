@@ -433,14 +433,14 @@ class Model {
     }
   }
 
-  draw(options) {
+  draw(modelMatrix, options) {
     if (!this.model) {
       return;
     }
 
     const gl = this.gl;
     const model = this.model;
-    const { projectionMatrix, viewMatrix, modelMatrix } = options;
+    const { projectionMatrix, viewMatrix } = options;
     const { shaders, buffers, textures } = model;
     const shader = shaders[options.shaderIndex ? options.shaderIndex : 0];
 

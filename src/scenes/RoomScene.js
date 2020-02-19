@@ -31,6 +31,8 @@ class RoomScene {
       brightness: 15.0
     };
     this.renderOptions = {
+      projectionMatrix: mat4.create(),
+      viewMatrix: mat4.create(),
       showDiffuseMap: true,
       showNormalMap: true,
       showAmbientOcclusionMap: true,
@@ -196,6 +198,7 @@ class RoomScene {
           {
             active: true,
             boundingRectagles: getMazeBoundingSquares(this.map),
+            modelMatrix: mat4.create(),
             model,
             location: [0.0, 0.0, 0.0],
             rotations: []
@@ -233,6 +236,7 @@ class RoomScene {
             scene.actors.push({
               active: true,
               boundingRadius: 0.1,
+              modelMatrix: mat4.create(),
               model: new MaterialModel(this.gl, pickRandom(shapes)),
               material: getMaterial(pickRandom(materials)),
               location,
@@ -279,6 +283,7 @@ class RoomScene {
 
     const gl = this.gl;
     const scene = this.scene;
+    const { projectionMatrix, viewMatrix } = this.renderOptions;
     const camera = scene.camera;
 
     clearScreen(gl);
@@ -287,10 +292,9 @@ class RoomScene {
     const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
     const zNear = 0.1;
     const zFar = 100.0;
-    const projectionMatrix = mat4.create();
     mat4.perspective(projectionMatrix, fieldOfView, aspect, zNear, zFar);
 
-    const viewMatrix = mat4.create();
+    mat4.identity(viewMatrix);
     mat4.translate(viewMatrix, viewMatrix, camera.location);
     for (let i = 0; i < camera.rotations.length; i++) {
       const rotation = camera.rotations[i];
@@ -306,7 +310,7 @@ class RoomScene {
     for (let i = 0; i < scene.actors.length; i++) {
       const actor = scene.actors[i];
       if (actor.active) {
-        this._renderActor(projectionMatrix, viewMatrix, actor);
+        this._renderActor(actor);
         this._animateActor(deltaTime, actor);
       }
     }
@@ -368,10 +372,9 @@ class RoomScene {
     }
   }
 
-  _renderActor(projectionMatrix, viewMatrix, actor) {
-    const model = actor.model;
-
-    const modelMatrix = mat4.create();
+  _renderActor(actor) {
+    const { model, modelMatrix } = actor;
+    mat4.identity(modelMatrix);
     mat4.translate(modelMatrix, modelMatrix, actor.location);
     if (actor.scale) {
       mat4.scale(modelMatrix, modelMatrix, actor.scale);
@@ -385,7 +388,7 @@ class RoomScene {
       this.renderOptions.material = actor.material;
     }
 
-    model.draw(Object.assign({ projectionMatrix, viewMatrix, modelMatrix }, this.renderOptions));
+    model.draw(modelMatrix, this.renderOptions);
   }
 
   _animateActor(deltaTime, actor) {
