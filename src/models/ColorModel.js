@@ -10,7 +10,11 @@ class ColorModel extends Model {
       gl,
       geometry: ({ addFaces }) => {
         const shape = getShape(shapeName);
-        addFaces(shape.vertices, shape.faces, { colors });
+        if (shape) {
+          addFaces(shape.vertices, shape.faces, { colors });
+        } else {
+          alert('shape ' + shapeName + ' not found');
+        }
       },
       shader: {
         vertex: 'shaders/color_L/vertex.glsl',
@@ -20,23 +24,7 @@ class ColorModel extends Model {
   }
 
   draw(projectionMatrix, viewMatrix, modelMatrix, options) {
-    const {
-      ambientLight,
-      directionalLight,
-      pointLight,
-      cameraPos,
-      lightingModel
-    } = options;
-    this._drawModel({
-      projectionMatrix,
-      viewMatrix,
-      modelMatrix,
-      ambientLight,
-      directionalLight,
-      pointLight,
-      cameraPos,
-      lightingModel
-    });
+    this._drawModel(Object.assign({ projectionMatrix, viewMatrix, modelMatrix }, options));
   }
 }
 
