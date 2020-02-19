@@ -4,7 +4,6 @@ class BrickWallModel extends Model {
   constructor(gl) {
     super(gl);
     this.gl = gl;
-    this.draw = this.draw.bind(this);
     this._initModel({
       gl,
       geometry: this._geometry,
@@ -18,41 +17,6 @@ class BrickWallModel extends Model {
         vertex: 'shaders/texture_LDNOP/vertex.glsl',
         fragment: 'shaders/texture_LDNOP/fragment.glsl'
       }
-    });
-  }
-
-  draw(projectionMatrix, viewMatrix, modelMatrix, options) {
-    const {
-      showDiffuseMap,
-      showNormalMap,
-      showAmbientOcclusionMap,
-      showParallaxMap,
-      parallaxHeightScale,
-      parallaxSteps,
-      parallaxOcclusionMapping,
-    } = options;
-    this._drawModel({
-      projectionMatrix,
-      viewMatrix,
-      modelMatrix,
-      showDiffuseMap,
-      showNormalMap,
-      showAmbientOcclusionMap,
-      showParallaxMap,
-      parallaxHeightScale,
-      parallaxSteps,
-      parallaxOcclusionMapping,
-      ambientLight: [0.3, 0.3, 0.3],
-      directionalLight: {
-        color: [0.4, 0.4, 0.4],
-        direction: [0.0, -1.0, 1.0]
-      },
-      pointLight: {
-        color: [1.0, 1.0, 1.0],
-        position: [0.0, 0.0, 0.0],
-        brightness: 15.0
-      },
-      cameraPos: [0.0, 0.0, 0.0]
     });
   }
 

@@ -18,19 +18,6 @@ class MaterialModel extends Model {
       }
     });
   }
-
-  draw(projectionMatrix, viewMatrix, modelMatrix, options) {
-    const { cameraPos, lights, material, lightingModel } = options;
-    this._drawModel({
-      projectionMatrix,
-      viewMatrix,
-      modelMatrix,
-      cameraPos,
-      lights,
-      material,
-      lightingModel
-    });
-  }
 }
 
 export default MaterialModel;

@@ -39,7 +39,8 @@ class MazeScene {
       },
       useMaterials: false,
       materials: new Array(3).fill(undefined),
-      lightingModel: 0
+      lightingModel: 0,
+      useColors: 1
     };
 
     this.options = [
@@ -199,7 +200,7 @@ class MazeScene {
       this.renderOptions.shaderIndex = 0;
     }
 
-    model.draw(projectionMatrix, viewMatrix, modelMatrix, this.renderOptions);
+    model.draw(Object.assign({ projectionMatrix, viewMatrix, modelMatrix }, this.renderOptions));
   }
 
   _animateActor(deltaTime, actor) {

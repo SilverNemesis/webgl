@@ -38,38 +38,6 @@ class RoomModel extends Model {
     });
   }
 
-  draw(projectionMatrix, viewMatrix, modelMatrix, options) {
-    const {
-      showDiffuseMap,
-      showNormalMap,
-      showAmbientOcclusionMap,
-      showParallaxMap,
-      parallaxHeightScale,
-      parallaxSteps,
-      parallaxOcclusionMapping,
-      ambientLight,
-      directionalLight,
-      pointLight,
-      cameraPos
-    } = options;
-    this._drawModel({
-      projectionMatrix,
-      viewMatrix,
-      modelMatrix,
-      showDiffuseMap,
-      showNormalMap,
-      showAmbientOcclusionMap,
-      showParallaxMap,
-      parallaxHeightScale,
-      parallaxSteps,
-      parallaxOcclusionMapping,
-      ambientLight,
-      directionalLight,
-      pointLight,
-      cameraPos
-    });
-  }
-
   update(map) {
     this.map = map;
     this._updateModel(this._geometry);

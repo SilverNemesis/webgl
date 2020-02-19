@@ -120,7 +120,7 @@ class TextureScene {
       mat4.rotate(modelMatrix, modelMatrix, rotation.angle, rotation.axis);
     }
 
-    model.draw(projectionMatrix, viewMatrix, modelMatrix, this.renderOptions);
+    model.draw(Object.assign({ projectionMatrix, viewMatrix, modelMatrix }, this.renderOptions));
   }
 
   _animateActor(deltaTime, actor) {

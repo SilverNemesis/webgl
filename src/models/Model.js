@@ -3,6 +3,10 @@ import * as vec3 from 'gl-matrix/vec3';
 import { loadTexture, initShaderProgram, getShaderParameters } from '../lib/utility'
 
 class Model {
+  constructor() {
+    this.draw = this.draw.bind(this);
+  }
+
   _initModel(options) {
     const { gl, geometry, bufferCount } = options;
 
@@ -429,7 +433,7 @@ class Model {
     }
   }
 
-  _drawModel(options) {
+  draw(options) {
     if (!this.model) {
       return;
     }

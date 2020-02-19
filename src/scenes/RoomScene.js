@@ -385,7 +385,7 @@ class RoomScene {
       this.renderOptions.material = actor.material;
     }
 
-    model.draw(projectionMatrix, viewMatrix, modelMatrix, this.renderOptions);
+    model.draw(Object.assign({ projectionMatrix, viewMatrix, modelMatrix }, this.renderOptions));
   }
 
   _animateActor(deltaTime, actor) {

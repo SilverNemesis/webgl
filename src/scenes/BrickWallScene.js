@@ -15,7 +15,18 @@ class BrickWallScene {
       showParallaxMap: true,
       parallaxHeightScale: 0.04,
       parallaxSteps: 32,
-      parallaxOcclusionMapping: true
+      parallaxOcclusionMapping: true,
+      ambientLight: [0.3, 0.3, 0.3],
+      directionalLight: {
+        color: [0.4, 0.4, 0.4],
+        direction: [0.0, -1.0, 1.0]
+      },
+      pointLight: {
+        color: [1.0, 1.0, 1.0],
+        position: [0.0, 0.0, 0.0],
+        brightness: 15.0
+      },
+      cameraPos: [0.0, 0.0, 0.0]
     };
     this.options = [
       {
@@ -136,7 +147,7 @@ class BrickWallScene {
       mat4.rotate(modelMatrix, modelMatrix, rotation.angle, rotation.axis);
     }
 
-    model.draw(projectionMatrix, viewMatrix, modelMatrix, this.renderOptions);
+    model.draw(Object.assign({ projectionMatrix, viewMatrix, modelMatrix }, this.renderOptions));
   }
 
   _animateActor(deltaTime, actor) {

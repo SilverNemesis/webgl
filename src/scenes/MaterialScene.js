@@ -434,7 +434,7 @@ class MaterialScene {
 
     this.renderOptions.material = this.renderOptions.materials[actor.materialIndex]
 
-    model.draw(projectionMatrix, viewMatrix, modelMatrix, this.renderOptions);
+    model.draw(Object.assign({ projectionMatrix, viewMatrix, modelMatrix }, this.renderOptions));
   }
 
   _animateActor(deltaTime, actor) {

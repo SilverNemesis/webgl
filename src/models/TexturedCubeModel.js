@@ -18,26 +18,6 @@ class TexturedCubeModel extends Model {
     });
   }
 
-  draw(projectionMatrix, viewMatrix, modelMatrix, options) {
-    const {
-      ambientLight,
-      directionalLight,
-      pointLight,
-      cameraPos,
-      lightingModel
-    } = options;
-    this._drawModel({
-      projectionMatrix,
-      viewMatrix,
-      modelMatrix,
-      ambientLight,
-      directionalLight,
-      pointLight,
-      cameraPos,
-      lightingModel
-    });
-  }
-
   _geometry({ addSquare }) {
     const f0 = [-1, -1, 1];
     const f1 = [1, -1, 1];

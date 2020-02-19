@@ -25,23 +25,6 @@ class MazeModel extends Model {
     });
   }
 
-  draw(projectionMatrix, viewMatrix, modelMatrix, options) {
-    const { shaderIndex, lights, material, materials, ambientLight, directionalLight, pointLight, lightingModel } = options;
-    this._drawModel({
-      projectionMatrix,
-      viewMatrix,
-      modelMatrix,
-      shaderIndex,
-      lights,
-      material,
-      materials,
-      ambientLight,
-      directionalLight,
-      pointLight,
-      lightingModel
-    });
-  }
-
   update(maze) {
     this.maze = maze;
     this._updateModel(this._geometry);

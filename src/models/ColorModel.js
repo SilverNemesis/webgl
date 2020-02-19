@@ -22,10 +22,6 @@ class ColorModel extends Model {
       }
     });
   }
-
-  draw(projectionMatrix, viewMatrix, modelMatrix, options) {
-    this._drawModel(Object.assign({ projectionMatrix, viewMatrix, modelMatrix }, options));
-  }
 }
 
 export default ColorModel;
