@@ -22,6 +22,7 @@ uniform struct {
 } uPointLight;
 
 uniform int uLightingModel;
+uniform int uUseColors;
 uniform vec3 uCameraPos;
 
 varying vec3 vVertexPosition;
@@ -31,7 +32,12 @@ varying vec3 vLighting;
 
 void main(void) {
   gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);
-  vColor = aVertexColor;
+  if (uUseColors != 0) {
+    vColor = aVertexColor;
+  }
+  else {
+    vColor = vec3(1.0, 1.0, 1.0);
+  }
   vVertexNormal = normalize(vec3(uNormalMatrix * vec4(aVertexNormal, 1.0)));
   vVertexPosition = vec3(uModelMatrix * vec4(aVertexPosition, 1.0));
 

@@ -545,6 +545,10 @@ class Model {
         gl.uniform1i(shader.uniformLocations.lightingModel, options.lightingModel);
       }
 
+      if (shader.uniformLocations.useColors && options.useColors !== undefined) {
+        gl.uniform1i(shader.uniformLocations.useColors, options.useColors);
+      }
+
       if (shader.uniformLocations.parallaxHeightScale && options.parallaxHeightScale !== undefined) {
         gl.uniform1f(shader.uniformLocations.parallaxHeightScale, options.parallaxHeightScale);
       }
