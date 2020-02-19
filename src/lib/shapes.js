@@ -23,9 +23,31 @@ export function getShape(shape) {
     return createIcosahedron();
   }
 
-  if (shape === 'icosphere') {
+  if (shape === 'icosphere1') {
+    return createIcosphere(1);
+  }
+
+  if (shape === 'icosphere2') {
+    return createIcosphere(2);
+  }
+
+  if (shape === 'icosphere3') {
     return createIcosphere(3);
   }
+}
+
+export function getShapeList() {
+  return [
+    'tetrahedron',
+    'cube',
+    'octahedron',
+    'pentagonaltrapezohedron',
+    'dodecahedron',
+    'icosahedron',
+    'icosphere1',
+    'icosphere2',
+    'icosphere3'
+  ];
 }
 
 export function createTetrahedron() {
