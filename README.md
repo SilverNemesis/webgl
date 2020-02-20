@@ -8,6 +8,8 @@ You can check out the [running application](https://silvernemesis.github.io/webg
 
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app), and it requires [Node.js](https://nodejs.org/en/) to be installed in order to be used.
 
+Also, the instructions below require [yarn](https://yarnpkg.com/) to be installed, if you do not use yarn please substitute npm for yarn when installing or running any of the scripts.
+
 ## Installing
 
 In the project directory, you must run this once to restore the required node packages:
